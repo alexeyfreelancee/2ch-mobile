@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <variable
+            name="thread"
+            type="com.example.a2ch.models.category.Thread" />
+    </data>
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:padding="16dp"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:textColor="#000"
+            tools:text="029342039"
+            android:layout_toEndOf="@id/name"
+            android:text="@{thread.num}"
+            android:id="@+id/num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <TextView
+            android:textColor="#000"
+            android:layout_marginEnd="8dp"
+            tools:text="Anon"
+            android:text="@{thread.name}"
+            android:id="@+id/name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:layout_above="@id/end"
+            android:layout_below="@id/name"
+            android:layout_alignParentStart="true"
+            android:layout_toStartOf="@id/date"
+            android:layout_marginEnd="16dp"
+            android:id="@+id/comment"
+            android:text="@{thread.comment}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:layout_above="@id/end"
+            tools:text="20 20 20"
+            android:layout_alignParentEnd="true"
+
+            android:id="@+id/date"
+            android:text="@{thread.date}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <View
+            android:layout_marginTop="8dp"
+            android:id="@+id/end"
+            android:layout_alignParentBottom="true"
+            android:background="@android:color/darker_gray"
+            android:layout_width="match_parent"
+            android:layout_height="0.25dp"/>
+    </RelativeLayout>
+</layout>

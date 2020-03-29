@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">2ch</string>
+    <string name="thematics">Тематика</string>
+    <string name="art">Творчество</string>
+    <string name="news">Политика</string>
+    <string name="it">Техника и софт</string>
+    <string name="games">Игры</string>
+    <string name="japanese">Японская культура</string>
+    <string name="sundry">Разное</string>
+    <string name="adult">Взрослым</string>
+    <string name="users">Кастом</string>
+    <string name="boards">Борды</string>
+    <string name="threads">Треды</string>
+</resources>
