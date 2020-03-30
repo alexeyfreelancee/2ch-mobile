@@ -1,60 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:tools="http://schemas.android.com/tools">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
     <data>
         <variable
             name="thread"
             type="com.example.a2ch.models.category.Thread" />
+        <variable
+            name="viewmodel"
+            type="com.example.a2ch.ui.category.CategoryViewModel" />
     </data>
-    <RelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <androidx.cardview.widget.CardView
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="10dp"
+
+        android:background="?attr/selectableItemBackground"
+        android:onClick="@{(view) -> viewmodel.startPostsActivity(thread.num)}"
         android:layout_width="match_parent"
-        android:padding="16dp"
+
         android:layout_height="wrap_content">
 
-        <TextView
-            android:textColor="#000"
-            tools:text="029342039"
-            android:layout_toEndOf="@id/name"
-            android:text="@{thread.num}"
-            android:id="@+id/num"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-        <TextView
-            android:textColor="#000"
-            android:layout_marginEnd="8dp"
-            tools:text="Anon"
-            android:text="@{thread.name}"
-            android:id="@+id/name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-        <TextView
-            android:layout_above="@id/end"
-            android:layout_below="@id/name"
-            android:layout_alignParentStart="true"
-            android:layout_toStartOf="@id/date"
-            android:layout_marginEnd="16dp"
-            android:id="@+id/comment"
-            android:text="@{thread.comment}"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-        <TextView
-            android:layout_above="@id/end"
-            tools:text="20 20 20"
-            android:layout_alignParentEnd="true"
-
-            android:id="@+id/date"
-            android:text="@{thread.date}"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-        <View
-            android:layout_marginTop="8dp"
-            android:id="@+id/end"
-            android:layout_alignParentBottom="true"
-            android:background="@android:color/darker_gray"
+        <RelativeLayout
+            android:padding="16dp"
+            android:background="?attr/selectableItemBackground"
             android:layout_width="match_parent"
-            android:layout_height="0.25dp"/>
-    </RelativeLayout>
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/thread_photo"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true" />
+            <TextView
+                android:layout_toEndOf="@id/thread_photo"
+                android:textSize="18sp"
+                android:layout_marginStart="16dp"
+                android:textColor="#000"
+                android:layout_marginEnd="8dp"
+                tools:text="Anon"
+                android:layout_alignParentEnd="true"
+                android:maxLines="1"
+                android:text="@{thread.subject}"
+                android:id="@+id/name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:layout_toEndOf="@id/thread_photo"
+                android:layout_marginStart="16dp"
+                android:layout_below="@id/name"
+               android:maxLines="5"
+                tools:text="dkjfalksjdflkasjdflkdkjfalksjdflkasjdflkasjdflkajsdflkjasldkfjaslkdfjaksdjfaskdjfalskdfjaskdkjfalksjdflkasjdflkasjdflkajsdflkjasldkfjaslkdfjaksdjfaskdjfalskdfjaskdkjfalksjdflkasjdflkasjdflkajsdflkjasldkfjaslkdfjaksdjfaskdjfalskdfjaskdkjfalksjdflkasjdflkasjdflkajsdflkjasldkfjaslkdfjaksdjfaskdjfalskdfjaskdkjfalksjdflkasjdflkasjdflkajsdflkjasldkfjaslkdfjaksdjfaskdjfalskdfjaskdkjfalksjdflkasjdflkasjdflkajsdflkjasldkfjaslkdfjaksdjfaskdjfalskdfjaskasjdflkajsdflkjasldkfjaslkdfjaksdjfaskdjfalskdfjask;ldjfklsdjf;aslkdfj"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="16dp"
+                android:id="@+id/comment"
+                android:text="@{thread.comment}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:layout_marginTop="8dp"
+                android:layout_below="@id/comment"
+                android:layout_marginEnd="16dp"
+                tools:text="20 20 20"
+                android:layout_alignParentEnd="true"
+                android:id="@+id/date"
+                android:text="@{thread.date}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+
+            <TextView
+                android:layout_toStartOf="@id/date"
+                android:layout_marginTop="8dp"
+                android:layout_below="@id/comment"
+                android:layout_marginEnd="16dp"
+                tools:text="20 постов"
+                android:id="@+id/replies"
+                android:text='@{String.format("%s %s",thread.postsCount, @string/posts)}'
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
 </layout>

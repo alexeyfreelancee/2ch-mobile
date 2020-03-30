@@ -3,7 +3,11 @@ package com.example.a2ch.util
 import android.app.Activity
 import android.app.Application
 import android.content.Context
+import android.util.Log
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import java.text.SimpleDateFormat
+import java.util.*
 
 fun Fragment.parseString(id: Int): String {
     return  this.requireContext().resources.getString(id)
@@ -11,4 +15,17 @@ fun Fragment.parseString(id: Int): String {
 
 fun Activity.parseString(id: Int): String {
     return  this.applicationContext.resources.getString(id)
+}
+
+fun log(msg: String){
+    Log.d("TAGG", msg)
+}
+
+fun Context.toast(msg: String){
+    Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+}
+fun getDate(unix: Long) : String{
+    val date = Date(unix * 1000)
+    val sdf = SimpleDateFormat("dd/MM/yy EEE hh:mm:ss", Locale.getDefault())
+    return sdf.format(date)
 }

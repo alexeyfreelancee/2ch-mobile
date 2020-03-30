@@ -13,7 +13,7 @@ data class CategoryBase(@SerializedName("enable_names")
                         @SerializedName("current_thread")
                        val currentThread: Int = 0,
                         @SerializedName("BoardInfoOuter")
-                       val boardInfoOuter: String = "",
+                       var boardInfoOuter: String = "",
                         @SerializedName("board_banner_link")
                        val boardBannerLink: String = "",
                         @SerializedName("max_files_size")
@@ -43,7 +43,7 @@ data class CategoryBase(@SerializedName("enable_names")
                         @SerializedName("is_index")
                        val isIndex: Int = 0,
                         @SerializedName("BoardInfo")
-                       val boardInfo: String = "",
+                       var boardInfo: String = "",
                         @SerializedName("enable_posting")
                        val enablePosting: Int = 0,
                         @SerializedName("enable_thread_tags")
@@ -53,7 +53,7 @@ data class CategoryBase(@SerializedName("enable_names")
                         @SerializedName("enable_flags")
                        val enableFlags: Int = 0,
                         @SerializedName("threads")
-                       val threads: List<Thread>?,
+                       var threads: List<Thread>,
                         @SerializedName("is_board")
                        val isBoard: Int = 0,
                         @SerializedName("enable_subject")

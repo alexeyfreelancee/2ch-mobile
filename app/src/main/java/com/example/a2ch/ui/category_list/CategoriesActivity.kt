@@ -12,6 +12,7 @@ import com.example.a2ch.databinding.ActivityCategoriesBinding
 import com.example.a2ch.ui.category.CategoryActivity
 import com.example.a2ch.util.BOARD_NAME
 import com.example.a2ch.util.CATEGORY_NAME
+import com.example.a2ch.util.log
 import kotlinx.android.synthetic.main.activity_categories.*
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.kodein
@@ -23,14 +24,16 @@ class CategoriesActivity : AppCompatActivity(), KodeinAware {
     private lateinit var viewModel: CategoriesViewModel
     private lateinit var categoriesListAdapter: CategoriesListAdapter
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this, factory).get(CategoriesViewModel::class.java)
         categoriesListAdapter = CategoriesListAdapter(viewModel)
         intent.getStringExtra(BOARD_NAME)?.let {
             viewModel.categoryName = it
+            log(it)
         }
-
+        log("created")
         DataBindingUtil.setContentView<ActivityCategoriesBinding>(
             this,
             R.layout.activity_categories

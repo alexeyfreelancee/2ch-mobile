@@ -3,7 +3,7 @@ package com.example.a2ch.models.category
 import com.google.gson.annotations.SerializedName
 
 data class Thread(@SerializedName("date")
-                  val date: String = "",
+                  var date: String = "",
                   @SerializedName("op")
                   val op: Int = 0,
                   @SerializedName("parent")
@@ -29,9 +29,9 @@ data class Thread(@SerializedName("date")
                   @SerializedName("closed")
                   val closed: Int = 0,
                   @SerializedName("files")
-                  val files: List<FilesItem>?,
+                  val files: List<FileThread>,
                   @SerializedName("comment")
-                  val comment: String = "",
+                  var comment: String = "",
                   @SerializedName("banned")
                   val banned: Int = 0,
                   @SerializedName("email")
@@ -39,4 +39,4 @@ data class Thread(@SerializedName("date")
                   @SerializedName("posts_count")
                   val postsCount: Int = 0,
                   @SerializedName("timestamp")
-                  val timestamp: Int = 0)
+                  val timestamp: Long = 0)

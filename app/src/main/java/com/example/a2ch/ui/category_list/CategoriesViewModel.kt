@@ -8,6 +8,7 @@ import com.example.a2ch.data.Repository
 import com.example.a2ch.models.boards.BoardsBase
 import com.example.a2ch.models.boards.Category
 import com.example.a2ch.util.Event
+import com.example.a2ch.util.log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -31,6 +32,7 @@ class CategoriesViewModel(private val repository: Repository) : ViewModel() {
 
     fun loadCategories() {
         CoroutineScope(Dispatchers.IO).launch {
+            log("$categoryName from viewmodel")
             _dataLoading.postValue(true)
             val boards = repository.loadBoards()
             _categories.postValue(calculateName(boards))
