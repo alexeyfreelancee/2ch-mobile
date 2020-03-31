@@ -26,6 +26,10 @@ fun Context.toast(msg: String){
 }
 fun getDate(unix: Long) : String{
     val date = Date(unix * 1000)
-    val sdf = SimpleDateFormat("dd/MM/yy EEE hh:mm:ss", Locale.getDefault())
+    val sdf = SimpleDateFormat("dd.MM hh:mm", Locale.getDefault())
     return sdf.format(date)
+}
+
+fun provideCaptchaUrl(id: String) : String{
+    return "https://2ch.hk/api/captcha/2chaptcha/image/$id"
 }

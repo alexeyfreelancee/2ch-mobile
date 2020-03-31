@@ -1,20 +1,13 @@
 package com.example.a2ch.data
 
-import android.R.attr.resource
-import android.content.Intent
-import android.graphics.Bitmap
-import android.net.Uri
 import android.os.Build
-import android.os.Environment
 import android.text.Html
-import android.widget.Toast
 import com.example.a2ch.data.networking.RetrofitClient
 import com.example.a2ch.models.boards.BoardsBase
 import com.example.a2ch.models.category.CategoryBase
 import com.example.a2ch.models.post.Post
 import com.example.a2ch.util.getDate
-import java.io.File
-import java.io.FileOutputStream
+import java.security.PublicKey
 
 
 class Repository(private val retrofit: RetrofitClient) {
@@ -49,6 +42,27 @@ class Repository(private val retrofit: RetrofitClient) {
         return posts
     }
 
+    suspend fun makePost(
+        username: String,
+        board: String,
+        thread: String,
+        comment: String,
+        captchaAnswer: String, publicKey: String
+    ): String {
+        retrofit.dvach.checkCaptcha(publicKey, captchaAnswer)
+        retrofit.dvach.makePost(
+            1, "post",
+            username, board, thread,
+            "2chaptcha",
+            publicKey, comment, captchaAnswer
+        )
+        return ""
+    }
+
+    suspend fun getCaptchaPublicKey(): String {
+        return retrofit.dvach.getCaptchaPublicKey().id
+    }
+
     private fun stripHtml(html: String?): String {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY).toString()
@@ -56,7 +70,6 @@ class Repository(private val retrofit: RetrofitClient) {
             Html.fromHtml(html).toString()
         }
     }
-
 
 
 }

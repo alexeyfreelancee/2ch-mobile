@@ -7,10 +7,10 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
-import android.transition.Transition
+import android.view.Menu
+import android.view.MenuItem
 import android.view.Window
 import android.widget.ImageView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
@@ -20,7 +20,8 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.example.a2ch.R
 import com.example.a2ch.adapters.PostListAdapter
 import com.example.a2ch.databinding.ActivityPostsBinding
-import com.example.a2ch.util.CATEGORY_NAME
+import com.example.a2ch.ui.make_post.MakePostActivity
+import com.example.a2ch.util.BOARD_NAME
 import com.example.a2ch.util.THREAD_NUM
 import com.example.a2ch.util.toast
 import kotlinx.android.synthetic.main.activity_posts.*
@@ -37,6 +38,9 @@ class PostsActivity : AppCompatActivity(), KodeinAware {
     private lateinit var viewModel: PostsViewModel
     private lateinit var postListAdapter: PostListAdapter
 
+    private var board = ""
+    private var thread = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this, factory).get(PostsViewModel::class.java)
@@ -46,16 +50,21 @@ class PostsActivity : AppCompatActivity(), KodeinAware {
         }
         postListAdapter = PostListAdapter(viewModel)
 
-        viewModel.apply {
-            board = intent.getStringExtra(CATEGORY_NAME)
-            thread = intent.getStringExtra(THREAD_NUM)
-        }
-        viewModel.loadPosts()
-
-
+        initViewModelData()
         initObservers()
         initPostList()
     }
+
+    private fun initViewModelData(){
+        board =  intent.getStringExtra(BOARD_NAME)
+        thread = intent.getStringExtra(THREAD_NUM)
+        viewModel.apply {
+            board = this@PostsActivity.board
+            thread = this@PostsActivity.thread
+        }
+        viewModel.loadPosts()
+    }
+
 
     private fun initObservers() {
         viewModel.posts.observe(this, Observer {
@@ -65,6 +74,9 @@ class PostsActivity : AppCompatActivity(), KodeinAware {
             openPhotoDialog(it.peekContent())
         })
     }
+
+
+
 
     private fun openPhotoDialog(photoUrl: String) {
         val dialog = Dialog(this)
@@ -98,6 +110,17 @@ class PostsActivity : AppCompatActivity(), KodeinAware {
         dialog.show()
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.opt_add_post -> {
+                startActivity(Intent(applicationContext, MakePostActivity::class.java)
+                    .putExtra(BOARD_NAME, board)
+                    .putExtra(THREAD_NUM, thread))
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
     fun downloadPhoto(bitmap: Bitmap){
         try {
             val root: String = Environment.getExternalStorageDirectory().toString()
@@ -118,6 +141,12 @@ class PostsActivity : AppCompatActivity(), KodeinAware {
             toast("Ошибка")
         }
     }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.add_post_menu, menu)
+        return true
+    }
+
 
     private fun initPostList() {
         post_list.adapter = postListAdapter

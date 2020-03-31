@@ -1,7 +1,10 @@
-package com.example.a2ch.ui.category
+package com.example.a2ch.ui.threads
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.inputmethod.EditorInfo
+import android.widget.SearchView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
@@ -11,7 +14,7 @@ import com.example.a2ch.R
 import com.example.a2ch.adapters.ThreadListAdapter
 import com.example.a2ch.databinding.ActivityCategoryBinding
 import com.example.a2ch.ui.posts.PostsActivity
-import com.example.a2ch.util.CATEGORY_NAME
+import com.example.a2ch.util.BOARD_NAME
 import com.example.a2ch.util.THREAD_NUM
 import com.example.a2ch.util.log
 import kotlinx.android.synthetic.main.activity_category.*
@@ -31,7 +34,7 @@ class CategoryActivity : AppCompatActivity(), KodeinAware {
         viewModel = ViewModelProvider(this, factory).get(CategoryViewModel::class.java)
         threadsListAdapter = ThreadListAdapter(viewModel)
 
-        intent.getStringExtra(CATEGORY_NAME)?.let {
+        intent.getStringExtra(BOARD_NAME)?.let {
             categoryName = it
             viewModel.categoryName = it
             log("$categoryName category")
@@ -63,10 +66,31 @@ class CategoryActivity : AppCompatActivity(), KodeinAware {
         viewModel.startActivity.observe(this, Observer {
             startActivity(Intent(applicationContext, PostsActivity::class.java)
                 .putExtra(THREAD_NUM, it.peekContent())
-                .putExtra(CATEGORY_NAME, categoryName))
+                .putExtra(BOARD_NAME, categoryName))
         })
 
     }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.search_option, menu)
+
+        val searchItem = menu?.findItem(R.id.opt_search)
+        val searchView = searchItem?.actionView as SearchView
+
+        searchView.imeOptions = EditorInfo.IME_ACTION_DONE
+        searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                threadsListAdapter.filter.filter(newText)
+                return false
+            }
+        })
+        return super.onCreateOptionsMenu(menu)
+    }
+
 
     private fun initThreadList() {
         val linearLayoutManager = object: LinearLayoutManager(this){

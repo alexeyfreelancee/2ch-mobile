@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.a2ch">
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -14,14 +14,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.posts.PostsActivity"
+        <activity android:name=".ui.make_post.MakePostActivity"
+
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".ui.category.CategoryActivity"
-            android:parentActivityName=".ui.category_list.CategoriesActivity"
+            android:name=".ui.posts.PostsActivity"
             android:screenOrientation="portrait" />
+
         <activity
-            android:name=".ui.category_list.CategoriesActivity"
+            android:name=".ui.threads.CategoryActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.MainActivity"

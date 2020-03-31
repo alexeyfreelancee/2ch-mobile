@@ -1,7 +1,5 @@
-package com.example.a2ch.ui.category
+package com.example.a2ch.ui.threads
 
-import android.os.Build
-import android.text.Html
 import android.util.Log
 import androidx.lifecycle.*
 import com.example.a2ch.data.Repository

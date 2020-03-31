@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    >
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="viewmodel"
+            type="com.example.a2ch.ui.boards.BoardsViewModel" />
+
+        <variable
+            name="category"
+            type="com.example.a2ch.models.boards.Board" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:background="@color/backgroundColor"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
+            android:visibility="@{category.isHeader ? View.VISIBLE : View.GONE}">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:textSize="16sp"
+                android:maxLines="1"
+                android:text="@{category.name}"
+                android:textColor="@color/colorPrimary" />
+
+        </RelativeLayout>
+
+
+        <RelativeLayout
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/backgroundColor"
+            android:onClick="@{(view) -> viewmodel.startThreadActivity(category.id)}"
+            android:padding="16dp"
+            android:visibility="@{category.isHeader ? View.GONE : View.VISIBLE}">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="@{category.name }"
+                android:textColor="#000"
+                tools:text="Бред" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:text="@{'/' + category.id+ '/'}"
+                android:textColor="#000"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                tools:text="/b/" />
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</layout>
