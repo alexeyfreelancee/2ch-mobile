@@ -4,7 +4,7 @@ import android.app.Application
 import com.example.a2ch.data.Repository
 import com.example.a2ch.data.networking.RetrofitClient
 import com.example.a2ch.ui.boards.BoardsViewModelFactory
-import com.example.a2ch.ui.make_post.SendPostViewModelFactory
+import com.example.a2ch.ui.send_post.SendPostViewModelFactory
 import com.example.a2ch.ui.threads.CategoryViewModelFactory
 
 import com.example.a2ch.ui.posts.PostsViewModelFactory

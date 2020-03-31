@@ -14,7 +14,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.make_post.MakePostActivity"
+        <activity android:name=".ui.send_post.SendPostActivity"
 
             android:screenOrientation="portrait"/>
         <activity
@@ -22,7 +22,7 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".ui.threads.CategoryActivity"
+            android:name=".ui.threads.ThreadsActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.MainActivity"

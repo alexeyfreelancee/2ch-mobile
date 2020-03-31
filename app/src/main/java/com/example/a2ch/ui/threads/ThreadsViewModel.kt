@@ -15,6 +15,9 @@ class CategoryViewModel(private val repository: Repository) : ViewModel() {
     private val _category = MutableLiveData<CategoryBase>()
     val category: LiveData<CategoryBase> get() = _category
 
+    private val _error = MutableLiveData<String>()
+    val error: LiveData<String> get() = _error
+
     val threads: LiveData<List<Thread>> = Transformations.map(_category){
         it.threads
     }
@@ -31,8 +34,13 @@ class CategoryViewModel(private val repository: Repository) : ViewModel() {
         CoroutineScope(Dispatchers.IO).launch {
             _dataLoading.postValue(true)
             Log.d("TAGG", categoryName)
-            val result = repository.loadCategory(categoryName)
-            _category.postValue(result)
+            try {
+                val result = repository.loadThreads(categoryName)
+                _category.postValue(result)
+            } catch (ex: Exception){
+                _error.postValue("Доски не существует")
+            }
+
             _dataLoading.postValue(false)
         }
 

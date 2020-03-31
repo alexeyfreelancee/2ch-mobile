@@ -22,6 +22,7 @@
             android:layout_alignParentStart="true"
             android:layout_marginStart="16dp"
             android:layout_below="@id/date"
+            android:visibility="@{post.comment.empty ? View.GONE : View.VISIBLE}"
             android:autoLink="web"
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="16dp"

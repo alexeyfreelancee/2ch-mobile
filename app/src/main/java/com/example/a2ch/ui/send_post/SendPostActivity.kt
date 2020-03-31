@@ -1,4 +1,4 @@
-package com.example.a2ch.ui.make_post
+package com.example.a2ch.ui.send_post
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -8,16 +8,13 @@ import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.example.a2ch.R
 import com.example.a2ch.databinding.ActivityMakePostBinding
-import com.example.a2ch.util.BOARD_NAME
-import com.example.a2ch.util.THREAD_NUM
-import com.example.a2ch.util.log
-import com.example.a2ch.util.provideCaptchaUrl
+import com.example.a2ch.util.*
 import kotlinx.android.synthetic.main.activity_make_post.*
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.kodein
 import org.kodein.di.generic.instance
 
-class MakePostActivity : AppCompatActivity(), KodeinAware {
+class SendPostActivity : AppCompatActivity(), KodeinAware {
     override val kodein by kodein()
     private val factory: SendPostViewModelFactory by instance()
     private lateinit var viewModel: SendPostViewModel
@@ -32,7 +29,7 @@ class MakePostActivity : AppCompatActivity(), KodeinAware {
             this, R.layout.activity_make_post
         ).apply {
             viewmodel = viewModel
-            lifecycleOwner = this@MakePostActivity
+            lifecycleOwner = this@SendPostActivity
         }
 
         initViewModelData()
@@ -43,28 +40,35 @@ class MakePostActivity : AppCompatActivity(), KodeinAware {
         thread = intent.getStringExtra(THREAD_NUM)
         board = intent.getStringExtra(BOARD_NAME)
         viewModel.apply {
-            thread = this@MakePostActivity.thread
-            board = this@MakePostActivity.board
+            thread = this@SendPostActivity.thread
+            board = this@SendPostActivity.board
         }
-        log(board)
-        log(thread)
+
     }
 
 
     private fun initObservers() {
-        viewModel.captchaId.observe(this, Observer {
-            log(it)
-            Glide.with(applicationContext)
-                .load(provideCaptchaUrl(it))
-                .error(R.drawable.common_google_signin_btn_text_light_focused)
-                .into(captcha_img)
+        viewModel.captchaResult.observe(this, Observer {
+            if(it != "Ошибка"){
+                captchaAnswer.setText("")
+                Glide.with(applicationContext)
+                    .load(provideCaptchaUrl(it))
+                    .error(R.drawable.common_google_signin_btn_text_light_focused)
+                    .into(captcha_img)
+            } else {
+                captchaAnswer.setText("")
+                toast("Ошибка")
+            }
+
         })
 
         viewModel.postResult.observe(this, Observer {
             val result = it.peekContent()
 
-            if (result == "aue") {
+            if (result == "success") {
                 finish()
+            } else {
+                toast("Сука, в рот ебал абу, капча не верна")
             }
         })
     }

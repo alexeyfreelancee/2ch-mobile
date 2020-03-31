@@ -4,9 +4,10 @@
 
     xmlns:tools="http://schemas.android.com/tools">
     <data>
+        <import type="android.view.View"/>
         <variable
             name="viewmodel"
-            type="com.example.a2ch.ui.make_post.SendPostViewModel" />
+            type="com.example.a2ch.ui.send_post.SendPostViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -14,7 +15,7 @@
         android:layout_height="match_parent"
         android:background="@color/backgroundColor"
         android:padding="16dp"
-        tools:context=".ui.make_post.MakePostActivity">
+        tools:context=".ui.send_post.SendPostActivity">
 
         <Button
             android:background="@null"
@@ -59,9 +60,10 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
-            android:onClick="@{viewmodel::loadCaptchaImage}"
+            android:onClick="@{viewmodel::loadCaptchaInfo}"
             android:id="@+id/captcha_img"
             android:layout_width="0dp"
+            android:visibility="@{viewmodel.captchaResult.equals(@string/passcode) ? View.GONE : View.VISIBLE}"
             android:scaleType="centerCrop"
             android:layout_height="80dp"
             android:layout_marginTop="16dp"
@@ -71,8 +73,12 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/editText" />
 
+
+
+
         <EditText
-            android:id="@+id/editText3"
+
+            android:id="@+id/captchaAnswer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"

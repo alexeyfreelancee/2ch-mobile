@@ -17,4 +17,6 @@
     <string name="username">Имя пользователя</string>
     <string name="comment">Комментарий</string>
     <string name="captch_answ">Введите код с картинки</string>
+    <string name="passcode">passcode</string>
+    <string name="enter_passcode">Введите пасскод</string>
 </resources>

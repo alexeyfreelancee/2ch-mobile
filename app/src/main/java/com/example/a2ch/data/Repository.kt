@@ -4,10 +4,12 @@ import android.os.Build
 import android.text.Html
 import com.example.a2ch.data.networking.RetrofitClient
 import com.example.a2ch.models.boards.BoardsBase
+import com.example.a2ch.models.captcha.CaptchaInfo
 import com.example.a2ch.models.category.CategoryBase
+import com.example.a2ch.models.post.MakePostError
 import com.example.a2ch.models.post.Post
 import com.example.a2ch.util.getDate
-import java.security.PublicKey
+import kotlin.concurrent.thread
 
 
 class Repository(private val retrofit: RetrofitClient) {
@@ -16,7 +18,7 @@ class Repository(private val retrofit: RetrofitClient) {
         return retrofit.dvach.getBoards()
     }
 
-    suspend fun loadCategory(name: String): CategoryBase {
+    suspend fun loadThreads(name: String): CategoryBase {
         val category = retrofit.dvach.getCategory(name)
         val threads = category.threads
         category.threads.forEach {
@@ -25,7 +27,12 @@ class Repository(private val retrofit: RetrofitClient) {
         }
         category.boardInfo = stripHtml(category.boardInfo)
 
-        category.threads = threads.subList(0, (threads.size / 4))
+        if(threads.size > 50){
+            category.threads = threads.subList(0, (threads.size  / 6))
+        } else{
+            category.threads = threads
+        }
+
 
         return category
     }
@@ -42,25 +49,41 @@ class Repository(private val retrofit: RetrofitClient) {
         return posts
     }
 
-    suspend fun makePost(
+    suspend fun makePostWithCaptcha(
         username: String,
         board: String,
         thread: String,
         comment: String,
-        captchaAnswer: String, publicKey: String
-    ): String {
-        retrofit.dvach.checkCaptcha(publicKey, captchaAnswer)
-        retrofit.dvach.makePost(
+        captchaAnswer: String,
+        captchaId: String
+    ): MakePostError {
+        return retrofit.dvach.makePostWithCaptcha(
             1, "post",
             username, board, thread,
             "2chaptcha",
-            publicKey, comment, captchaAnswer
+            captchaId, comment, captchaAnswer
         )
-        return ""
     }
 
-    suspend fun getCaptchaPublicKey(): String {
-        return retrofit.dvach.getCaptchaPublicKey().id
+    // не работает, тк всеми любимая мартышка не может сделать так,
+    // чтобы сервер возвращал пасскод в формате json
+    suspend fun makePostWithPasscode(
+        username: String,
+        board: String,
+        thread: String,
+        comment: String,
+        usercode: String
+    ): MakePostError {
+        val responseUsercode = retrofit.dvach.getPasscode("auth", usercode)
+
+
+        return retrofit.dvach.makePostWithPasscode(
+            1, "post", username, board, thread, comment, responseUsercode
+        )
+    }
+
+    suspend fun getCaptchaInfo(board: String, thread: String): CaptchaInfo {
+        return retrofit.dvach.getCaptchaId(board, thread)
     }
 
     private fun stripHtml(html: String?): String {

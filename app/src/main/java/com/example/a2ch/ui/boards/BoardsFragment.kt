@@ -11,7 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.a2ch.R
 import com.example.a2ch.adapters.BoardListAdapter
 import com.example.a2ch.databinding.BoardsFragmentBinding
-import com.example.a2ch.ui.threads.CategoryActivity
+import com.example.a2ch.ui.threads.ThreadsActivity
 import com.example.a2ch.util.BOARD_NAME
 import kotlinx.android.synthetic.main.boards_fragment.*
 import org.kodein.di.KodeinAware
@@ -49,7 +49,7 @@ class BoardsFragment : Fragment(), KodeinAware {
         viewModel.startCategory.observe(viewLifecycleOwner, Observer {
             val name = it.peekContent()
             startActivity(
-                Intent(requireContext(), CategoryActivity::class.java).putExtra(
+                Intent(requireContext(), ThreadsActivity::class.java).putExtra(
                     BOARD_NAME, name
                 )
             )

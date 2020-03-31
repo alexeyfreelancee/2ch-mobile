@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import java.text.SimpleDateFormat
@@ -15,6 +16,14 @@ fun Fragment.parseString(id: Int): String {
 
 fun Activity.parseString(id: Int): String {
     return  this.applicationContext.resources.getString(id)
+}
+
+fun View.visible(){
+    this.visibility = View.VISIBLE
+}
+
+fun View.gone(){
+    this.visibility = View.GONE
 }
 
 fun log(msg: String){

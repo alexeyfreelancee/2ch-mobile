@@ -17,12 +17,13 @@ import com.example.a2ch.ui.posts.PostsActivity
 import com.example.a2ch.util.BOARD_NAME
 import com.example.a2ch.util.THREAD_NUM
 import com.example.a2ch.util.log
+import com.example.a2ch.util.toast
 import kotlinx.android.synthetic.main.activity_category.*
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.kodein
 import org.kodein.di.generic.instance
 
-class CategoryActivity : AppCompatActivity(), KodeinAware {
+class ThreadsActivity : AppCompatActivity(), KodeinAware {
     override val kodein by kodein()
     private val factory: CategoryViewModelFactory by instance()
     private lateinit var threadsListAdapter: ThreadListAdapter
@@ -37,16 +38,16 @@ class CategoryActivity : AppCompatActivity(), KodeinAware {
         intent.getStringExtra(BOARD_NAME)?.let {
             categoryName = it
             viewModel.categoryName = it
-            log("$categoryName category")
         }
         viewModel.update()
+
 
        DataBindingUtil.setContentView<ActivityCategoryBinding>(
             this,
             R.layout.activity_category
         ).apply {
             viewmodel = viewModel
-            lifecycleOwner = this@CategoryActivity
+            lifecycleOwner = this@ThreadsActivity
         }
 
         initThreadList()
@@ -60,15 +61,21 @@ class CategoryActivity : AppCompatActivity(), KodeinAware {
             threadsListAdapter.updateList(it)
             log(it.size.toString())
         })
+
         viewModel.category.observe(this, Observer {
             supportActionBar?.title = it.boardName
         })
+
         viewModel.startActivity.observe(this, Observer {
             startActivity(Intent(applicationContext, PostsActivity::class.java)
                 .putExtra(THREAD_NUM, it.peekContent())
                 .putExtra(BOARD_NAME, categoryName))
         })
 
+        viewModel.error.observe(this, Observer {
+            toast(it)
+            finish()
+        })
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -98,7 +105,7 @@ class CategoryActivity : AppCompatActivity(), KodeinAware {
                 return false
             }
         }
-
+        linearLayoutManager.isAutoMeasureEnabled = true
         thread_list.apply {
             adapter = threadsListAdapter
             layoutManager =linearLayoutManager

@@ -1,4 +1,4 @@
-package com.example.a2ch.ui.make_post
+package com.example.a2ch.ui.send_post
 
 import android.view.View
 import androidx.lifecycle.LiveData
@@ -6,8 +6,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.a2ch.data.Repository
+import com.example.a2ch.models.post.MakePostError
 import com.example.a2ch.util.Event
-import com.example.a2ch.util.log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -18,37 +18,52 @@ class SendPostViewModel(private val repository: Repository) : ViewModel() {
     var captchaAnswer = ""
     var board = ""
     var thread = ""
+    var passcode = ""
 
-    private val _captchaId = MutableLiveData<String>()
-    val captchaId : LiveData<String> = _captchaId
+
+    private val _captchaResult = MutableLiveData<String>()
+    val captchaResult: LiveData<String> = _captchaResult
 
     private val _postResult = MutableLiveData<Event<String>>()
     val postResult: LiveData<Event<String>> = _postResult
 
     init {
-        loadCaptchaImage(null)
+        loadCaptchaInfo(null)
     }
 
-    fun makePost(view : View?) {
+    fun makePost(view: View?) {
         if (checkFields()) {
             CoroutineScope(Dispatchers.IO).launch {
-                repository.makePost(
-                    username, board,
-                    thread, comment,
-                    captchaAnswer, _captchaId.value!!
-                )
-                log(captchaAnswer)
-                log(board)
-                log(thread)
-                _postResult.postValue(Event("aue"))
+                var result: MakePostError? = null
+
+                if (_captchaResult.value != "Ошибка") {
+                    result = repository.makePostWithCaptcha(
+                        username, board,
+                        thread, comment,
+                        captchaAnswer, _captchaResult.value!!
+                    )
+                }
+
+                if (result?.error != null) {
+                    _postResult.postValue(Event(result.reason!!))
+                } else {
+                    _postResult.postValue(Event("success"))
+                }
+
             }
         }
     }
 
-     fun loadCaptchaImage(view: View?){
+    fun loadCaptchaInfo(view: View?) {
         CoroutineScope(Dispatchers.IO).launch {
-            val id = repository.getCaptchaPublicKey()
-            _captchaId.postValue(id)
+            val info = repository.getCaptchaInfo(board, thread)
+
+            when (info.result) {
+                0 -> _captchaResult.postValue("Ошибка")
+                1 -> {
+                    _captchaResult.postValue(info.id)
+                }
+            }
         }
 
     }

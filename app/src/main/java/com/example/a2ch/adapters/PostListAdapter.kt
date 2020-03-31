@@ -51,19 +51,16 @@ class PostListAdapter(private val viewModel: PostsViewModel): RecyclerView.Adapt
 
                 Glide.with(itemView.context)
                     .load("https://2ch.hk${post.files[1].path}")
-                    .into(itemView.photo1)
+                    .into(itemView.photo2)
 
                 Glide.with(itemView.context)
                     .load("https://2ch.hk${post.files[2].path}")
-                    .into(itemView.photo1)
+                    .into(itemView.photo3)
 
                 Glide.with(itemView.context)
                     .load(post.files[3])  .load("https://2ch.hk${post.files[3].path}")
-                    .into(itemView.photo1)
+                    .into(itemView.photo4)
 
-                Glide.with(itemView.context)
-                    .load(post.files[4])  .load("https://2ch.hk${post.files[4].path}")
-                    .into(itemView.photo1)
             } catch (ex: Exception){}
 
         }

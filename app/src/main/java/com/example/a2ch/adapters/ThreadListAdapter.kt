@@ -53,7 +53,7 @@ class ThreadListAdapter(private val viewModel: CategoryViewModel) :
                     itemsFull.forEach {
                         if (
                             it.subject.contains(pattern) ||
-                            it.num.contains(pattern)
+                            it.comment.contains(pattern)
                         ) {
                             filteredList.add(it)
                         }
@@ -66,7 +66,7 @@ class ThreadListAdapter(private val viewModel: CategoryViewModel) :
             }
 
             override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
-                val resultList = results as List<Thread>
+                val resultList = results?.values as List<Thread>
                 items.clear()
                 items.addAll(resultList)
                 notifyDataSetChanged()

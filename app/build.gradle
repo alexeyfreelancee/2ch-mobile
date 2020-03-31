@@ -77,5 +77,10 @@ dependencies {
     //Captcha
     implementation 'com.google.android.gms:play-services-safetynet:17.0.0'
 
+    //Bottom refresh
+    implementation 'com.github.omadahealth:swipy:1.2.3@aar'
+
+    //PhotoView
+    implementation 'com.github.chrisbanes:PhotoView:2.0.0'
 
 }
