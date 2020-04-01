@@ -68,7 +68,7 @@ class SendPostActivity : AppCompatActivity(), KodeinAware {
             if (result == "success") {
                 finish()
             } else {
-                toast("Сука, в рот ебал абу, капча не верна")
+                toast("Абу пидор, капча не верна")
             }
         })
     }

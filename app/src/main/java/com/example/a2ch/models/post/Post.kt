@@ -23,7 +23,7 @@ data class Post(@SerializedName("date")
                 @SerializedName("trip")
                 val trip: String = "",
                 @SerializedName("name")
-                val name: String = "",
+                var name: String = "",
                 @SerializedName("sticky")
                 val sticky: Int = 0,
                 @SerializedName("closed")

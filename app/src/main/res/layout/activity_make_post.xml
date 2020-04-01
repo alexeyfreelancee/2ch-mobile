@@ -38,7 +38,7 @@
             android:ems="10"
             android:gravity="top"
             android:hint="@string/comment"
-            android:inputType="textPersonName"
+            android:inputType="textMultiLine"
             android:text="@={viewmodel.comment}"
             app:layout_constraintBottom_toTopOf="@+id/captcha_img"
             app:layout_constraintEnd_toEndOf="parent"

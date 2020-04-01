@@ -23,30 +23,48 @@ class PostsViewModel(private val repository: Repository) : ViewModel() {
     private val _dataLoading = MutableLiveData<Boolean>()
     val dataLoading : LiveData<Boolean> = _dataLoading
 
-    private val _openDialog = MutableLiveData<Event<String>>()
-    val openDialog : LiveData<Event<String>> = _openDialog
+    private val _openPhotoDialog = MutableLiveData<Event<String>>()
+    val openPhotoDialog : LiveData<Event<String>> = _openPhotoDialog
+
+    private val _openPostDialog = MutableLiveData<Event<Post>>()
+    val openPostDialog : LiveData<Event<Post>> = _openPostDialog
+
+    private val _error = MutableLiveData<String>()
+    val error: LiveData<String> get() = _error
 
     var thread = ""
     var board = ""
 
     fun loadPosts(direction: SwipyRefreshLayoutDirection){
         CoroutineScope(Dispatchers.IO).launch {
-            _dataLoading.postValue(true)
+            try{
+                _dataLoading.postValue(true)
 
-            val postList = repository.loadPosts(thread, board)
-            _posts.postValue(postList)
+                val postList = repository.loadPosts(thread, board)
+                _posts.postValue(postList)
 
-            if(direction == SwipyRefreshLayoutDirection.BOTTOM)
-                _scrollToBottom.postValue(Event(Any()))
+                if(direction == SwipyRefreshLayoutDirection.BOTTOM)
+                    _scrollToBottom.postValue(Event(Any()))
 
-            _dataLoading.postValue(false)
+                _dataLoading.postValue(false)
+            } catch (ex: Exception){
+                _error.postValue("Треда не существует")
+            }
+
         }
 
     }
 
+    fun openPostDialog(parent: String){
+        CoroutineScope(Dispatchers.IO).launch {
+            val post = repository.getPost(board, parent)
+            _openPostDialog.postValue(Event(post))
+        }
 
-    fun openDialog(photoUrl: String){
-        _openDialog.postValue(Event(photoUrl))
+    }
+
+    fun openPhotoDialog(photoUrl: String){
+        _openPhotoDialog.postValue(Event(photoUrl))
     }
 
 

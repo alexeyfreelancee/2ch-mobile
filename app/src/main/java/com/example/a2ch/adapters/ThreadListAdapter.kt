@@ -9,11 +9,12 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.a2ch.databinding.ThreadRowBinding
-import com.example.a2ch.models.category.Thread
 import com.example.a2ch.ui.threads.CategoryViewModel
 import kotlinx.android.synthetic.main.thread_row.view.*
+import com.example.a2ch.models.category.Thread
 import java.util.*
 import kotlin.collections.ArrayList
+
 
 class ThreadListAdapter(private val viewModel: CategoryViewModel) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>(), Filterable {
@@ -81,9 +82,12 @@ class ThreadListAdapter(private val viewModel: CategoryViewModel) :
                 viewmodel = viewModel
             }
 
-            Glide.with(itemView.context)
-                .load("https://2ch.hk${item.files[0].path}")
-                .into(itemView.thread_photo)
+            try{
+                Glide.with(itemView.context)
+                    .load("https://2ch.hk${item.files[0].path}")
+                    .into(itemView.thread_photo)
+            } catch (ex: Exception){}
+
         }
     }
 }

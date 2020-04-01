@@ -21,11 +21,17 @@
             app:refreshing="@{viewmodel.dataLoading}"
             android:layout_height="match_parent">
 
+
+
             <androidx.recyclerview.widget.RecyclerView
                 android:layout_width="match_parent"
                 android:id="@+id/post_list"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 android:layout_height="match_parent"/>
+
+
+
+
         </com.omadahealth.github.swipyrefreshlayout.library.SwipyRefreshLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

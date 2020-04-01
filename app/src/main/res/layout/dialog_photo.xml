@@ -1,45 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    android:background="@color/backgroundColor"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="300dp"
-    android:layout_height="300dp">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+
+    android:background="@color/backgroundColor">
 
     <com.github.chrisbanes.photoview.PhotoView
         android:id="@+id/photo"
-        android:layout_centerHorizontal="true"
-
-        android:layout_marginTop="45dp"
-        android:layout_alignParentTop="true"
+        android:layout_width="match_parent"
+        android:adjustViewBounds="true"
+        android:layout_height="match_parent"
         android:layout_above="@id/download"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+      android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="45dp" />
 
 
     <VideoView
-        android:layout_centerHorizontal="true"
+        android:adjustViewBounds="true"
         android:id="@+id/video"
-        android:layout_marginTop="45dp"
-        android:layout_alignParentTop="true"
-        android:layout_above="@id/download"
         android:layout_width="match_parent"
-        android:layout_height="0dp"/>
+        android:layout_height="match_parent"
+        android:layout_above="@id/download"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="45dp" />
 
     <ProgressBar
         android:id="@+id/progress"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
         android:layout_width="45dp"
-        android:layout_height="45dp"/>
+        android:layout_height="45dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true" />
 
     <ImageView
-
-        android:scaleType="centerCrop"
-      android:src="@drawable/ic_download"
-        android:layout_width="45dp"
         android:id="@+id/download"
-        android:layout_marginEnd="8dp"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_height="45dp"/>
+        android:layout_marginEnd="8dp"
+        android:src="@drawable/ic_download" />
 </RelativeLayout>

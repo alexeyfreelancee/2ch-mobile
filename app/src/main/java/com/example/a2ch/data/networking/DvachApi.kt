@@ -2,7 +2,7 @@ package com.example.a2ch.data.networking
 
 import com.example.a2ch.models.boards.BoardsBase
 import com.example.a2ch.models.captcha.CaptchaInfo
-import com.example.a2ch.models.category.CategoryBase
+import com.example.a2ch.models.category.BoardInfo
 import com.example.a2ch.models.post.MakePostError
 import com.example.a2ch.models.post.Post
 import retrofit2.http.GET
@@ -15,13 +15,13 @@ interface DvachApi {
     @GET("makaba/mobile.fcgi?task=get_boards")
     suspend fun getBoards(): BoardsBase
 
-    @GET("{name}/catalog_num.json")
-    suspend fun getCategory(
-        @Path("name") name: String
-    ): CategoryBase
+    @GET("{board}/index.json")
+    suspend fun getThreads(
+        @Path("board") board: String
+    ): BoardInfo
 
     @GET("makaba/mobile.fcgi")
-    suspend fun getThreadPosts(
+    suspend fun getPosts(
         @Query("task") task: String,
         @Query("board") board: String,
         @Query("thread") thread: String,
@@ -72,4 +72,11 @@ interface DvachApi {
         @Query("usercode") usercode: String
     ) : String
 
+
+    @GET("makaba/mobile.fcgi")
+    suspend fun getPost(
+        @Query("task") task: String,
+        @Query("board") board: String,
+        @Query("post") post: String
+    ) : List<Post>
 }

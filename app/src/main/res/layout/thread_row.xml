@@ -31,23 +31,25 @@
             android:layout_height="wrap_content">
 
             <ImageView
-                android:layout_marginEnd="16dp"
                 android:visibility="@{thread.files.empty ? View.GONE : View.VISIBLE}"
                 android:scaleType="centerCrop"
                 android:id="@+id/thread_photo"
                 android:layout_width="50dp"
+                android:layout_marginEnd="8dp"
                 android:layout_height="50dp"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true" />
 
             <TextView
+                android:textAlignment="viewStart"
+                android:gravity="start"
                 android:layout_toEndOf="@id/thread_photo"
                 android:textSize="18sp"
-
+                android:visibility="@{thread.subject.empty  ? View.GONE : View.VISIBLE}"
                 android:textColor="#000"
-                android:layout_marginEnd="8dp"
                 tools:text="Anon"
-                android:layout_alignParentEnd="true"
+                android:paddingEnd="16dp"
+                android:paddingStart="8dp"
                 android:maxLines="1"
                 android:text="@{thread.subject}"
                 android:id="@+id/name"
@@ -62,7 +64,8 @@
 
                 tools:text="dkjfalksjdflkasjdflkdkjfalksjdflkasjdflkasjdflkajsdflkjasldkfjaslkdfjaksdjfaskdjfalskdfjaskdkjfalksjdflkasjdflkasjdflkajsdflkjasldkfjaslkdfjaksdjfaskdjfalskdfjaskdkjfalksjdflkasjdflkasjdflkajsdflkjasldkfjaslkdfjaksdjfaskdjfalskdfjaskdkjfalksjdflkasjdflkasjdflkajsdflkjasldkfjaslkdfjaksdjfaskdjfalskdfjaskdkjfalksjdflkasjdflkasjdflkajsdflkjasldkfjaslkdfjaksdjfaskdjfalskdfjaskdkjfalksjdflkasjdflkasjdflkajsdflkjasldkfjaslkdfjaksdjfaskdjfalskdfjaskasjdflkajsdflkjasldkfjaslkdfjaksdjfaskdjfalskdfjask;ldjfklsdjf;aslkdfj"
                 android:layout_alignParentEnd="true"
-                android:layout_marginEnd="16dp"
+                android:paddingEnd="16dp"
+                android:paddingStart="8dp"
                 android:id="@+id/comment"
                 android:text="@{thread.comment}"
                 android:layout_width="wrap_content"

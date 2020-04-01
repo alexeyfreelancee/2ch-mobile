@@ -3,24 +3,23 @@ package com.example.a2ch.ui.threads
 import android.util.Log
 import androidx.lifecycle.*
 import com.example.a2ch.data.Repository
-import com.example.a2ch.models.category.CategoryBase
-import com.example.a2ch.models.category.Thread
+import com.example.a2ch.models.category.BoardInfo
 import com.example.a2ch.util.Event
 import kotlinx.coroutines.CoroutineScope
+import com.example.a2ch.models.category.Thread
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
 class CategoryViewModel(private val repository: Repository) : ViewModel() {
-    private val _category = MutableLiveData<CategoryBase>()
-    val category: LiveData<CategoryBase> get() = _category
+    private val _category = MutableLiveData<BoardInfo>()
+    val category: LiveData<BoardInfo> get() = _category
 
     private val _error = MutableLiveData<String>()
     val error: LiveData<String> get() = _error
 
-    val threads: LiveData<List<Thread>> = Transformations.map(_category){
-        it.threads
-    }
+    private val _threads = MutableLiveData<List<Thread>>()
+    val threads: LiveData<List<Thread>> = _threads
 
     var categoryName = ""
 
@@ -37,7 +36,14 @@ class CategoryViewModel(private val repository: Repository) : ViewModel() {
             try {
                 val result = repository.loadThreads(categoryName)
                 _category.postValue(result)
+
+                val threadList = ArrayList<Thread>()
+                result.threads.forEach {
+                    threadList.add(it.posts[0])
+                }
+                _threads.postValue(threadList)
             } catch (ex: Exception){
+                ex.printStackTrace()
                 _error.postValue("Доски не существует")
             }
 
@@ -45,6 +51,7 @@ class CategoryViewModel(private val repository: Repository) : ViewModel() {
         }
 
     }
+
 
     fun startPostsActivity(threadNum: String){
         _startActivity.postValue(Event(threadNum))

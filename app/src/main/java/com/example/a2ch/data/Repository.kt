@@ -5,11 +5,10 @@ import android.text.Html
 import com.example.a2ch.data.networking.RetrofitClient
 import com.example.a2ch.models.boards.BoardsBase
 import com.example.a2ch.models.captcha.CaptchaInfo
-import com.example.a2ch.models.category.CategoryBase
+import com.example.a2ch.models.category.BoardInfo
 import com.example.a2ch.models.post.MakePostError
 import com.example.a2ch.models.post.Post
 import com.example.a2ch.util.getDate
-import kotlin.concurrent.thread
 
 
 class Repository(private val retrofit: RetrofitClient) {
@@ -18,32 +17,28 @@ class Repository(private val retrofit: RetrofitClient) {
         return retrofit.dvach.getBoards()
     }
 
-    suspend fun loadThreads(name: String): CategoryBase {
-        val category = retrofit.dvach.getCategory(name)
-        val threads = category.threads
-        category.threads.forEach {
-            it.comment = stripHtml(it.comment)
-            it.date = getDate(it.timestamp)
-        }
-        category.boardInfo = stripHtml(category.boardInfo)
+    suspend fun loadThreads(name: String): BoardInfo {
+        val threadsBase = retrofit.dvach.getThreads(name)
 
-        if(threads.size > 50){
-            category.threads = threads.subList(0, (threads.size  / 6))
-        } else{
-            category.threads = threads
+        threadsBase.threads.forEach {
+            val thread = it.posts[0]
+            thread.comment = stripHtml(thread.comment)
+            thread.date = getDate(thread.timestamp)
         }
 
-
-        return category
+        threadsBase.boardInfo = stripHtml(threadsBase.boardInfo)
+        return threadsBase
     }
 
     suspend fun loadPosts(thread: String, board: String): List<Post> {
-        val posts = retrofit.dvach.getThreadPosts(
+        val posts = retrofit.dvach.getPosts(
             "get_thread", board, thread, 1
         )
         posts.forEach {
             it.date = getDate(it.timestamp)
             it.comment = stripHtml(it.comment)
+            it.name = stripHtml(it.name)
+            it.comment.replace(">>${it.parent}".toRegex(), "")
         }
 
         return posts
@@ -86,7 +81,7 @@ class Repository(private val retrofit: RetrofitClient) {
         return retrofit.dvach.getCaptchaId(board, thread)
     }
 
-    private fun stripHtml(html: String?): String {
+    private fun stripHtml(html: String): String {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY).toString()
         } else {
@@ -94,6 +89,18 @@ class Repository(private val retrofit: RetrofitClient) {
         }
     }
 
+
+    suspend fun getPost(board: String, postId:String) : Post{
+        val posts = retrofit.dvach.getPost("get_post",board,postId)
+        posts.forEach {
+            it.date = getDate(it.timestamp)
+            it.comment = stripHtml(it.comment)
+            it.name = stripHtml(it.name)
+            it.comment.replace(">>${it.parent}".toRegex(), "")
+        }
+        return posts[0]
+
+    }
 
 }
 

@@ -19,4 +19,6 @@
     <string name="captch_answ">Введите код с картинки</string>
     <string name="passcode">passcode</string>
     <string name="enter_passcode">Введите пасскод</string>
+    <string name="parent">>></string>
+    <string name="zero">0</string>
 </resources>
