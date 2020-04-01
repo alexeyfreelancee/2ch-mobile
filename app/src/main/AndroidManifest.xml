@@ -19,6 +19,7 @@
             android:screenOrientation="portrait"/>
         <activity
             android:name=".ui.posts.PostsActivity"
+            android:theme="@style/NoActionBar"
             android:screenOrientation="portrait" />
 
         <activity

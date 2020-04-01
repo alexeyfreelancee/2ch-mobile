@@ -8,6 +8,10 @@ import android.widget.Filterable
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.signature.ObjectKey
 import com.example.a2ch.databinding.ThreadRowBinding
 import com.example.a2ch.ui.threads.CategoryViewModel
 import kotlinx.android.synthetic.main.thread_row.view.*
@@ -83,9 +87,16 @@ class ThreadListAdapter(private val viewModel: CategoryViewModel) :
             }
 
             try{
+                val myOptions = RequestOptions()
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .centerCrop()
+
                 Glide.with(itemView.context)
                     .load("https://2ch.hk${item.files[0].path}")
+                    .apply(myOptions)
+                    .transition(DrawableTransitionOptions.withCrossFade())
                     .into(itemView.thread_photo)
+
             } catch (ex: Exception){}
 
         }

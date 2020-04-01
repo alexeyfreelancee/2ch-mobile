@@ -16,7 +16,7 @@ android {
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
-
+        multiDexEnabled = true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -44,7 +44,8 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
-
+    //Multidex
+    implementation 'com.android.support:multidex:1.0.3'
     //MVVM
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
 
@@ -81,5 +82,11 @@ dependencies {
 
     //PhotoView
     implementation 'com.github.chrisbanes:PhotoView:2.0.0'
+
+    //Jsoup
+    implementation 'org.jsoup:jsoup:1.8.3'
+
+    //Exoplayer
+    implementation 'com.google.android.exoplayer:exoplayer:2.11.3'
 
 }

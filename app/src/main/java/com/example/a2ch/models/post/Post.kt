@@ -7,7 +7,7 @@ data class Post(@SerializedName("date")
                 @SerializedName("op")
                 val op: Int = 0,
                 @SerializedName("parent")
-                val parent: String = "",
+                var parent: String = "",
                 @SerializedName("subject")
                 val subject: String = "",
                 @SerializedName("num")

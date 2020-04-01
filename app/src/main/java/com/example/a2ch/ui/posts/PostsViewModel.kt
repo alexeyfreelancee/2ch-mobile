@@ -48,6 +48,7 @@ class PostsViewModel(private val repository: Repository) : ViewModel() {
 
                 _dataLoading.postValue(false)
             } catch (ex: Exception){
+                ex.printStackTrace()
                 _error.postValue("Треда не существует")
             }
 

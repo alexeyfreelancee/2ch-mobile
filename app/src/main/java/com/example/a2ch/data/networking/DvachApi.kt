@@ -74,7 +74,7 @@ interface DvachApi {
 
 
     @GET("makaba/mobile.fcgi")
-    suspend fun getPost(
+    suspend fun getCurrentPost(
         @Query("task") task: String,
         @Query("board") board: String,
         @Query("post") post: String

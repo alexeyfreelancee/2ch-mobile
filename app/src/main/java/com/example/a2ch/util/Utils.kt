@@ -26,8 +26,12 @@ fun View.gone(){
     this.visibility = View.GONE
 }
 
-fun log(msg: String){
-    Log.d("TAGG", msg)
+fun log(msg: Any){
+    when(msg){
+        is String ->Log.d("TAGG", msg)
+        else -> Log.d("TAGG", msg.toString())
+    }
+
 }
 
 fun Context.toast(msg: String){
@@ -41,4 +45,8 @@ fun getDate(unix: Long) : String{
 
 fun provideCaptchaUrl(id: String) : String{
     return "https://2ch.hk/api/captcha/2chaptcha/image/$id"
+}
+
+fun String.parseDigits(): String{
+    return this.replace("\\D+".toRegex(),"");
 }

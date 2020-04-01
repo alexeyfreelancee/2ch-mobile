@@ -1,6 +1,7 @@
 package com.example.a2ch
 
 import android.app.Application
+import androidx.multidex.MultiDexApplication
 import com.example.a2ch.data.Repository
 import com.example.a2ch.data.networking.RetrofitClient
 import com.example.a2ch.ui.boards.BoardsViewModelFactory
@@ -15,7 +16,7 @@ import org.kodein.di.generic.bind
 import org.kodein.di.generic.instance
 import org.kodein.di.generic.singleton
 
-class App : Application(), KodeinAware {
+class App : MultiDexApplication(), KodeinAware {
 
     override val kodein = Kodein.lazy {
         bind() from singleton { RetrofitClient }

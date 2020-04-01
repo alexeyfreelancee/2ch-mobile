@@ -24,7 +24,7 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:visibility="@{post.op == 1 || post.parent.equals(@string/zero) ? View.INVISIBLE : View.VISIBLE}"
+                android:visibility="@{post.parent.empty ? View.GONE : View.VISIBLE}"
                 android:text='@{String.format("%s %s",@string/parent, post.parent)}'
                 android:background="?attr/selectableItemBackground"
                 android:layout_width="wrap_content"
@@ -87,14 +87,16 @@
                 android:onClick="@{(view) ->viewmodel.openPhotoDialog(post.files[0].path)}"
                 android:visibility="@{post.files.size() > 0 ? View.VISIBLE : View.GONE}"
                 android:layout_marginTop="8dp"
-
+                android:background="@android:color/darker_gray"
                 android:id="@+id/photo1"
                 android:layout_width="60dp"
                 android:layout_below="@id/comment"
                 android:layout_height="60dp"/>
 
             <ImageView
+                android:background="@android:color/darker_gray"
                 android:scaleType="centerCrop"
+
                 android:onClick="@{(view) ->viewmodel.openPhotoDialog(post.files[1].path)}"
                 android:visibility="@{post.files.size() > 1 ? View.VISIBLE : View.GONE}"
                 android:layout_toEndOf="@id/photo1"
@@ -106,6 +108,7 @@
                 android:layout_height="60dp"/>
 
             <ImageView
+                android:background="@android:color/darker_gray"
                 android:scaleType="centerCrop"
                 android:onClick="@{(view) ->viewmodel.openPhotoDialog(post.files[2].path)}"
                 android:visibility="@{post.files.size() > 2 ? View.VISIBLE : View.GONE}"
@@ -118,6 +121,7 @@
                 android:layout_height="60dp"/>
 
             <ImageView
+                android:background="@android:color/darker_gray"
                 android:scaleType="centerCrop"
                 android:onClick="@{(view) ->viewmodel.openPhotoDialog(post.files[3].path)}"
                 android:visibility="@{post.files.size() > 3 ? View.VISIBLE : View.GONE}"
