@@ -1,5 +1,6 @@
 package com.example.a2ch.models.post
 
+import android.text.Spanned
 import com.google.gson.annotations.SerializedName
 
 data class Post(@SerializedName("date")
@@ -37,4 +38,6 @@ data class Post(@SerializedName("date")
                 @SerializedName("timestamp")
                 val timestamp: Long = 0,
                 @SerializedName("files")
-                val files: List<FilePost>)
+                val files: List<FilePost>,
+                var htmlComment: Spanned,
+                var htmlName: Spanned)

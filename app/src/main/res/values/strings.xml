@@ -15,10 +15,11 @@
     <string name="search">Search</string>
     <string name="makepost">Запостить</string>
     <string name="username">Имя пользователя</string>
-    <string name="comment">Комментарий</string>
+    <string name="comment">Текст</string>
     <string name="captch_answ">Введите код с картинки</string>
     <string name="passcode">passcode</string>
     <string name="enter_passcode">Введите пасскод</string>
     <string name="parent">>></string>
     <string name="zero">0</string>
+    <string name="internet_warning">Беды с интернетом</string>
 </resources>

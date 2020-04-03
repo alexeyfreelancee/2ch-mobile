@@ -11,20 +11,15 @@
         android:padding="16dp">
 
 
-        <TextView
-            android:id="@+id/parent"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/num"
-            android:background="?attr/selectableItemBackground"
-            android:textColor="@color/colorAccent" />
 
 
-        <TextView
+
+        <org.sufficientlysecure.htmltextview.HtmlTextView
             android:id="@+id/comment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/parent"
+            android:linksClickable="true"
+            android:layout_below="@id/num"
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
             android:autoLink="web" />
@@ -47,7 +42,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="4dp" />
 
-        <TextView
+        <org.sufficientlysecure.htmltextview.HtmlTextView
             android:id="@+id/name"
 
             android:layout_width="wrap_content"
@@ -96,6 +91,59 @@
             android:layout_marginTop="8dp"
             android:layout_toEndOf="@id/photo3"
             android:scaleType="centerCrop" />
+
+        <ImageView
+
+            android:scaleType="centerCrop"
+
+
+            android:layout_marginTop="8dp"
+            android:background="@android:color/darker_gray"
+            android:id="@+id/photo5"
+            android:layout_marginEnd="16dp"
+            android:layout_width="60dp"
+            android:layout_below="@id/photo1"
+            android:layout_height="60dp"/>
+
+        <ImageView
+
+            android:layout_toEndOf="@id/photo5"
+            android:scaleType="centerCrop"
+
+            android:layout_marginTop="8dp"
+            android:background="@android:color/darker_gray"
+            android:id="@+id/photo6"
+            android:layout_width="60dp"
+            android:layout_marginEnd="16dp"
+            android:layout_below="@id/photo1"
+            android:layout_height="60dp"/>
+
+        <ImageView
+
+            android:scaleType="centerCrop"
+
+            android:layout_marginTop="8dp"
+            android:background="@android:color/darker_gray"
+            android:id="@+id/photo7"
+            android:layout_width="60dp"
+            android:layout_marginEnd="16dp"
+            android:layout_toEndOf="@id/photo6"
+            android:layout_below="@id/photo1"
+            android:layout_height="60dp"/>
+
+        <ImageView
+
+            android:scaleType="centerCrop"
+
+
+            android:layout_marginTop="8dp"
+            android:layout_toEndOf="@id/photo7"
+            android:background="@android:color/darker_gray"
+            android:id="@+id/photo8"
+            android:layout_marginEnd="16dp"
+            android:layout_width="60dp"
+            android:layout_below="@id/photo1"
+            android:layout_height="60dp"/>
     </RelativeLayout>
 </ScrollView>
 

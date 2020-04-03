@@ -5,32 +5,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/backgroundColor">
 
-    <com.github.chrisbanes.photoview.PhotoView
+
+    <com.example.a2ch.util.ViewPagerFixed
         android:id="@+id/photo"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/download"
-        android:layout_alignParentBottom="true"
+        android:layout_below="@id/download"
+        android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
-        android:layout_below="@id/download" />
-
-
-    <com.google.android.exoplayer2.ui.PlayerView
-        android:id="@+id/video"
-        android:layout_width="match_parent"
-
-        android:layout_height="match_parent"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/download" />
-
-    <ProgressBar
-        android:id="@+id/progress"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true" />
-
+        />
 
     <ImageView
         android:layout_marginEnd="16dp"

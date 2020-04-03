@@ -1,7 +1,10 @@
 package com.example.a2ch.ui.boards
 
-import androidx.lifecycle.*
-import com.example.a2ch.data.Repository
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import com.example.a2ch.data.source.Repository
 import com.example.a2ch.models.boards.Board
 import com.example.a2ch.models.boards.BoardsBase
 import com.example.a2ch.util.Event
@@ -19,18 +22,27 @@ class BoardsViewModel(private val repository: Repository) : ViewModel() {
     private val _boards = MutableLiveData<List<Board>>()
     val boards: LiveData<List<Board>> = _boards
 
+    private val _success = MutableLiveData<Boolean>(true)
+    val success : LiveData<Boolean> = _success
+
     init {
         loadBoards()
     }
 
-    fun loadBoards(){
+    fun loadBoards() {
         CoroutineScope(Dispatchers.IO).launch {
             _dataLoading.postValue(true)
 
-            val boards = repository.loadBoards()
-            val resultList = getResultList(boards)
+            try {
+                val boards = repository.loadBoards()
+                val resultList = getResultList(boards)
 
-            _boards.postValue(resultList)
+                _boards.postValue(resultList)
+                _success.postValue(true)
+            } catch (ex: Exception) {
+                ex.printStackTrace()
+            }
+
             _dataLoading.postValue(false)
         }
 
@@ -41,8 +53,8 @@ class BoardsViewModel(private val repository: Repository) : ViewModel() {
     }
 
 
-    private fun getResultList(boards: BoardsBase) : ArrayList<Board>{
-        val resultList= ArrayList<Board>()
+    private fun getResultList(boards: BoardsBase): ArrayList<Board> {
+        val resultList = ArrayList<Board>()
         resultList.add(Board(name = "Разное", isHeader = true))
         resultList.addAll(boards.sundry!!)
         resultList.add(Board(name = "Тематика", isHeader = true))

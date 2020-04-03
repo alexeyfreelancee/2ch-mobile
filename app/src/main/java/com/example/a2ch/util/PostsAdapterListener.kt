@@ -1,4 +1,4 @@
-package com.example.a2ch.ui.posts
+package com.example.a2ch.util
 
 interface PostsAdapterListener {
     fun upReached()

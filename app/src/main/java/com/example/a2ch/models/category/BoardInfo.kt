@@ -1,5 +1,6 @@
 package com.example.a2ch.models.category
 
+import android.text.Spanned
 import com.google.gson.annotations.SerializedName
 
 data class BoardInfo(@SerializedName("BoardName")

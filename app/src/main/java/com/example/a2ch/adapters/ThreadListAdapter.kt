@@ -21,7 +21,7 @@ import kotlin.collections.ArrayList
 
 
 class ThreadListAdapter(private val viewModel: CategoryViewModel) :
-    RecyclerView.Adapter<RecyclerView.ViewHolder>(), Filterable {
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val items = ArrayList<Thread>()
     private var itemsFull = ArrayList<Thread>()
 
@@ -46,38 +46,7 @@ class ThreadListAdapter(private val viewModel: CategoryViewModel) :
         notifyDataSetChanged()
     }
 
-    override fun getFilter(): Filter {
-        return object : Filter() {
-            override fun performFiltering(constraint: CharSequence?): FilterResults {
-                val pattern = constraint.toString().toLowerCase(Locale.ROOT).trim()
-                val filteredList = ArrayList<Thread>()
 
-                if (pattern.isEmpty()) {
-                    items.addAll(itemsFull)
-                } else {
-                    itemsFull.forEach {
-                        if (
-                            it.subject.contains(pattern) ||
-                            it.comment.contains(pattern)
-                        ) {
-                            filteredList.add(it)
-                        }
-                    }
-                }
-
-                val result = FilterResults()
-                result.values = filteredList
-                return result
-            }
-
-            override fun publishResults(constraint: CharSequence?, results: FilterResults?) {
-                val resultList = results?.values as List<Thread>
-                items.clear()
-                items.addAll(resultList)
-                notifyDataSetChanged()
-            }
-        }
-    }
 
     inner class ThreadViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(item: Thread) {
@@ -85,19 +54,6 @@ class ThreadListAdapter(private val viewModel: CategoryViewModel) :
                 thread = item
                 viewmodel = viewModel
             }
-
-            try{
-                val myOptions = RequestOptions()
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .centerCrop()
-
-                Glide.with(itemView.context)
-                    .load("https://2ch.hk${item.files[0].path}")
-                    .apply(myOptions)
-                    .transition(DrawableTransitionOptions.withCrossFade())
-                    .into(itemView.thread_photo)
-
-            } catch (ex: Exception){}
 
         }
     }

@@ -1,9 +1,9 @@
 package com.example.a2ch.data.networking
 
 import com.example.a2ch.models.boards.BoardsBase
-import com.example.a2ch.models.captcha.CaptchaInfo
+import com.example.a2ch.models.captcha.CaptchaData
 import com.example.a2ch.models.category.BoardInfo
-import com.example.a2ch.models.post.MakePostError
+import com.example.a2ch.models.post.MakePostResult
 import com.example.a2ch.models.post.Post
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -33,7 +33,7 @@ interface DvachApi {
     suspend fun getCaptchaId(
         @Query("board") board: String,
         @Query("thread") thread: String
-    ): CaptchaInfo
+    ): CaptchaData
 
     @GET("/api/captcha/2chaptcha/check/{id}")
     suspend fun checkCaptcha(
@@ -52,7 +52,7 @@ interface DvachApi {
         @Query("2chaptcha_id") captchaId: String,
         @Query("comment") comment: String,
         @Query("2chaptcha_value") captchaValue: String
-    ) : MakePostError
+    ) : MakePostResult
 
     @POST("makaba/posting.fcgi")
     suspend fun makePostWithPasscode(
@@ -63,7 +63,7 @@ interface DvachApi {
         @Query("thread") thread: String,
         @Query("comment") comment: String,
         @Query("usercode") usercode: String
-    ) : MakePostError
+    ) : MakePostResult
 
 
     @POST("makaba/makaba.fcgi")

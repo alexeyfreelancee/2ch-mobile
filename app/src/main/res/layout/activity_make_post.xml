@@ -7,7 +7,7 @@
         <import type="android.view.View"/>
         <variable
             name="viewmodel"
-            type="com.example.a2ch.ui.send_post.SendPostViewModel" />
+            type="com.example.a2ch.ui.make_post.SendPostViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -15,7 +15,7 @@
         android:layout_height="match_parent"
         android:background="@color/backgroundColor"
         android:padding="16dp"
-        tools:context=".ui.send_post.SendPostActivity">
+        tools:context=".ui.make_post.MakePostActivity">
 
         <Button
             android:background="@null"
@@ -63,7 +63,7 @@
             android:onClick="@{viewmodel::loadCaptchaInfo}"
             android:id="@+id/captcha_img"
             android:layout_width="0dp"
-            android:visibility="@{viewmodel.captchaResult.equals(@string/passcode) ? View.GONE : View.VISIBLE}"
+            app:imageUrl="@{viewmodel.captchaData.url}"
             android:scaleType="centerCrop"
             android:layout_height="80dp"
             android:layout_marginTop="16dp"

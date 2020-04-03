@@ -1,33 +1,32 @@
 package com.example.a2ch.ui.posts
 
 import android.animation.ObjectAnimator
-import android.app.Dialog
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
-import android.view.Window
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.bumptech.glide.Glide
 import com.example.a2ch.R
 import com.example.a2ch.adapters.PostListAdapter
 import com.example.a2ch.databinding.ActivityPostsBinding
 import com.example.a2ch.models.post.Post
-import com.example.a2ch.ui.send_post.SendPostActivity
-import com.example.a2ch.util.BOARD_NAME
-import com.example.a2ch.util.THREAD_NUM
-import com.example.a2ch.util.toast
+import com.example.a2ch.models.util.CRITICAL
+import com.example.a2ch.models.util.Error
+import com.example.a2ch.ui.posts.dialogs.ViewContentDialog
+import com.example.a2ch.ui.posts.dialogs.ViewPostDialog
+import com.example.a2ch.ui.make_post.MakePostActivity
+import com.example.a2ch.util.*
 import com.omadahealth.github.swipyrefreshlayout.library.SwipyRefreshLayoutDirection
 import kotlinx.android.synthetic.main.activity_posts.*
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.kodein
 import org.kodein.di.generic.instance
 
-class PostsActivity : AppCompatActivity(), KodeinAware, PostsAdapterListener {
+class PostsActivity : AppCompatActivity(), KodeinAware,
+    PostsAdapterListener {
 
     override val kodein by kodein()
     private val factory: PostsViewModelFactory by instance()
@@ -74,15 +73,19 @@ class PostsActivity : AppCompatActivity(), KodeinAware, PostsAdapterListener {
         viewModel.scrollToBottom.observe(this, Observer {
             scrollDown()
         })
-        viewModel.openPhotoDialog.observe(this, Observer {
-            openPhotoDialog(it.peekContent())
+        viewModel.contentDialogData.observe(this, Observer {
+            val data = it.peekContent()
+            openContentDialog(data.urls, data.position)
         })
         viewModel.error.observe(this, Observer {
-            toast(it)
-            finish()
+            initError(this,it)
         })
         viewModel.openPostDialog.observe(this, Observer {
             openPostDialog(it.peekContent())
+        })
+        viewModel.openWebLink.observe(this, Observer {
+            val url = it.peekContent()
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
         })
     }
 
@@ -93,8 +96,13 @@ class PostsActivity : AppCompatActivity(), KodeinAware, PostsAdapterListener {
         dialog.show()
     }
 
-    private fun openPhotoDialog(url: String) {
-        val dialog = ViewContentDialog(this, "https://2ch.hk$url")
+    private fun openContentDialog(urls: ArrayList<String>, position: Int) {
+        val dialog = ViewContentDialog(
+            this,
+            urls,
+            position
+        )
+
         dialog.show()
     }
 
@@ -136,15 +144,15 @@ class PostsActivity : AppCompatActivity(), KodeinAware, PostsAdapterListener {
 
     private fun startAddPostActivity() {
         startActivity(
-            Intent(applicationContext, SendPostActivity::class.java)
+            Intent(applicationContext, MakePostActivity::class.java)
                 .putExtra(BOARD_NAME, board)
                 .putExtra(THREAD_NUM, thread)
         )
     }
 
     private fun initSwipeToRefresh() {
-        swipe_refresh.setOnRefreshListener {
-            viewModel.loadPosts(it)
+        swipe_refresh.setOnRefreshListener {direction->
+            viewModel.loadPosts(direction)
         }
     }
 
@@ -164,4 +172,8 @@ class PostsActivity : AppCompatActivity(), KodeinAware, PostsAdapterListener {
     }
 
 
+    override fun onResume() {
+        viewModel.loadPosts(SwipyRefreshLayoutDirection.TOP)
+        super.onResume()
+    }
 }
