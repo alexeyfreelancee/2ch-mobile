@@ -67,11 +67,8 @@ class ThreadsActivity : AppCompatActivity(), KodeinAware {
         })
 
         viewModel.startPostsActivity.observe(this, Observer {
-            startActivity(
-                Intent(applicationContext, PostsActivity::class.java)
-                    .putExtra(THREAD_NUM, it.peekContent())
-                    .putExtra(BOARD_NAME, boardName)
-            )
+            val threadNum = it.peekContent()
+           startPostsActivity(threadNum)
         })
 
         viewModel.error.observe(this, Observer {
@@ -87,6 +84,14 @@ class ThreadsActivity : AppCompatActivity(), KodeinAware {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.opt_add) startAddThreadActivity()
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun startPostsActivity(thread: String){
+        startActivity(
+            Intent(applicationContext, PostsActivity::class.java)
+                .putExtra(THREAD_NUM, thread)
+                .putExtra(BOARD_NAME, boardName)
+        )
     }
 
     private fun startAddThreadActivity() {

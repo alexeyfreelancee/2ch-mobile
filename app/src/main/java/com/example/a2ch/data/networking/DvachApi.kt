@@ -35,6 +35,10 @@ interface DvachApi {
         @Query("thread") thread: String
     ): CaptchaData
 
+    //https://2ch.hk/api/captcha/invisible_recaptcha/id
+    @GET("/api/captcha/invisible_recaptcha/id")
+    suspend fun getInvisibleCaptchaId(): CaptchaData
+
     @GET("/api/captcha/2chaptcha/check/{id}")
     suspend fun checkCaptcha(
         @Path("id") id: String,

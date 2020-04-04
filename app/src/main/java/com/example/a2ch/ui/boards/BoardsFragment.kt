@@ -3,6 +3,7 @@ package com.example.a2ch.ui.boards
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
+import android.view.KeyEvent.KEYCODE_BACK
 import android.view.inputmethod.EditorInfo
 import android.widget.SearchView
 import androidx.fragment.app.Fragment
@@ -13,10 +14,12 @@ import com.example.a2ch.adapters.BoardListAdapter
 import com.example.a2ch.databinding.BoardsFragmentBinding
 import com.example.a2ch.ui.threads.ThreadsActivity
 import com.example.a2ch.util.BOARD_NAME
+import com.example.a2ch.util.log
 import kotlinx.android.synthetic.main.boards_fragment.*
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.kodein
 import org.kodein.di.generic.instance
+
 
 class BoardsFragment : Fragment(), KodeinAware {
     override val kodein by kodein()
@@ -24,7 +27,7 @@ class BoardsFragment : Fragment(), KodeinAware {
 
     private lateinit var viewModel: BoardsViewModel
     private lateinit var binding: BoardsFragmentBinding
-    private lateinit var boardListAdapter: BoardListAdapter
+    lateinit var boardListAdapter: BoardListAdapter
 
 
     override fun onCreateView(
@@ -38,7 +41,6 @@ class BoardsFragment : Fragment(), KodeinAware {
 
         initObservers()
 
-        setHasOptionsMenu(true)
         return binding.apply {
             viewmodel = viewModel
         }.root
@@ -61,25 +63,6 @@ class BoardsFragment : Fragment(), KodeinAware {
         })
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        requireActivity().menuInflater.inflate(R.menu.search_option, menu)
-
-        val searchItem = menu.findItem(R.id.opt_search)
-        val searchView = searchItem.actionView as SearchView
-
-        searchView.imeOptions = EditorInfo.IME_ACTION_DONE
-        searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                return false
-            }
-
-            override fun onQueryTextChange(newText: String?): Boolean {
-                boardListAdapter.filter.filter(newText)
-                return false
-            }
-        })
-        super.onCreateOptionsMenu(menu, inflater)
-    }
 
 
     private fun initList() {
@@ -91,6 +74,11 @@ class BoardsFragment : Fragment(), KodeinAware {
         super.onActivityCreated(savedInstanceState)
         binding.lifecycleOwner = viewLifecycleOwner
         initList()
+    }
+
+
+    fun filter(text: String){
+        boardListAdapter.filter.filter(text)
     }
 
 }

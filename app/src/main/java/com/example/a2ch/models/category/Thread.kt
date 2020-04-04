@@ -40,4 +40,5 @@ data class Thread(@SerializedName("date")
                   @SerializedName("posts_count")
                      val postsCount: Int = 0,
                   @SerializedName("timestamp")
-                     val timestamp: Long = 0)
+                     val timestamp: Long = 0,
+                  var board: String = "")

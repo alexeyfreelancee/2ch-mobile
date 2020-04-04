@@ -40,6 +40,7 @@ class BoardsViewModel(private val repository: Repository) : ViewModel() {
                 _boards.postValue(resultList)
                 _success.postValue(true)
             } catch (ex: Exception) {
+                _success.postValue(false)
                 ex.printStackTrace()
             }
 

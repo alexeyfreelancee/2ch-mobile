@@ -35,6 +35,8 @@ class MakePostActivity : AppCompatActivity(), KodeinAware {
             lifecycleOwner = this@MakePostActivity
         }
 
+
+
         initViewModelData()
         initObservers()
     }

@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.RelativeLayout
-import android.widget.VideoView
 import androidx.viewpager.widget.PagerAdapter
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -19,6 +18,7 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.example.a2ch.R
 import com.example.a2ch.util.gone
+import com.example.a2ch.util.log
 import com.example.a2ch.util.myOptions
 import com.example.a2ch.util.visible
 import com.github.chrisbanes.photoview.PhotoView
@@ -35,11 +35,10 @@ class ContentSliderAdapter(
     private val ctx: Context,
     private val urls: ArrayList<String>
 ) : PagerAdapter() {
-    private var player: SimpleExoPlayer? = null
     private var layoutInflater: LayoutInflater? = null
+    private val players = HashMap<Int, SimpleExoPlayer>()
 
     init {
-        player = ExoPlayerFactory.newSimpleInstance(ctx)
         layoutInflater = ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
     }
 
@@ -56,7 +55,7 @@ class ContentSliderAdapter(
         if (url.endsWith("mp4") || url.endsWith("webm")) {
             image.gone()
             video.visible()
-            setupVideo(video, url, progressBar)
+            setupVideo(video, url, progressBar, position)
         } else {
             image.visible()
             video.gone()
@@ -71,7 +70,7 @@ class ContentSliderAdapter(
         Glide.with(ctx)
             .load(url)
             .apply(myOptions.fitCenter())
-            .listener(object: RequestListener<Drawable>{
+            .listener(object : RequestListener<Drawable> {
                 override fun onLoadFailed(
                     e: GlideException?,
                     model: Any?,
@@ -102,21 +101,22 @@ class ContentSliderAdapter(
     private fun setupVideo(
         video: PlayerView,
         url: String,
-        progressBar: ProgressBar
+        progressBar: ProgressBar,
+        position: Int
     ) {
+        val player = ExoPlayerFactory.newSimpleInstance(video.context)
+        players[position] = player
         video.player = player
 
         progressBar.visible()
-        player?.apply {
+        player.apply {
             prepare(createMediaSource(url))
-            playWhenReady = true
-
+            log(url)
             addListener(object : Player.DefaultEventListener() {
                 override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
                     super.onPlayerStateChanged(playWhenReady, playbackState)
                     if (playbackState == ExoPlayer.STATE_BUFFERING) progressBar.visible() else progressBar.gone()
-                    if (playbackState == ExoPlayer.STATE_IDLE) player?.prepare(createMediaSource(url))
-
+                    if (playbackState == ExoPlayer.STATE_IDLE) player.prepare(createMediaSource(url))
                 }
             })
         }
@@ -132,21 +132,30 @@ class ContentSliderAdapter(
     }
 
     override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
-        releasePlayer(player)
+        pausePlayers()
         container.removeView(`object` as RelativeLayout)
     }
 
     override fun getCount(): Int = urls.size
 
-    fun getPlayer(): SimpleExoPlayer? = player
 
-
-    private fun releasePlayer(player: SimpleExoPlayer?) {
-        player?.apply {
-            release()
-            playWhenReady = false;
-            stop();
-            seekTo(0);
+    fun pausePlayers() {
+        players.forEach {
+            it.value.apply {
+                playWhenReady = false
+            }
         }
+
+    }
+
+    fun releasePlayers() {
+        players.forEach {
+            it.value.apply {
+                release()
+                playWhenReady = false
+                stop(true);
+            }
+        }
+
     }
 }

@@ -43,6 +43,7 @@ class BoardListAdapter(private val viewModel: BoardsViewModel) :
 
     }
 
+    //Не трогай эту ебанину, сам не понимаю как работает
     override fun getFilter(): Filter {
         return object : Filter() {
             override fun performFiltering(constraint: CharSequence?): FilterResults {
@@ -53,11 +54,21 @@ class BoardListAdapter(private val viewModel: BoardsViewModel) :
                     filteredList.addAll(itemsFull)
                 } else {
                     itemsFull.forEach {
-                        if (
-                            it.name.toLowerCase(Locale.ROOT).contains(pattern)
-                            || it.id.toLowerCase(Locale.ROOT).contains(pattern)
-                        ) {
-                            if(!it.isHeader)filteredList.add(it)
+                        if (it.name.toLowerCase(Locale.ROOT).contains(pattern) || it.id.toLowerCase(Locale.ROOT).contains(pattern)) {
+                            if(it.isHeader){
+                                //Поиск по категории
+                                filteredList.add(it)
+                                val minIndex = itemsFull.indexOf(it)
+                                for ((index, param) in itemsFull.withIndex()){
+                                    if(index > minIndex){
+                                        if(param.isHeader) return@forEach
+                                        filteredList.add(param)
+                                    }
+                                }
+                            }else {
+                                //Обычный поиск
+                                filteredList.add(it)
+                            }
                         }
                     }
                 }

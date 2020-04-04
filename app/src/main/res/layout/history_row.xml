@@ -11,7 +11,7 @@
 
         <variable
             name="viewmodel"
-            type="com.example.a2ch.ui.threads.CategoryViewModel" />
+            type="com.example.a2ch.ui.history.HistoryViewModel" />
     </data>
 
     <androidx.cardview.widget.CardView
@@ -22,17 +22,15 @@
         android:layout_marginTop="8dp"
 
         android:background="?attr/selectableItemBackground"
-        android:onClick="@{(view) -> viewmodel.startPostsActivity(thread.num)}"
         android:layout_width="match_parent"
 
         android:layout_height="wrap_content">
 
         <RelativeLayout
             android:clickable="true"
-
             android:focusable="true"
-            android:onClick="@{(view) -> viewmodel.startPostsActivity(thread.num)}"
             android:padding="8dp"
+            android:onClick="@{(view) -> viewmodel.startPostsActivity(thread)}"
             android:background="?attr/selectableItemBackground"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -40,7 +38,6 @@
             <ImageView
                 app:imageUrl="@{thread.files[0].path}"
                 android:background="@android:color/darker_gray"
-                android:onClick="@{(view) -> viewmodel.startPostsActivity(thread.num)}"
                 android:visibility="@{thread.files.empty ? View.GONE : View.VISIBLE}"
                 android:scaleType="centerCrop"
                 android:id="@+id/thread_photo"
@@ -52,7 +49,6 @@
 
             <org.sufficientlysecure.htmltextview.HtmlTextView
                 android:textAlignment="viewStart"
-                android:onClick="@{(view) -> viewmodel.startPostsActivity(thread.num)}"
                 android:gravity="start"
                 android:layout_toEndOf="@id/thread_photo"
                 android:textSize="18sp"
@@ -69,7 +65,6 @@
 
             <org.sufficientlysecure.htmltextview.HtmlTextView
                 android:layout_toEndOf="@id/thread_photo"
-                android:onClick="@{(view) -> viewmodel.startPostsActivity(thread.num)}"
                 android:layout_below="@id/name"
                 android:maxLines="5"
 
@@ -85,8 +80,7 @@
 
 
             <View
-                android:onClick="@{(view) -> viewmodel.startPostsActivity(thread.num)}"
-               android:layout_toEndOf="@id/thread_photo"
+                android:layout_toEndOf="@id/thread_photo"
                 android:layout_width="match_parent"
                 android:layout_marginTop="8dp"
                 android:id="@+id/view"
@@ -95,7 +89,6 @@
                 android:layout_height="0.25dp" />
 
             <TextView
-                android:onClick="@{(view) -> viewmodel.startPostsActivity(thread.num)}"
                 android:layout_marginTop="5dp"
                 android:layout_below="@id/view"
                 android:layout_marginEnd="16dp"
@@ -108,7 +101,6 @@
 
 
             <TextView
-                android:onClick="@{(view) -> viewmodel.startPostsActivity(thread.num)}"
                 android:layout_toStartOf="@id/date"
                 android:layout_marginTop="5dp"
                 android:layout_below="@id/view"

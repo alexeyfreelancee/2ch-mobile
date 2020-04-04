@@ -9,7 +9,7 @@
     <string name="sundry">Разное</string>
     <string name="adult">Взрослым</string>
     <string name="users">Кастом</string>
-    <string name="boards">Борды</string>
+
     <string name="threads">Треды</string>
     <string name="posts">replies</string>
     <string name="search">Search</string>
@@ -22,4 +22,12 @@
     <string name="parent">>></string>
     <string name="zero">0</string>
     <string name="internet_warning">Беды с интернетом</string>
+    <string name="history">История</string>
+    <string name="favourites">Избранное</string>
+    <string name="boards">Борды</string>
+    <string name="open">open</string>
+    <string name="close">close</string>
+    <string name="add_fav">Добаить в избранное</string>
+    <string name="add_post">Сделать пост</string>
+    <string name="empty">Здесь ничего нет</string>
 </resources>

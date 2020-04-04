@@ -62,10 +62,10 @@ class ViewPostDialog(
         photo2.visibility = if (post.files.size > 1) View.VISIBLE else View.GONE
         photo3.visibility = if (post.files.size > 2) View.VISIBLE else View.GONE
         photo4.visibility = if (post.files.size > 3) View.VISIBLE else View.GONE
-        photo5.visibility = if (post.files.isNotEmpty()) View.VISIBLE else View.GONE
-        photo6.visibility = if (post.files.size > 4) View.VISIBLE else View.GONE
-        photo7.visibility = if (post.files.size > 5) View.VISIBLE else View.GONE
-        photo8.visibility = if (post.files.size > 6) View.VISIBLE else View.GONE
+        photo5.visibility = if (post.files.size > 4) View.VISIBLE else View.GONE
+        photo6.visibility = if (post.files.size > 5) View.VISIBLE else View.GONE
+        photo7.visibility = if (post.files.size > 6) View.VISIBLE else View.GONE
+        photo8.visibility = if (post.files.size > 7) View.VISIBLE else View.GONE
 
         name.setHtml(post.name)
         num.text = "#${post.num}"

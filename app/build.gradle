@@ -92,4 +92,8 @@ dependencies {
     //Html text view
     implementation 'org.sufficientlysecure:html-textview:3.9'
 
+    //Navigation
+    implementation "androidx.navigation:navigation-fragment-ktx:2.3.0-alpha04"
+    implementation "androidx.navigation:navigation-ui-ktx:2.3.0-alpha04"
+
 }

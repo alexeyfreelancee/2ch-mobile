@@ -4,7 +4,10 @@ import android.animation.ObjectAnimator
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
@@ -13,17 +16,16 @@ import com.example.a2ch.R
 import com.example.a2ch.adapters.PostListAdapter
 import com.example.a2ch.databinding.ActivityPostsBinding
 import com.example.a2ch.models.post.Post
-import com.example.a2ch.models.util.CRITICAL
-import com.example.a2ch.models.util.Error
+import com.example.a2ch.ui.make_post.MakePostActivity
 import com.example.a2ch.ui.posts.dialogs.ViewContentDialog
 import com.example.a2ch.ui.posts.dialogs.ViewPostDialog
-import com.example.a2ch.ui.make_post.MakePostActivity
 import com.example.a2ch.util.*
 import com.omadahealth.github.swipyrefreshlayout.library.SwipyRefreshLayoutDirection
 import kotlinx.android.synthetic.main.activity_posts.*
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.kodein
 import org.kodein.di.generic.instance
+
 
 class PostsActivity : AppCompatActivity(), KodeinAware,
     PostsAdapterListener {
@@ -39,6 +41,7 @@ class PostsActivity : AppCompatActivity(), KodeinAware,
     private var needToAnimate = false
     private var positionUp = true
 
+    private lateinit var scroll: ImageView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this, factory).get(PostsViewModel::class.java)
@@ -48,11 +51,12 @@ class PostsActivity : AppCompatActivity(), KodeinAware,
         }
         postListAdapter = PostListAdapter(viewModel)
 
+
         initSwipeToRefresh()
         initViewModelData()
         initObservers()
         initPostList()
-        initActionBar()
+
     }
 
     private fun initViewModelData() {
@@ -63,6 +67,7 @@ class PostsActivity : AppCompatActivity(), KodeinAware,
             thread = this@PostsActivity.thread
         }
         viewModel.loadPosts(SwipyRefreshLayoutDirection.TOP)
+        viewModel.addToHistory()
     }
 
 
@@ -78,7 +83,7 @@ class PostsActivity : AppCompatActivity(), KodeinAware,
             openContentDialog(data.urls, data.position)
         })
         viewModel.error.observe(this, Observer {
-            initError(this,it)
+            initError(this, it)
         })
         viewModel.openPostDialog.observe(this, Observer {
             openPostDialog(it.peekContent())
@@ -86,6 +91,10 @@ class PostsActivity : AppCompatActivity(), KodeinAware,
         viewModel.openWebLink.observe(this, Observer {
             val url = it.peekContent()
             startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+        })
+        viewModel.addToFavourites.observe(this, Observer {
+            val content = it.peekContent()
+            toast(content)
         })
     }
 
@@ -107,11 +116,8 @@ class PostsActivity : AppCompatActivity(), KodeinAware,
     }
 
 
-    private fun initActionBar() {
-        opt_add_post.setOnClickListener {
-            startAddPostActivity()
-        }
-
+    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
+        scroll =  menu.findItem(R.id.opt_scroll).actionView as ImageView
         scroll.setOnClickListener {
             if (positionUp) {
                 scrollDown()
@@ -121,7 +127,27 @@ class PostsActivity : AppCompatActivity(), KodeinAware,
                 upReached()
             }
         }
+        scroll.visible()
+        return super.onPrepareOptionsMenu(menu)
     }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.posts_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.opt_addFavourites -> {
+                viewModel.addToFavourites()
+            }
+            R.id.opt_addPost ->{
+                startAddPostActivity()
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
 
 
     override fun upReached() {
@@ -151,7 +177,7 @@ class PostsActivity : AppCompatActivity(), KodeinAware,
     }
 
     private fun initSwipeToRefresh() {
-        swipe_refresh.setOnRefreshListener {direction->
+        swipe_refresh.setOnRefreshListener { direction ->
             viewModel.loadPosts(direction)
         }
     }

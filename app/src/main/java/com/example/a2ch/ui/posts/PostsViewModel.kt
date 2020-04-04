@@ -41,6 +41,9 @@ class PostsViewModel(private val repository: Repository) : ViewModel() {
     private val _error = MutableLiveData<Event<Error>>()
     val error: LiveData<Event<Error>> get() = _error
 
+    private val _addToFavourites = MutableLiveData<Event<String>>()
+    val addToFavourites: LiveData<Event<String>> get() = _addToFavourites
+
     var thread = ""
     var board = ""
 
@@ -69,6 +72,22 @@ class PostsViewModel(private val repository: Repository) : ViewModel() {
 
     }
 
+    fun addToHistory(){
+        CoroutineScope(Dispatchers.IO).launch {
+            repository.addToHistory(board,thread)
+        }
+    }
+
+    fun addToFavourites(){
+        CoroutineScope(Dispatchers.IO).launch {
+            val success = repository.addToFavourites(board,thread)
+            if(success){
+                _addToFavourites.postValue(Event("Тред добавлен в избранное"))
+            } else{
+                _addToFavourites.postValue(Event("Ошибка"))
+            }
+        }
+    }
     fun openUrl(href: String) {
         CoroutineScope(Dispatchers.IO).launch {
             if (href.isWebLink()) {

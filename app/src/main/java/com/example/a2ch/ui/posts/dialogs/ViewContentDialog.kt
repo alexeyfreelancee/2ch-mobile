@@ -11,7 +11,6 @@ import android.widget.ImageView
 import androidx.viewpager.widget.ViewPager
 import com.example.a2ch.R
 import com.example.a2ch.adapters.ContentSliderAdapter
-import com.example.a2ch.util.log
 import com.example.a2ch.util.toast
 import java.io.File
 
@@ -20,17 +19,19 @@ class ViewContentDialog(
     private val urls: ArrayList<String>,
     private val position: Int
 ) : Dialog(ctx) {
+    lateinit var contentSliderAdapter: ContentSliderAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         setCancelable(true)
         setContentView(R.layout.dialog_photo)
 
+        contentSliderAdapter = ContentSliderAdapter(ctx, urls)
         val contentSlider = findViewById<ViewPager>(R.id.photo).apply {
             offscreenPageLimit = 0
-            adapter =  ContentSliderAdapter(ctx, urls)
+            adapter = contentSliderAdapter
             currentItem = position
-            addOnPageChangeListener(object: ViewPager.OnPageChangeListener{
+            addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
                 override fun onPageScrollStateChanged(state: Int) {
 
                 }
@@ -44,10 +45,11 @@ class ViewContentDialog(
                 }
 
                 override fun onPageSelected(position: Int) {
-                    log("page selected $position")
+                    try { contentSliderAdapter.pausePlayers() } catch (ex: java.lang.Exception){ex.printStackTrace()}
                 }
             })
         }
+
 
         val download = findViewById<ImageView>(R.id.download)
         download.setOnClickListener {
@@ -91,5 +93,10 @@ class ViewContentDialog(
         }
         val name = System.currentTimeMillis().toString() + prefix
         return File(myDir, name)
+    }
+
+    override fun onDetachedFromWindow() {
+        contentSliderAdapter.releasePlayers()
+        super.onDetachedFromWindow()
     }
 }

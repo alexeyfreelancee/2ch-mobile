@@ -4,6 +4,8 @@ import androidx.multidex.MultiDexApplication
 import com.example.a2ch.data.source.Repository
 import com.example.a2ch.data.networking.RetrofitClient
 import com.example.a2ch.ui.boards.BoardsViewModelFactory
+import com.example.a2ch.ui.favourite.FavouritesViewModelFactory
+import com.example.a2ch.ui.history.HistoryViewModelFactory
 import com.example.a2ch.ui.make_post.SendPostViewModelFactory
 import com.example.a2ch.ui.threads.CategoryViewModelFactory
 
@@ -21,7 +23,8 @@ class App : MultiDexApplication(), KodeinAware {
         bind() from singleton { RetrofitClient }
         bind() from singleton { Repository(instance()) }
 
-
+        bind() from singleton { HistoryViewModelFactory(instance()) }
+        bind() from singleton { FavouritesViewModelFactory(instance()) }
         bind() from singleton { BoardsViewModelFactory(instance()) }
         bind() from singleton { CategoryViewModelFactory(instance()) }
         bind() from singleton { PostsViewModelFactory(instance()) }
