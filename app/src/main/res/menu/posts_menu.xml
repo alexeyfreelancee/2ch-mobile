@@ -3,14 +3,26 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/opt_scroll"
-        android:title="scroll"
+        android:id="@+id/opt_scroll_down"
+        android:title="scroll down"
         app:showAsAction="always"
-        app:actionViewClass="android.widget.ImageView"
         android:icon="@drawable/ic_bottom"/>
+
+    <item
+        android:id="@+id/opt_scroll_up"
+        android:title="scroll up"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_upward"/>
+
+
     <item
         android:id="@+id/opt_addFavourites"
         android:title="@string/add_fav"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/opt_removeFavourites"
+        android:title="@string/remove_fav"
         app:showAsAction="never" />
 
     <item

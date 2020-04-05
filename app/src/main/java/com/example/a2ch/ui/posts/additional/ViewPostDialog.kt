@@ -1,29 +1,17 @@
-package com.example.a2ch.ui.posts.dialogs
+package com.example.a2ch.ui.posts.additional
 
 
 import android.app.Dialog
 import android.content.Context
-import android.content.res.ColorStateList
-import android.graphics.Color
 import android.os.Bundle
-import android.text.Html
-import android.text.SpannableStringBuilder
-import android.text.SpannedString
-import android.text.method.LinkMovementMethod
-import android.text.style.ClickableSpan
-import android.text.style.ForegroundColorSpan
-import android.text.style.TextAppearanceSpan
-import android.text.style.URLSpan
 import android.view.View
 import android.view.Window
 import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.example.a2ch.R
-import com.example.a2ch.models.post.Post
+import com.example.a2ch.models.threads.ThreadPost
 import com.example.a2ch.ui.posts.PostsViewModel
-import com.example.a2ch.util.greenColorList
-import com.example.a2ch.util.log
 import com.example.a2ch.util.myOptions
 import com.example.a2ch.util.setTextViewHTML
 import org.sufficientlysecure.htmltextview.HtmlTextView
@@ -31,7 +19,7 @@ import org.sufficientlysecure.htmltextview.HtmlTextView
 
 class ViewPostDialog(
     private val ctx: Context,
-    private val post: Post,
+    private val post: ThreadPost,
     private val viewModel: PostsViewModel
 ) : Dialog(ctx) {
 
@@ -73,32 +61,32 @@ class ViewPostDialog(
         setTextViewHTML(comment, post.comment, viewModel)
 
         comment.setOnClickATagListener { widget, href ->
-            if(href!=null) viewModel.openUrl(href)
+            if (href != null) viewModel.openUrl(href)
         }
 
         photo1.setOnClickListener {
             openPhotoDialog(post, 0)
         }
         photo2.setOnClickListener {
-            openPhotoDialog(post,1)
+            openPhotoDialog(post, 1)
         }
         photo3.setOnClickListener {
-            openPhotoDialog(post,2)
+            openPhotoDialog(post, 2)
         }
         photo4.setOnClickListener {
-            openPhotoDialog(post,3)
+            openPhotoDialog(post, 3)
         }
         photo1.setOnClickListener {
             openPhotoDialog(post, 4)
         }
         photo2.setOnClickListener {
-            openPhotoDialog(post,5)
+            openPhotoDialog(post, 5)
         }
         photo3.setOnClickListener {
-            openPhotoDialog(post,6)
+            openPhotoDialog(post, 6)
         }
         photo4.setOnClickListener {
-            openPhotoDialog(post,7)
+            openPhotoDialog(post, 7)
         }
 
         try {
@@ -147,17 +135,13 @@ class ViewPostDialog(
 
     }
 
-    private fun openPhotoDialog(post: Post, position: Int) {
-        val urls= arrayListOf<String>()
+    private fun openPhotoDialog(post: ThreadPost, position: Int) {
+        val urls = arrayListOf<String>()
         post.files.forEach {
             urls.add(it.path)
         }
-        val dialog =
-            ViewContentDialog(ctx, urls, position)
-        dialog.show()
+       
     }
-
-
 
 
 }

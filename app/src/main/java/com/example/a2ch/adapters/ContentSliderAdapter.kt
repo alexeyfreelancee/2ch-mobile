@@ -37,7 +37,7 @@ class ContentSliderAdapter(
 ) : PagerAdapter() {
     private var layoutInflater: LayoutInflater? = null
     private val players = HashMap<Int, SimpleExoPlayer>()
-
+    private val playerViews = HashMap<Int, PlayerView>()
     init {
         layoutInflater = ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
     }
@@ -58,7 +58,7 @@ class ContentSliderAdapter(
             setupVideo(video, url, progressBar, position)
         } else {
             image.visible()
-            video.gone()
+            video.visible()
             setupImage(image, url, progressBar)
         }
         container.addView(view)
@@ -106,12 +106,12 @@ class ContentSliderAdapter(
     ) {
         val player = ExoPlayerFactory.newSimpleInstance(video.context)
         players[position] = player
+        playerViews[position] = video
         video.player = player
 
         progressBar.visible()
         player.apply {
             prepare(createMediaSource(url))
-            log(url)
             addListener(object : Player.DefaultEventListener() {
                 override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
                     super.onPlayerStateChanged(playWhenReady, playbackState)
@@ -120,6 +120,28 @@ class ContentSliderAdapter(
                 }
             })
         }
+    }
+
+
+
+    fun pausePlayers() {
+        try {
+            players.forEach {
+                it.value.playWhenReady = false
+            }
+        } catch (ex: Exception){}
+
+    }
+
+    fun releasePlayers() {
+        players.forEach {
+            it.value.apply {
+                release()
+                playWhenReady = false
+                stop(true);
+            }
+        }
+
     }
 
     private fun createMediaSource(url: String): ExtractorMediaSource {
@@ -138,24 +160,4 @@ class ContentSliderAdapter(
 
     override fun getCount(): Int = urls.size
 
-
-    fun pausePlayers() {
-        players.forEach {
-            it.value.apply {
-                playWhenReady = false
-            }
-        }
-
-    }
-
-    fun releasePlayers() {
-        players.forEach {
-            it.value.apply {
-                release()
-                playWhenReady = false
-                stop(true);
-            }
-        }
-
-    }
 }

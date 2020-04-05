@@ -5,7 +5,7 @@
         <import type="android.view.View"/>
         <variable
             name="post"
-            type="com.example.a2ch.models.post.Post" />
+            type="com.example.a2ch.models.threads.ThreadPost" />
         <variable
             name="viewmodel"
             type="com.example.a2ch.ui.posts.PostsViewModel" />

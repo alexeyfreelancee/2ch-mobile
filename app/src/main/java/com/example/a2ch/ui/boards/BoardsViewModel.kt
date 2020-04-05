@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.a2ch.data.source.Repository
+import com.example.a2ch.data.Repository
 import com.example.a2ch.models.boards.Board
 import com.example.a2ch.models.boards.BoardsBase
 import com.example.a2ch.util.Event

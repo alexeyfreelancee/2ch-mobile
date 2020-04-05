@@ -30,7 +30,10 @@ import com.example.a2ch.ui.posts.PostsViewModel
 import org.sufficientlysecure.htmltextview.HtmlFormatter
 import org.sufficientlysecure.htmltextview.HtmlFormatterBuilder
 import org.sufficientlysecure.htmltextview.HtmlTextView
+import java.io.IOException
 import java.lang.Exception
+import java.net.InetSocketAddress
+import java.net.Socket
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -120,6 +123,27 @@ fun loadImage(view: ImageView, url: String?) {
     }
 }
 
+
+@BindingAdapter("time")
+fun parseTime(view: TextView, timestamp: Long) {
+    val date = Date(timestamp * 1000)
+    val sdf = SimpleDateFormat("EEE, dd", Locale.getDefault())
+    view.text = sdf.parse(date)
+}
+fun isNetworkAvailable() : Boolean{
+    val runtime = Runtime.getRuntime()
+    try {
+        val ipProcess = runtime.exec("/system/bin/ping -c 1 8.8.8.8")
+        val exitValue = ipProcess.waitFor()
+        return exitValue == 0
+    } catch (e: IOException) {
+        e.printStackTrace()
+    } catch (e: InterruptedException) {
+        e.printStackTrace()
+    }
+    return false
+
+}
 
 fun setTextViewHTML(text: TextView, html: String?, viewModel: PostsViewModel) {
     val sequence = Html.fromHtml(html)

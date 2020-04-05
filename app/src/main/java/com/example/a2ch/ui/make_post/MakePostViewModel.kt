@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.a2ch.data.source.Repository
+import com.example.a2ch.data.Repository
 import com.example.a2ch.models.captcha.CaptchaData
 import com.example.a2ch.models.util.Error
 import com.example.a2ch.models.util.WARNING
@@ -45,15 +45,7 @@ class SendPostViewModel(private val repository: Repository) : ViewModel() {
                         thread, comment,
                         captchaAnswer, _captchaData.value!!.id
                     )
-                    if(!success){
-                        _error.postValue(
-                            Event(
-                                Error(WARNING, "Абу пидор, капча не валидна")
-                            )
-                        )
-                    } else{
-                       _success.postValue(Any())
-                    }
+                    computeResult(success)
                 } catch (ex: Exception) {
                     ex.printStackTrace()
                     _error.postValue(
@@ -63,6 +55,18 @@ class SendPostViewModel(private val repository: Repository) : ViewModel() {
                     )
                 }
             }
+        }
+    }
+
+    private fun computeResult(success: Boolean){
+        if(!success){
+            _error.postValue(
+                Event(
+                    Error(WARNING, "Абу пидор, капча не валидна")
+                )
+            )
+        } else{
+            _success.postValue(Any())
         }
     }
 

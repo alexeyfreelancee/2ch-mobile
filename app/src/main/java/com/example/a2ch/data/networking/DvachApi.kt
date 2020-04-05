@@ -2,9 +2,10 @@ package com.example.a2ch.data.networking
 
 import com.example.a2ch.models.boards.BoardsBase
 import com.example.a2ch.models.captcha.CaptchaData
-import com.example.a2ch.models.category.BoardInfo
-import com.example.a2ch.models.post.MakePostResult
-import com.example.a2ch.models.post.Post
+import com.example.a2ch.models.threads.ThreadBase
+import com.example.a2ch.models.util.MakePostResult
+
+import com.example.a2ch.models.threads.ThreadPost
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
@@ -18,7 +19,7 @@ interface DvachApi {
     @GET("{board}/index.json")
     suspend fun getThreads(
         @Path("board") board: String
-    ): BoardInfo
+    ): ThreadBase
 
     @GET("makaba/mobile.fcgi")
     suspend fun getPosts(
@@ -26,7 +27,7 @@ interface DvachApi {
         @Query("board") board: String,
         @Query("thread") thread: String,
         @Query("post") post: Int
-    ): List<Post>
+    ): List<ThreadPost>
 
 
     @GET("/api/captcha/2chaptcha/id")
@@ -82,5 +83,5 @@ interface DvachApi {
         @Query("task") task: String,
         @Query("board") board: String,
         @Query("post") post: String
-    ) : List<Post>
+    ) : List<ThreadPost>
 }

@@ -14,7 +14,8 @@ import android.widget.TextView
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.a2ch.databinding.PostRowBinding
-import com.example.a2ch.models.post.Post
+import com.example.a2ch.models.threads.ThreadPost
+
 import com.example.a2ch.ui.posts.PostsViewModel
 import com.example.a2ch.util.PostsAdapterListener
 import com.example.a2ch.util.log
@@ -26,10 +27,10 @@ import kotlin.collections.ArrayList
 
 class PostListAdapter(private val viewModel: PostsViewModel) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    private val items = ArrayList<Post>()
+    private val items = ArrayList<ThreadPost>()
     var listener: PostsAdapterListener? = null
 
-    fun updateList(newList: List<Post>) {
+    fun updateList(newList: List<ThreadPost>) {
         if (items.size != newList.size) {
             items.clear()
             items.addAll(newList)
@@ -58,7 +59,7 @@ class PostListAdapter(private val viewModel: PostsViewModel) :
     }
 
     inner class PostViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bind(post: Post) {
+        fun bind(post: ThreadPost) {
             DataBindingUtil.bind<PostRowBinding>(itemView).apply {
                 this?.post = post
                 this?.viewmodel = viewModel

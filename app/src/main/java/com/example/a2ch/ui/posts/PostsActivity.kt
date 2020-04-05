@@ -1,13 +1,10 @@
 package com.example.a2ch.ui.posts
 
-import android.animation.ObjectAnimator
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
-import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
@@ -15,10 +12,10 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.a2ch.R
 import com.example.a2ch.adapters.PostListAdapter
 import com.example.a2ch.databinding.ActivityPostsBinding
-import com.example.a2ch.models.post.Post
+import com.example.a2ch.models.threads.ThreadPost
 import com.example.a2ch.ui.make_post.MakePostActivity
-import com.example.a2ch.ui.posts.dialogs.ViewContentDialog
-import com.example.a2ch.ui.posts.dialogs.ViewPostDialog
+import com.example.a2ch.ui.posts.additional.ViewContentFragment
+import com.example.a2ch.ui.posts.additional.ViewPostDialog
 import com.example.a2ch.util.*
 import com.omadahealth.github.swipyrefreshlayout.library.SwipyRefreshLayoutDirection
 import kotlinx.android.synthetic.main.activity_posts.*
@@ -38,10 +35,12 @@ class PostsActivity : AppCompatActivity(), KodeinAware,
     private var board = ""
     private var thread = ""
 
-    private var needToAnimate = false
-    private var positionUp = true
+    private lateinit var scrollDown: MenuItem
+    private lateinit var scrollUp: MenuItem
 
-    private lateinit var scroll: ImageView
+    private lateinit var addToFavourites: MenuItem
+    private lateinit var removeFromFavourites: MenuItem
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this, factory).get(PostsViewModel::class.java)
@@ -64,10 +63,10 @@ class PostsActivity : AppCompatActivity(), KodeinAware,
         thread = intent.getStringExtra(THREAD_NUM)
         viewModel.apply {
             board = this@PostsActivity.board
-            thread = this@PostsActivity.thread
+            threadNum = this@PostsActivity.thread
         }
         viewModel.loadPosts(SwipyRefreshLayoutDirection.TOP)
-        viewModel.addToHistory()
+        viewModel.checkFavourite()
     }
 
 
@@ -92,81 +91,82 @@ class PostsActivity : AppCompatActivity(), KodeinAware,
             val url = it.peekContent()
             startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
         })
-        viewModel.addToFavourites.observe(this, Observer {
-            val content = it.peekContent()
-            toast(content)
+        viewModel.isFavourite.observe(this, Observer {
+            if(it){
+                log("visible")
+                removeFromFavourites.isVisible = true
+                addToFavourites.isVisible = false
+            } else{
+                log("gone")
+                removeFromFavourites.isVisible = false
+                addToFavourites.isVisible = true
+            }
         })
     }
 
-    private fun openPostDialog(post: Post) {
-        val dialog = ViewPostDialog(
-            this, post, viewModel
-        )
-        dialog.show()
-    }
 
     private fun openContentDialog(urls: ArrayList<String>, position: Int) {
-        val dialog = ViewContentDialog(
-            this,
-            urls,
-            position
+        val urlsResult = StringBuilder()
+        urls.forEach {
+            urlsResult.append("${it},")
+        }
+        log(urlsResult)
+        val fragment = ViewContentFragment.newInstance(
+            urlsResult.toString(), position
         )
 
-        dialog.show()
+      //  supportFragmentManager.beginTransaction().add(R.id.view_content_frame,fragment).addToBackStack("2ch").commit()
     }
 
 
-    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
-        scroll =  menu.findItem(R.id.opt_scroll).actionView as ImageView
-        scroll.setOnClickListener {
-            if (positionUp) {
-                scrollDown()
-                bottomReached()
-            } else {
-                scrollUp()
-                upReached()
-            }
-        }
-        scroll.visible()
-        return super.onPrepareOptionsMenu(menu)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.posts_menu, menu)
-        return true
-    }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId){
+        when (item.itemId) {
             R.id.opt_addFavourites -> {
                 viewModel.addToFavourites()
+                removeFromFavourites.isVisible = true
+                addToFavourites.isVisible = false
+                toast("Тред добавлен в избранное")
             }
-            R.id.opt_addPost ->{
+            R.id.opt_removeFavourites ->{
+                viewModel.removeFromFavourites()
+                removeFromFavourites.isVisible = false
+                addToFavourites.isVisible = true
+                toast("Тред удален из избранного")
+            }
+            R.id.opt_addPost -> {
                 startAddPostActivity()
             }
+            R.id.opt_scroll_down ->{
+                scrollDown()
+            }
+            R.id.opt_scroll_up ->{
+                scrollUp()
+            }
+
         }
         return super.onOptionsItemSelected(item)
     }
 
 
 
-    override fun upReached() {
-        positionUp = true
-        val animator = ObjectAnimator.ofFloat(scroll, View.ROTATION, 180f, 0f)
-        if (needToAnimate) {
-            animator.start()
-        }
-        needToAnimate = true
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.posts_menu, menu)
+        scrollUp = menu!!.findItem(R.id.opt_scroll_up)
+        scrollUp.isVisible = false
+        scrollDown =  menu.findItem(R.id.opt_scroll_down)
+        addToFavourites = menu.findItem(R.id.opt_addFavourites)
+        removeFromFavourites = menu.findItem(R.id.opt_removeFavourites)
+        return true
     }
 
-    override fun bottomReached() {
-        positionUp = false
-        val animator = ObjectAnimator.ofFloat(scroll, View.ROTATION, 0f, 180f)
-        if (needToAnimate) {
-            animator.start()
-        }
-        needToAnimate = true
+    private fun openPostDialog(post: ThreadPost) {
+        val dialog = ViewPostDialog(
+            this, post, viewModel
+        )
+        dialog.show()
     }
+
 
     private fun startAddPostActivity() {
         startActivity(
@@ -191,13 +191,25 @@ class PostsActivity : AppCompatActivity(), KodeinAware,
 
     private fun scrollDown() {
         post_list.layoutManager?.scrollToPosition(postListAdapter.itemCount - 1)
+        scrollDown.isVisible = false
+        scrollUp.isVisible = true
     }
 
     private fun scrollUp() {
         post_list.layoutManager?.scrollToPosition(0)
+        scrollDown.isVisible = true
+        scrollUp.isVisible = false
     }
 
+    override fun upReached() {
+        scrollUp.isVisible = false
+        scrollDown.isVisible = true
+    }
 
+    override fun bottomReached() {
+        scrollUp.isVisible = true
+        scrollDown.isVisible = false
+    }
     override fun onResume() {
         viewModel.loadPosts(SwipyRefreshLayoutDirection.TOP)
         super.onResume()

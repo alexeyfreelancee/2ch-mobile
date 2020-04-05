@@ -16,4 +16,10 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="NoFloating">
+        <item name="android:windowIsFloating">false</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
 </resources>

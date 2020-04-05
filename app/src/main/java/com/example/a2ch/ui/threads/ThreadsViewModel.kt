@@ -5,9 +5,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.a2ch.data.source.Repository
-import com.example.a2ch.models.category.BoardInfo
-import com.example.a2ch.models.category.Thread
+import com.example.a2ch.data.Repository
+import com.example.a2ch.models.threads.ThreadBase
+import com.example.a2ch.models.threads.ThreadPost
 import com.example.a2ch.models.util.CRITICAL
 import com.example.a2ch.models.util.Error
 import com.example.a2ch.util.Event
@@ -17,14 +17,14 @@ import kotlinx.coroutines.launch
 
 
 class CategoryViewModel(private val repository: Repository) : ViewModel() {
-    private val _category = MutableLiveData<BoardInfo>()
-    val category: LiveData<BoardInfo> get() = _category
+    private val _category = MutableLiveData<ThreadBase>()
+    val category: LiveData<ThreadBase> get() = _category
 
     private val _error = MutableLiveData<Event<Error>>()
     val error: LiveData<Event<Error>> get() = _error
 
-    private val _threads = MutableLiveData<List<Thread>>()
-    val threads: LiveData<List<Thread>> = _threads
+    private val _threads = MutableLiveData<List<ThreadPost>>()
+    val threads: LiveData<List<ThreadPost>> = _threads
 
     var boardName = ""
 
@@ -39,7 +39,7 @@ class CategoryViewModel(private val repository: Repository) : ViewModel() {
             _dataLoading.postValue(true)
             Log.d("TAGG", boardName)
             try {
-                val result = repository.loadThreads(boardName)
+                val result = repository.loadBoardInfo(boardName)
                 _category.postValue(result)
                 parseThreads(result)
             } catch (ex: Exception) {
@@ -56,9 +56,9 @@ class CategoryViewModel(private val repository: Repository) : ViewModel() {
 
     }
 
-    private fun parseThreads(result: BoardInfo) {
-        val threadList = ArrayList<Thread>()
-        result.threads.forEach {
+    private fun parseThreads(result: ThreadBase) {
+        val threadList = ArrayList<ThreadPost>()
+        result.threadItems.forEach {
             threadList.add(it.posts[0])
         }
         _threads.postValue(threadList)

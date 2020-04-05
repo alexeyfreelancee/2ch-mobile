@@ -12,10 +12,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.a2ch.R
 import com.example.a2ch.adapters.HistoryListAdapter
 import com.example.a2ch.databinding.HistoryFragmentBinding
-import com.example.a2ch.models.category.Thread
 import com.example.a2ch.ui.posts.PostsActivity
 import com.example.a2ch.util.BOARD_NAME
 import com.example.a2ch.util.THREAD_NUM
+import com.example.a2ch.util.log
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.kodein
 import org.kodein.di.generic.instance
@@ -48,6 +48,7 @@ class HistoryFragment : Fragment(), KodeinAware {
 
     private fun initObservers() {
         viewModel.threads.observe(viewLifecycleOwner, Observer {
+            log(it.size)
             historyListAdapter.updateList(it)
         })
         viewModel.startPostsActivity.observe(viewLifecycleOwner, Observer {
@@ -55,6 +56,12 @@ class HistoryFragment : Fragment(), KodeinAware {
             startPostsActivity(data.board, data.thread)
         })
     }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.loadHistory()
+    }
+
 
     private fun startPostsActivity(board: String, thread: String){
         startActivity(

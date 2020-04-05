@@ -7,7 +7,7 @@
         <import type="android.view.View"/>
         <variable
             name="thread"
-            type="com.example.a2ch.models.category.Thread" />
+            type="com.example.a2ch.models.threads.ThreadPost" />
 
         <variable
             name="viewmodel"

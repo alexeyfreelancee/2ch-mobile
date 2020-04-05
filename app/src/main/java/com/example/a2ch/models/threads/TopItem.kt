@@ -1,4 +1,4 @@
-package com.example.a2ch.models.category
+package com.example.a2ch.models.threads
 
 import com.google.gson.annotations.SerializedName
 

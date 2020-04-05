@@ -1,4 +1,4 @@
-package com.example.a2ch.models.post
+package com.example.a2ch.models.util
 
 import com.google.gson.annotations.SerializedName
 

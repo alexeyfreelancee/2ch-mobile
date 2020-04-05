@@ -40,8 +40,10 @@
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
+            android:visibility="@{viewmodel.threads.empty || viewmodel.threads == null ? View.GONE : View.VISIBLE}"
             android:id="@+id/favourites_list"
             android:layout_width="match_parent"
+            android:overScrollMode="never"
             android:layout_height="match_parent"
             android:text="@string/favourites"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"

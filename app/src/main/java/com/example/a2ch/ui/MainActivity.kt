@@ -73,17 +73,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.nav_boards -> {
-                supportFragmentManager.beginTransaction().show(boardsFragment).hide(activeFragment).commit()
+                supportFragmentManager.beginTransaction().hide(activeFragment).show(boardsFragment).commit()
                 activeFragment = boardsFragment
                 searchView.visible()
             }
             R.id.nav_favourites ->{
-                supportFragmentManager.beginTransaction().show(favouritesFragment).hide(activeFragment).commit()
+                supportFragmentManager.beginTransaction().hide(activeFragment).show(favouritesFragment).commit()
                 activeFragment = favouritesFragment
                 searchView.gone()
             }
             R.id.nav_history -> {
-                supportFragmentManager.beginTransaction().show(historyFragment).hide(activeFragment).commit()
+                supportFragmentManager.beginTransaction().hide(activeFragment).show(historyFragment).commit()
                 activeFragment = historyFragment
                 searchView.gone()
             }
