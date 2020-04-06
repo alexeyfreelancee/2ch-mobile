@@ -16,7 +16,8 @@ interface ThreadDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun saveThread(threadItem: ThreadItem)
 
-    suspend fun insertWithTimestamp(data: ThreadItem) {
+
+    suspend fun saveWithTimestamp(data: ThreadItem) {
         saveThread(data.apply{
             timestamp = System.currentTimeMillis()
         })

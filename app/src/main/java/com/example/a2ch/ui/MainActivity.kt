@@ -41,6 +41,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         if (savedInstanceState == null) {
             initFragments()
         }
+        toast("Добро пожаловать. Снова")
         setSupportActionBar(toolbar)
         checkPermissions()
         initNavigationDrawer()

@@ -13,33 +13,42 @@
             type="com.example.a2ch.ui.posts.PostsViewModel" />
     </data>
 
-
-    <com.omadahealth.github.swipyrefreshlayout.library.SwipyRefreshLayout
-        android:id="@+id/swipe_refresh"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:background="@color/backgroundColor"
-        app:layout_constraintTop_toTopOf="parent"
-        app:refreshing="@{viewmodel.dataLoading}"
-        app:srl_direction="both">
+        android:layout_height="match_parent">
 
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:background="@color/backgroundColor"
-            android:id="@+id/post_list"
+        <com.omadahealth.github.swipyrefreshlayout.library.SwipyRefreshLayout
+            android:id="@+id/swipe_refresh"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:background="@color/backgroundColor"
+            app:layout_constraintTop_toTopOf="parent"
+            app:refreshing="@{viewmodel.dataLoading}"
+            app:srl_direction="both">
 
 
-    </com.omadahealth.github.swipyrefreshlayout.library.SwipyRefreshLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:background="@color/backgroundColor"
+                android:id="@+id/post_list"
+                android:layout_width="match_parent"
+                android:overScrollMode="never"
+                android:layout_height="match_parent"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+        </com.omadahealth.github.swipyrefreshlayout.library.SwipyRefreshLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 
 </layout>

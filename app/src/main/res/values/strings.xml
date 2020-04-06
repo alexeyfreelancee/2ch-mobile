@@ -31,4 +31,5 @@
     <string name="remove_fav">Удалить из избранного</string>
     <string name="add_post">Сделать пост</string>
     <string name="empty">Здесь ничего нет</string>
+    <string name="download">Скачать все медиа</string>
 </resources>

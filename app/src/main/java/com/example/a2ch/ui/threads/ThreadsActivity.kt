@@ -59,7 +59,6 @@ class ThreadsActivity : AppCompatActivity(), KodeinAware {
     private fun initObservers() {
         viewModel.threads.observe(this, Observer {
             threadsListAdapter.updateList(it)
-
         })
 
         viewModel.category.observe(this, Observer {

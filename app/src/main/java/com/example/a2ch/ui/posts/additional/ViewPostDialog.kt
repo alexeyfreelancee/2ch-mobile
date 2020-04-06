@@ -3,17 +3,19 @@ package com.example.a2ch.ui.posts.additional
 
 import android.app.Dialog
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.Window
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat.startActivity
 import com.bumptech.glide.Glide
 import com.example.a2ch.R
 import com.example.a2ch.models.threads.ThreadPost
+import com.example.a2ch.ui.posts.PostsActivity
 import com.example.a2ch.ui.posts.PostsViewModel
-import com.example.a2ch.util.myOptions
-import com.example.a2ch.util.setTextViewHTML
+import com.example.a2ch.util.*
 import org.sufficientlysecure.htmltextview.HtmlTextView
 
 
@@ -22,7 +24,7 @@ class ViewPostDialog(
     private val post: ThreadPost,
     private val viewModel: PostsViewModel
 ) : Dialog(ctx) {
-
+    lateinit var activity: PostsActivity
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,7 +59,7 @@ class ViewPostDialog(
 
         name.setHtml(post.name)
         num.text = "#${post.num}"
-        date.text = post.date
+        date.text = getDate(post.timestamp)
         setTextViewHTML(comment, post.comment, viewModel)
 
         comment.setOnClickATagListener { widget, href ->
@@ -65,28 +67,28 @@ class ViewPostDialog(
         }
 
         photo1.setOnClickListener {
-            openPhotoDialog(post, 0)
+            showContent(post, 0)
         }
         photo2.setOnClickListener {
-            openPhotoDialog(post, 1)
+            showContent(post, 1)
         }
         photo3.setOnClickListener {
-            openPhotoDialog(post, 2)
+            showContent(post, 2)
         }
         photo4.setOnClickListener {
-            openPhotoDialog(post, 3)
+            showContent(post, 3)
         }
         photo1.setOnClickListener {
-            openPhotoDialog(post, 4)
+            showContent(post, 4)
         }
         photo2.setOnClickListener {
-            openPhotoDialog(post, 5)
+            showContent(post, 5)
         }
         photo3.setOnClickListener {
-            openPhotoDialog(post, 6)
+            showContent(post, 6)
         }
         photo4.setOnClickListener {
-            openPhotoDialog(post, 7)
+            showContent(post, 7)
         }
 
         try {
@@ -135,12 +137,27 @@ class ViewPostDialog(
 
     }
 
-    private fun openPhotoDialog(post: ThreadPost, position: Int) {
+
+    private fun showContent(post: ThreadPost, position: Int) {
         val urls = arrayListOf<String>()
         post.files.forEach {
-            urls.add(it.path)
+            urls.add("https://2ch.hk${it.path}")
         }
-       
+        val urlsResult = StringBuilder()
+        urls.forEach {
+            urlsResult.append("${it},")
+        }
+
+
+        context.startActivity(
+            Intent(context, ViewContentActivity::class.java).putExtra(
+                URLS,
+                urlsResult.toString()
+            ).putExtra(
+                POSITION, position
+            )
+        )
+
     }
 
 

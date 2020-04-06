@@ -4,15 +4,15 @@
 
     <item
         android:id="@+id/opt_scroll_down"
+        android:icon="@drawable/ic_bottom"
         android:title="scroll down"
-        app:showAsAction="always"
-        android:icon="@drawable/ic_bottom"/>
+        app:showAsAction="always" />
 
     <item
         android:id="@+id/opt_scroll_up"
+        android:icon="@drawable/ic_upward"
         android:title="scroll up"
-        app:showAsAction="always"
-        android:icon="@drawable/ic_upward"/>
+        app:showAsAction="always" />
 
 
     <item
@@ -27,6 +27,11 @@
 
     <item
         android:id="@+id/opt_addPost"
-        app:showAsAction="never"
-        android:title="@string/add_post"/>
+        android:title="@string/add_post"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/opt_download"
+        android:title="@string/download"
+        app:showAsAction="never" />
 </menu>

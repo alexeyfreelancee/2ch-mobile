@@ -1,5 +1,13 @@
 package com.example.a2ch.data
 
+import android.app.DownloadManager
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.net.Uri
+import android.os.Environment
+import android.provider.MediaStore
+import android.view.View
 import com.example.a2ch.data.db.AppDatabase
 import com.example.a2ch.data.networking.RetrofitClient
 import com.example.a2ch.models.boards.BoardsBase
@@ -8,13 +16,12 @@ import com.example.a2ch.models.threads.ThreadBase
 import com.example.a2ch.models.threads.ThreadItem
 import com.example.a2ch.models.threads.ThreadPost
 import com.example.a2ch.models.util.MakePostResult
-import com.example.a2ch.util.getDate
-import com.example.a2ch.util.isNetworkAvailable
-import com.example.a2ch.util.log
-import com.example.a2ch.util.parseDigits
+import com.example.a2ch.util.*
+import java.io.File
 
 
 class Repository(private val retrofit: RetrofitClient, private val db: AppDatabase) {
+
 
     suspend fun loadBoards(): BoardsBase {
         return retrofit.dvach.getBoards()
@@ -67,33 +74,38 @@ class Repository(private val retrofit: RetrofitClient, private val db: AppDataba
         return retrofit.dvach.getCaptchaId(board, thread)
     }
 
-    suspend fun isFavourite(board: String, threadNum: String): Boolean{
+    suspend fun isFavourite(board: String, threadNum: String): Boolean {
         val thread = getThread(board, threadNum)
         return thread?.isFavourite ?: false
 
     }
-    suspend fun loadPosts(thread: String, board: String): List<ThreadPost> {
-        return if (isNetworkAvailable()) {
-            val posts = retrofit.dvach.getPosts(
-                "get_thread", board, thread, 1
-            )
-            addToDatabase(board, thread)
-            preparePosts(posts)
-        } else {
-            db.threadDao().getThread(board, thread)!!.posts
-        }
 
+    suspend fun loadPosts(thread: String, board: String): List<ThreadPost> {
+        if (isNetworkAvailable()) {
+            addToDatabase(board, thread)
+        }
+        return db.threadDao().getThread(board, thread)!!.posts
     }
 
-    suspend fun getPost(href: String): ThreadPost {
+    suspend fun getPost(href: String, threadNum: String): ThreadPost {
         //href example /b/res/216879164.html#216879164\
         val boardId = href.split("/")
         val postId = href
             .substring(href.lastIndexOf("#") + 1)
             .parseDigits()
 
-        val currentPost = retrofit.dvach.getCurrentPost("get_post", boardId[1], postId)
-        return preparePosts(currentPost)[0]
+
+        val dbThread = db.threadDao().getThread(boardId[1], threadNum)
+        val dbPost = dbThread?.posts?.find { post ->
+            post.num == postId
+        }
+        var networkPost: ThreadPost? =null
+
+        if(isNetworkAvailable() && dbPost == null){
+           networkPost  = retrofit.dvach.getCurrentPost("get_post", boardId[1], postId)[0]
+        }
+
+        return dbPost ?: networkPost!!
     }
 
     private suspend fun addToDatabase(board: String, threadNum: String) {
@@ -101,14 +113,25 @@ class Repository(private val retrofit: RetrofitClient, private val db: AppDataba
         val posts = retrofit.dvach.getPosts(
             "get_thread", board, threadNum, 1
         )
-        if(thread!=null){
-            posts.forEach {post->
+        if (thread != null) {
+            val needToUpdatePosts = thread.posts.size == posts.size
+
+            posts.forEach { post ->
                 post.postsCount = posts.size
                 post.board = board
             }
+
             thread.board = board
-            thread.posts = posts
-            db.threadDao().insertWithTimestamp(thread)
+
+
+            if(needToUpdatePosts) {
+                //Важно сохранять кол-во прочитанных постов
+               for ((index, post) in thread.posts.withIndex()){
+                   posts[index].isRead = post.isRead
+               }
+                thread.posts = posts
+            }
+            db.threadDao().saveWithTimestamp(thread)
         }
 
     }
@@ -123,7 +146,7 @@ class Repository(private val retrofit: RetrofitClient, private val db: AppDataba
 
         threadItem.posts[0].board = board
         threadItem.isFavourite = true
-        db.threadDao().insertWithTimestamp(threadItem)
+        db.threadDao().saveWithTimestamp(threadItem)
     }
 
     suspend fun removeFromFavourites(threadPost: ThreadPost) {
@@ -131,14 +154,49 @@ class Repository(private val retrofit: RetrofitClient, private val db: AppDataba
 
         threadItem?.let {
             threadItem.isFavourite = false
-            db.threadDao().insertWithTimestamp(threadItem)
+            db.threadDao().saveWithTimestamp(threadItem)
         }
 
     }
 
+    suspend fun readPost(board: String, threadNum: String, position: Int) {
+        val thread = db.threadDao().getThread(board, threadNum)
+
+        thread?.let {
+            val post = thread.posts[position]
+            if (!post.isRead) {
+                post.isRead = true
+                db.threadDao().saveThread(thread)
+
+            }
+
+        }
+
+    }
+
+    suspend fun computeUnreadPosts(threadNum: String, board: String): Int? {
+        var postsWereRead = 0
+        db.threadDao().getThread(board, threadNum)?.posts?.forEach {
+            if (it.isRead) postsWereRead++
+        }
+
+        val postsSaved = db.threadDao().getThread(board, threadNum)?.posts?.size ?: 0
+        val unreadPosts = postsSaved - postsWereRead
+
+        log("posts were read $postsWereRead")
+        log("posts save $postsSaved")
+        log("unread posts $unreadPosts")
+        return if (postsSaved == 0 || unreadPosts == 0 || postsWereRead == 0) {
+            null
+        } else {
+            unreadPosts
+        }
+    }
+
+
     suspend fun removeFromFavourites(threadItem: ThreadItem) {
         threadItem.isFavourite = false
-        db.threadDao().insertWithTimestamp(threadItem)
+        db.threadDao().saveWithTimestamp(threadItem)
     }
 
     suspend fun loadFavourites(): List<ThreadPost> {
@@ -151,20 +209,95 @@ class Repository(private val retrofit: RetrofitClient, private val db: AppDataba
     }
 
     suspend fun loadHistory(): List<ThreadPost> {
+        val dates = HashSet<String>()
         val threads = db.threadDao().getHistoryThreads()
         val result = ArrayList<ThreadPost>()
+
+
         threads.forEach {
+            val date = parseThreadDate(it.timestamp)
+            if (!dates.contains(date)) {
+                result.add(ThreadPost(isDate = true, date = date))
+            }
+            dates.add(date)
             result.add(it.posts[0])
         }
+
         return result
     }
 
-    private fun preparePosts(posts: List<ThreadPost>): List<ThreadPost> {
-        posts.forEach {
-            it.date = getDate(it.timestamp)
-        }
-        return posts
+
+    fun makeThreadScreenshot(view: View) {
+        val context = view.context
+        val bitmap = loadBitmapFromView(view)
+        MediaStore.Images.Media.insertImage(context.contentResolver, bitmap, "2ch screenshot", "");
     }
+
+
+    private fun loadBitmapFromView(v: View): Bitmap? {
+        val b = Bitmap.createBitmap(v.width, v.height, Bitmap.Config.ARGB_8888)
+        val c = Canvas(b)
+        v.draw(c)
+        return b
+    }
+
+    suspend fun downloadAll(threadNum: String, board: String, context: Context) {
+        val photoLinks = getAllPhotos(threadNum, board)
+        try {
+            photoLinks.forEach {
+                log(it)
+                download(it, context)
+            }
+
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+        }
+
+    }
+
+    private suspend fun getAllPhotos(threadNum: String, board: String): ArrayList<String> {
+        val photoLinks = ArrayList<String>()
+        val posts = retrofit.dvach.getPosts(
+            "get_thread", board, threadNum, 1
+        )
+        posts.forEach {
+            it.files.forEach { file ->
+                photoLinks.add("https://2ch.hk${file.path}")
+            }
+        }
+        return photoLinks
+    }
+
+    private fun download(url: String, context: Context) {
+        val request = DownloadManager.Request(Uri.parse(url))
+        val prefix = if (url.endsWith(".mp4") || url.endsWith("webm")) ".mp4" else ".jpg"
+        val file = createFile(prefix)
+        val title = if (prefix == ".mp4") "video" else "photo"
+
+
+        request.apply {
+            setTitle("2ch $title")
+            setDescription(url)
+            setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+            allowScanningByMediaScanner()
+            setDestinationUri(Uri.fromFile(file))
+        }
+
+        val manager =
+            context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+        manager.enqueue(request)
+    }
+
+    private fun createFile(prefix: String): File {
+        val root: String = Environment.getExternalStorageDirectory().toString()
+        val myDir = File("$root/2ch")
+        if (!myDir.exists()) {
+            myDir.mkdirs()
+        }
+        val name = System.currentTimeMillis().toString() + prefix
+        return File(myDir, name)
+    }
+
 
 }
 

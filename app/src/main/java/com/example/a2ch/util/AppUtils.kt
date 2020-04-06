@@ -1,6 +1,6 @@
 package com.example.a2ch.util
 
-import android.R
+
 import android.app.Activity
 import android.content.Context
 import android.content.res.ColorStateList
@@ -19,7 +19,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.databinding.BindingAdapter
-import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
@@ -31,9 +30,6 @@ import org.sufficientlysecure.htmltextview.HtmlFormatter
 import org.sufficientlysecure.htmltextview.HtmlFormatterBuilder
 import org.sufficientlysecure.htmltextview.HtmlTextView
 import java.io.IOException
-import java.lang.Exception
-import java.net.InetSocketAddress
-import java.net.Socket
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -42,71 +38,66 @@ val myOptions = RequestOptions()
     .diskCacheStrategy(DiskCacheStrategy.ALL)
     .centerCrop()
 
-fun View.visible(){
+fun View.visible() {
     this.visibility = View.VISIBLE
 }
 
-fun View.gone(){
+fun View.gone() {
     this.visibility = View.GONE
 }
 
-fun log(msg: Any){
-    when(msg){
-        is String ->Log.d("TAGG", msg)
+fun log(msg: Any) {
+    when (msg) {
+        is String -> Log.d("TAGG", msg)
         else -> Log.d("TAGG", msg.toString())
     }
 
 }
-val greenColorList = ColorStateList(
-    arrayOf(
-        intArrayOf(R.attr.state_pressed),
-        intArrayOf(R.attr.state_focused),
-        intArrayOf(R.attr.state_focused, R.attr.state_pressed)
-    ), intArrayOf(
-        Color.GREEN,
-        Color.GREEN,
-        Color.GREEN
-    )
-)
-fun String.parseDigits(): String{
-    return this.replace("\\D+".toRegex(),"");
+
+
+fun String.parseDigits(): String {
+    return this.replace("\\D+".toRegex(), "");
 }
-fun Context.toast(msg: String){
+
+fun Context.toast(msg: String) {
     Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
 }
-fun getDate(unix: Long) : String{
+
+fun getDate(unix: Long): String {
     val date = Date(unix * 1000)
     val sdf = SimpleDateFormat("dd.MM hh:mm", Locale.getDefault())
     return sdf.format(date)
 }
 
-fun provideCaptchaUrl(id: String) : String{
+fun provideCaptchaUrl(id: String): String {
     return "/api/captcha/2chaptcha/image/$id"
 }
 
 
-fun String.isWebLink() : Boolean{
+fun String.isWebLink(): Boolean {
     return try {
         val url = java.net.URL(this)
         true
-    } catch (ex: Exception){
+    } catch (ex: Exception) {
         false
     }
 
 }
 
 
-fun initError(activity: Activity,event: Event<Error>){
+fun initError(activity: Activity, event: Event<Error>) {
     val error = event.peekContent()
     activity.toast(error.msg)
-    if(error.type == CRITICAL) activity.finish()
+    if (error.type == CRITICAL) activity.finish()
 }
 
 @BindingAdapter("html")
 fun displayHtml(view: HtmlTextView, html: String?) {
-    if(html!=null){
-        view.text = HtmlFormatter.formatHtml(HtmlFormatterBuilder()
-            .setHtml(html))
+    if (html != null) {
+        view.text = HtmlFormatter.formatHtml(
+            HtmlFormatterBuilder()
+                .setHtml(html)
+        )
 
     }
 
@@ -114,7 +105,7 @@ fun displayHtml(view: HtmlTextView, html: String?) {
 
 @BindingAdapter("imageUrl")
 fun loadImage(view: ImageView, url: String?) {
-    if(url!=null){
+    if (url != null) {
         Glide.with(view.context)
             .load("https://2ch.hk${url}")
             .apply(myOptions)
@@ -124,13 +115,19 @@ fun loadImage(view: ImageView, url: String?) {
 }
 
 
-@BindingAdapter("time")
-fun parseTime(view: TextView, timestamp: Long) {
-    val date = Date(timestamp * 1000)
-    val sdf = SimpleDateFormat("EEE, dd", Locale.getDefault())
-    view.text = sdf.parse(date)
+@BindingAdapter("date")
+fun setDate(view: TextView, timestamp: Long) {
+    view.text = getDate(timestamp)
 }
-fun isNetworkAvailable() : Boolean{
+
+fun parseThreadDate(timestamp: Long): String {
+    val date = Date(timestamp)
+    val sdf = SimpleDateFormat("EEE, dd MMM", Locale.getDefault())
+    return sdf.format(date)
+}
+
+
+fun isNetworkAvailable(): Boolean {
     val runtime = Runtime.getRuntime()
     try {
         val ipProcess = runtime.exec("/system/bin/ping -c 1 8.8.8.8")
@@ -150,7 +147,7 @@ fun setTextViewHTML(text: TextView, html: String?, viewModel: PostsViewModel) {
     val strBuilder = SpannableStringBuilder(sequence)
 
     makeRepliesGreen(strBuilder)
-    makeLinkClickable(sequence,strBuilder, viewModel)
+    makeLinkClickable(sequence, strBuilder, viewModel)
 
     text.text = strBuilder
     text.movementMethod = LinkMovementMethod.getInstance()
@@ -182,17 +179,17 @@ private fun makeLinkClickable(
 
 private fun makeRepliesGreen(
     stringBuilder: SpannableStringBuilder
-){
-    val color = Color.rgb(120,153,34)
-    val lines = stringBuilder.split("\\r?\\n".toRegex());
+) {
+    val color = Color.rgb(120, 153, 34)
+    val lines = stringBuilder.split("\\r?\\n".toRegex())
     lines.forEach {
-        if(it.startsWith(">")){
-            if(!it.startsWith(">>")){
+        if (it.contains(">")) {
+            if (!it.contains(">>")) {
                 val start = stringBuilder.indexOf(it)
                 val end = start + it.length
 
                 stringBuilder.setSpan(
-                    ForegroundColorSpan(color),start,end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                    ForegroundColorSpan(color), start, end, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
 
             }

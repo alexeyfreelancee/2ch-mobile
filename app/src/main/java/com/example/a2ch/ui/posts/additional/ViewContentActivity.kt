@@ -2,14 +2,12 @@ package com.example.a2ch.ui.posts.additional
 
 import android.app.DownloadManager
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.fragment.app.Fragment
+import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
 import com.example.a2ch.R
 import com.example.a2ch.adapters.ContentSliderAdapter
@@ -18,24 +16,21 @@ import com.example.a2ch.util.URLS
 import com.example.a2ch.util.toast
 import java.io.File
 
-class ViewContentFragment() : Fragment() {
+
+class ViewContentActivity() : AppCompatActivity() {
     private var contentSliderAdapter: ContentSliderAdapter? = null
     private var urls = ArrayList<String>()
     private var position: Int = 0
 
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.view_content_activity)
+        getData(intent)
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.view_content_frag, container, false)
-        getData(arguments)
+        contentSliderAdapter = ContentSliderAdapter(applicationContext, urls)
 
-        contentSliderAdapter = ContentSliderAdapter(context!!, urls)
-
-        val contentSlider = view?.findViewById<ViewPager>(R.id.photo)?.apply {
+        val contentSlider = findViewById<ViewPager>(R.id.photo)?.apply {
             adapter = contentSliderAdapter
             currentItem = position
             addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
@@ -45,20 +40,22 @@ class ViewContentFragment() : Fragment() {
 
 
                 override fun onPageScrollStateChanged(state: Int) {}
-                override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
+                override fun onPageScrolled(
+                    position: Int,
+                    positionOffset: Float,
+                    positionOffsetPixels: Int
+                ) {
+                }
             })
         }
 
 
-        val download = view?.findViewById<ImageView>(R.id.download)
+        val download = findViewById<ImageView>(R.id.download)
         download!!.setOnClickListener {
             download(urls[contentSlider!!.currentItem])
         }
 
-
-        return view
     }
-
 
 
     private fun download(url: String) {
@@ -77,11 +74,11 @@ class ViewContentFragment() : Fragment() {
                 setDestinationUri(Uri.fromFile(file))
             }
 
-            val manager = context!!.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+            val manager = applicationContext.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
             manager.enqueue(request)
-            context!!.toast("Загрузка...")
+            applicationContext.toast("Загрузка...")
         } catch (ex: Exception) {
-            context!!.toast("Ошибка :(")
+            applicationContext.toast("Ошибка :(")
         }
 
     }
@@ -97,26 +94,18 @@ class ViewContentFragment() : Fragment() {
         return File(myDir, name)
     }
 
-    private fun getData(arguments: Bundle?){
-        val urlArray = arguments?.getString(URLS)?.split(",")
+    private fun getData(arguments: Intent?) {
+        val urlArray = arguments?.getStringExtra(URLS)?.split(",")
+
         urlArray?.forEach {
-            urls.add(it)
+            if (it.length > 5) urls.add(it)
         }
-        position = arguments?.getInt(POSITION)!!
+
+        position = arguments?.getIntExtra(POSITION, 0)!!
     }
 
-    companion object{
-        fun newInstance(urls: String, position: Int) : ViewContentFragment{
-            val fragment = ViewContentFragment()
 
-            val args = Bundle()
-            args.putString(urls, URLS)
-            args.putInt(POSITION, position)
 
-            fragment.arguments = args
-            return fragment
-        }
-    }
     override fun onStop() {
         contentSliderAdapter!!.releasePlayers()
         super.onStop()

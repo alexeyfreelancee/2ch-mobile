@@ -38,7 +38,7 @@ class BoardListAdapter(private val viewModel: BoardsViewModel) :
             items.clear()
             items.addAll(newList)
             itemsFull = ArrayList(newList)
-            notifyDataSetChanged()
+           notifyDataSetChanged()
         }
 
     }

@@ -1,9 +1,11 @@
 package com.example.a2ch.ui.posts
 
-import android.content.ClipData
-import android.content.ClipboardManager
+import android.content.Context
+import android.os.Build
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.view.View
-import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.*
 import com.example.a2ch.data.Repository
 import com.example.a2ch.models.threads.ThreadPost
@@ -13,11 +15,12 @@ import com.example.a2ch.models.util.Error
 import com.example.a2ch.models.util.WARNING
 import com.example.a2ch.util.Event
 import com.example.a2ch.util.isWebLink
-import com.example.a2ch.util.toast
+import com.example.a2ch.util.log
 import com.omadahealth.github.swipyrefreshlayout.library.SwipyRefreshLayoutDirection
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+
 
 class PostsViewModel(private val repository: Repository) : ViewModel() {
     private val _posts = MutableLiveData<List<ThreadPost>>()
@@ -44,6 +47,15 @@ class PostsViewModel(private val repository: Repository) : ViewModel() {
     private val _isFavourite = MutableLiveData<Boolean>()
     val isFavourite: LiveData<Boolean> get() = _isFavourite
 
+    private val _addToFavourites = MutableLiveData<Event<Boolean>>()
+    val addToFavourites: LiveData<Event<Boolean>> get() = _addToFavourites
+
+    private val _removeFromFavourites = MutableLiveData<Event<Boolean>>()
+    val removeFromFavourites: LiveData<Event<Boolean>> get() = _removeFromFavourites
+
+    private val _newPosts = MutableLiveData<Int>()
+    val newPosts: LiveData<Int> = _newPosts
+
     var threadNum = ""
     var board = ""
 
@@ -56,12 +68,11 @@ class PostsViewModel(private val repository: Repository) : ViewModel() {
 
                 if (direction == SwipyRefreshLayoutDirection.BOTTOM)
                     _scrollToBottom.postValue(Event(Any()))
-
             } catch (ex: Exception) {
                 ex.printStackTrace()
                 _error.postValue(
                     Event(
-                        Error(CRITICAL, "Тред умер нахуй")
+                        Error(CRITICAL, "Тред умер")
                     )
                 )
             }
@@ -69,11 +80,29 @@ class PostsViewModel(private val repository: Repository) : ViewModel() {
         _dataLoading.value = false
     }
 
+    fun getUnreadPosts() {
+        CoroutineScope(Dispatchers.IO).launch {
+            val newPosts = repository.computeUnreadPosts(threadNum, board)
+            newPosts?.let {
+                _newPosts.postValue(it)
+            }
+
+        }
+    }
+
+    fun readPost(position: Int) {
+        CoroutineScope(Dispatchers.IO).launch {
+
+            repository.readPost(board, threadNum, position)
+        }
+    }
+
     fun addToFavourites() = viewModelScope.launch {
         try {
             val thread = repository.getThread(board, threadNum)
             if (thread != null) {
                 repository.addToFavourites(board, thread)
+                _addToFavourites.postValue(Event(true))
             }
         } catch (ex: Exception) {
             _error.postValue(
@@ -91,8 +120,8 @@ class PostsViewModel(private val repository: Repository) : ViewModel() {
             val thread = repository.getThread(board, threadNum)
             if (thread != null) {
                 repository.removeFromFavourites(thread)
+                _removeFromFavourites.postValue(Event(true))
             }
-
         } catch (ex: Exception) {
             _error.postValue(
                 Event(
@@ -124,9 +153,10 @@ class PostsViewModel(private val repository: Repository) : ViewModel() {
 
     private fun openPostDialog(href: String) = viewModelScope.launch {
         try {
-            val post = repository.getPost(href)
+            val post = repository.getPost(href, threadNum)
             _openPostDialog.postValue(Event(post))
         } catch (ex: Exception) {
+            ex.printStackTrace()
             _error.postValue(
                 Event(
                     Error(WARNING, "Пост не найдет")
@@ -136,6 +166,13 @@ class PostsViewModel(private val repository: Repository) : ViewModel() {
 
     }
 
+    fun downloadAll(context: Context){
+        CoroutineScope(Dispatchers.IO).launch {
+            repository.downloadAll(threadNum, board, context)
+
+        }
+
+    }
 
     fun openContentDialog(post: ThreadPost, position: Int) {
         val urls = arrayListOf<String>()
@@ -146,19 +183,23 @@ class PostsViewModel(private val repository: Repository) : ViewModel() {
         _openContentDialog.postValue(Event(contentDialogData))
     }
 
-    fun copyToClipboard(view: View, text: String) {
+    fun makeViewScreenshot(view: View) {
         val context = view.context
+        repository.makeThreadScreenshot(view)
+        vibrate(context)
+    }
 
-        val clipboard = ContextCompat.getSystemService<ClipboardManager>(
-            context,
-            ClipboardManager::class.java
-        )
-        val clip = ClipData.newPlainText(
-            "label", text
-        )
-        clipboard?.setPrimaryClip(clip)
-
-        context.toast("Скопиравно в буфер обмена")
+    private fun vibrate(context: Context) {
+        val vibrator = getSystemService<Vibrator>(context, Vibrator::class.java)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            vibrator?.vibrate(
+                VibrationEffect.createOneShot(
+                    500, VibrationEffect.EFFECT_HEAVY_CLICK
+                )
+            )
+        } else {
+            vibrator?.vibrate(500)
+        }
     }
 }
 

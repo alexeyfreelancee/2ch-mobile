@@ -9,8 +9,6 @@ data class ThreadItem(
     @PrimaryKey
     @SerializedName("thread_num")
     val threadNum: String = "",
-    @SerializedName("files_count")
-    val filesCount: Int = 0,
     @SerializedName("posts")
     var posts: List<ThreadPost>,
     @SerializedName("posts_count")

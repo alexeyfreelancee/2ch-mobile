@@ -14,7 +14,7 @@ import com.example.a2ch.adapters.PostListAdapter
 import com.example.a2ch.databinding.ActivityPostsBinding
 import com.example.a2ch.models.threads.ThreadPost
 import com.example.a2ch.ui.make_post.MakePostActivity
-import com.example.a2ch.ui.posts.additional.ViewContentFragment
+import com.example.a2ch.ui.posts.additional.ViewContentActivity
 import com.example.a2ch.ui.posts.additional.ViewPostDialog
 import com.example.a2ch.util.*
 import com.omadahealth.github.swipyrefreshlayout.library.SwipyRefreshLayoutDirection
@@ -41,6 +41,9 @@ class PostsActivity : AppCompatActivity(), KodeinAware,
     private lateinit var addToFavourites: MenuItem
     private lateinit var removeFromFavourites: MenuItem
 
+    private var unreadPostsCount = 0
+    private var wasScrolledToUnread = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this, factory).get(PostsViewModel::class.java)
@@ -66,7 +69,7 @@ class PostsActivity : AppCompatActivity(), KodeinAware,
             threadNum = this@PostsActivity.thread
         }
         viewModel.loadPosts(SwipyRefreshLayoutDirection.TOP)
-        viewModel.checkFavourite()
+
     }
 
 
@@ -79,7 +82,7 @@ class PostsActivity : AppCompatActivity(), KodeinAware,
         })
         viewModel.contentDialogData.observe(this, Observer {
             val data = it.peekContent()
-            openContentDialog(data.urls, data.position)
+            showContent(data.urls, data.position)
         })
         viewModel.error.observe(this, Observer {
             initError(this, it)
@@ -87,83 +90,112 @@ class PostsActivity : AppCompatActivity(), KodeinAware,
         viewModel.openPostDialog.observe(this, Observer {
             openPostDialog(it.peekContent())
         })
+
         viewModel.openWebLink.observe(this, Observer {
             val url = it.peekContent()
             startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
         })
+        viewModel.newPosts.observe(this, Observer {
+            toast("$it unread")
+            unreadPostsCount = it
+        })
         viewModel.isFavourite.observe(this, Observer {
-            if(it){
-                log("visible")
+            if (it) {
                 removeFromFavourites.isVisible = true
                 addToFavourites.isVisible = false
-            } else{
-                log("gone")
+            } else {
                 removeFromFavourites.isVisible = false
                 addToFavourites.isVisible = true
             }
         })
+        viewModel.removeFromFavourites.observe(this, Observer {
+            val success = it.peekContent()
+            if (success) {
+                removeFromFavourites.isVisible = false
+                addToFavourites.isVisible = true
+                toast("Тред удален из избранного")
+            }
+        })
+        viewModel.addToFavourites.observe(this, Observer {
+            val success = it.peekContent()
+            if (success) {
+                removeFromFavourites.isVisible = true
+                addToFavourites.isVisible = false
+                toast("Тред добавлен в избранное")
+            }
+        })
     }
-
-
-    private fun openContentDialog(urls: ArrayList<String>, position: Int) {
-        val urlsResult = StringBuilder()
-        urls.forEach {
-            urlsResult.append("${it},")
-        }
-        log(urlsResult)
-        val fragment = ViewContentFragment.newInstance(
-            urlsResult.toString(), position
-        )
-
-      //  supportFragmentManager.beginTransaction().add(R.id.view_content_frame,fragment).addToBackStack("2ch").commit()
-    }
-
 
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.opt_addFavourites -> {
                 viewModel.addToFavourites()
-                removeFromFavourites.isVisible = true
-                addToFavourites.isVisible = false
-                toast("Тред добавлен в избранное")
             }
-            R.id.opt_removeFavourites ->{
+            R.id.opt_removeFavourites -> {
                 viewModel.removeFromFavourites()
-                removeFromFavourites.isVisible = false
-                addToFavourites.isVisible = true
-                toast("Тред удален из избранного")
             }
             R.id.opt_addPost -> {
                 startAddPostActivity()
             }
-            R.id.opt_scroll_down ->{
-                scrollDown()
+            R.id.opt_scroll_down -> {
+                if (unreadPostsCount == 0 || wasScrolledToUnread) scrollDown()
+                else scrollToUnread()
             }
-            R.id.opt_scroll_up ->{
+            R.id.opt_scroll_up -> {
                 scrollUp()
             }
-
+            R.id.opt_download -> {
+                viewModel.downloadAll(applicationContext)
+                toast("Загрузка...")
+            }
         }
         return super.onOptionsItemSelected(item)
     }
 
 
-
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.posts_menu, menu)
+
         scrollUp = menu!!.findItem(R.id.opt_scroll_up)
         scrollUp.isVisible = false
-        scrollDown =  menu.findItem(R.id.opt_scroll_down)
+
+        scrollDown = menu.findItem(R.id.opt_scroll_down)
         addToFavourites = menu.findItem(R.id.opt_addFavourites)
         removeFromFavourites = menu.findItem(R.id.opt_removeFavourites)
+
+
+
+        viewModel.getUnreadPosts()
+        viewModel.checkFavourite()
         return true
     }
+
+    private fun showContent(urls: ArrayList<String>, position: Int) {
+        val urlsResult = StringBuilder()
+        urls.forEach {
+            urlsResult.append("${it},")
+        }
+
+
+        startActivity(
+            Intent(applicationContext, ViewContentActivity::class.java).putExtra(
+                URLS,
+                urlsResult.toString()
+            ).putExtra(
+                POSITION, position
+            )
+        )
+
+    }
+
 
     private fun openPostDialog(post: ThreadPost) {
         val dialog = ViewPostDialog(
             this, post, viewModel
         )
+
+        dialog.activity = this
         dialog.show()
     }
 
@@ -189,6 +221,13 @@ class PostsActivity : AppCompatActivity(), KodeinAware,
     }
 
 
+    private fun scrollToUnread() {
+        val total = postListAdapter.itemCount - 1
+        val lastReadPost = total - unreadPostsCount
+        post_list.layoutManager?.scrollToPosition(lastReadPost)
+        wasScrolledToUnread = true
+    }
+
     private fun scrollDown() {
         post_list.layoutManager?.scrollToPosition(postListAdapter.itemCount - 1)
         scrollDown.isVisible = false
@@ -210,6 +249,7 @@ class PostsActivity : AppCompatActivity(), KodeinAware,
         scrollUp.isVisible = true
         scrollDown.isVisible = false
     }
+
     override fun onResume() {
         viewModel.loadPosts(SwipyRefreshLayoutDirection.TOP)
         super.onResume()
