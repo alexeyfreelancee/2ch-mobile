@@ -84,7 +84,10 @@ class Repository(private val retrofit: RetrofitClient, private val db: AppDataba
         if (isNetworkAvailable()) {
             addToDatabase(board, thread)
         }
-        return db.threadDao().getThread(board, thread)!!.posts
+        val dbThread = db.threadDao().getThread(board, thread)
+
+        return dbThread?.posts ?: getThread(board, thread)!!.posts
+
     }
 
     suspend fun getPost(href: String, threadNum: String): ThreadPost {
@@ -122,15 +125,13 @@ class Repository(private val retrofit: RetrofitClient, private val db: AppDataba
             }
 
             thread.board = board
-
-
             if(needToUpdatePosts) {
                 //Важно сохранять кол-во прочитанных постов
                for ((index, post) in thread.posts.withIndex()){
                    posts[index].isRead = post.isRead
                }
-                thread.posts = posts
             }
+            thread.posts = posts
             db.threadDao().saveWithTimestamp(thread)
         }
 
@@ -160,17 +161,23 @@ class Repository(private val retrofit: RetrofitClient, private val db: AppDataba
     }
 
     suspend fun readPost(board: String, threadNum: String, position: Int) {
-        val thread = db.threadDao().getThread(board, threadNum)
+        //TODO optimize
+        /*
+        try {
 
-        thread?.let {
-            val post = thread.posts[position]
-            if (!post.isRead) {
-                post.isRead = true
-                db.threadDao().saveThread(thread)
+            val thread = db.threadDao().getThread(board, threadNum)
 
+            if(thread!=null){
+                if (!thread.posts[position].isRead) {
+                    thread.posts[position].isRead = true
+                    db.threadDao().saveThread(thread)
+                }
             }
 
-        }
+        } catch (ex: Exception){}
+
+
+         */
 
     }
 
@@ -183,9 +190,7 @@ class Repository(private val retrofit: RetrofitClient, private val db: AppDataba
         val postsSaved = db.threadDao().getThread(board, threadNum)?.posts?.size ?: 0
         val unreadPosts = postsSaved - postsWereRead
 
-        log("posts were read $postsWereRead")
-        log("posts save $postsSaved")
-        log("unread posts $unreadPosts")
+
         return if (postsSaved == 0 || unreadPosts == 0 || postsWereRead == 0) {
             null
         } else {
@@ -245,7 +250,6 @@ class Repository(private val retrofit: RetrofitClient, private val db: AppDataba
         val photoLinks = getAllPhotos(threadNum, board)
         try {
             photoLinks.forEach {
-                log(it)
                 download(it, context)
             }
 

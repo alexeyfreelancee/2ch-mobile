@@ -1,5 +1,6 @@
 package com.example.a2ch.adapters
 
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,7 +22,6 @@ import kotlin.collections.ArrayList
 class PostListAdapter(private val viewModel: PostsViewModel) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val items = ArrayList<ThreadPost>()
-    var listener: PostsAdapterListener? = null
 
     fun updateList(newList: List<ThreadPost>) {
         if (items.size != newList.size) {
@@ -42,10 +42,6 @@ class PostListAdapter(private val viewModel: PostsViewModel) :
     override fun getItemCount(): Int = items.size
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        when (position) {
-            0 -> listener?.upReached()
-            items.size - 1 -> listener?.bottomReached()
-        }
         when (holder) {
             is PostViewHolder -> holder.bind(items[position])
         }
@@ -67,10 +63,11 @@ class PostListAdapter(private val viewModel: PostsViewModel) :
                 context.toast("Скриншот сохранен в галерею")
                 return@setOnLongClickListener true
             }
+
             setTextViewHTML(itemView.comment, post.comment, viewModel)
 
             if(!post.isRead){
-                viewModel.readPost(layoutPosition)
+               viewModel.readPost(position)
             }
 
         }

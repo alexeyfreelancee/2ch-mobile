@@ -41,8 +41,6 @@ class HistoryListAdapter(private val viewModel: HistoryViewModel) :
         items.clear()
         items.addAll(newList)
         notifyDataSetChanged()
-
-
     }
 
     override fun getItemViewType(position: Int): Int {

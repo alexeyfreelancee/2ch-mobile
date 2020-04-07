@@ -13,7 +13,12 @@ import com.example.a2ch.R
 import com.example.a2ch.adapters.ContentSliderAdapter
 import com.example.a2ch.util.POSITION
 import com.example.a2ch.util.URLS
+import com.example.a2ch.util.ViewPagerFixed
 import com.example.a2ch.util.toast
+import com.r0adkll.slidr.Slidr
+import com.r0adkll.slidr.model.SlidrConfig
+import com.r0adkll.slidr.model.SlidrListener
+import com.r0adkll.slidr.model.SlidrPosition
 import java.io.File
 
 
@@ -21,40 +26,15 @@ class ViewContentActivity() : AppCompatActivity() {
     private var contentSliderAdapter: ContentSliderAdapter? = null
     private var urls = ArrayList<String>()
     private var position: Int = 0
-
+    private lateinit var contentSlider: ViewPagerFixed
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.view_content_activity)
         getData(intent)
-
-        contentSliderAdapter = ContentSliderAdapter(applicationContext, urls)
-
-        val contentSlider = findViewById<ViewPager>(R.id.photo)?.apply {
-            adapter = contentSliderAdapter
-            currentItem = position
-            addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
-                override fun onPageSelected(position: Int) {
-                    contentSliderAdapter!!.pausePlayers()
-                }
-
-
-                override fun onPageScrollStateChanged(state: Int) {}
-                override fun onPageScrolled(
-                    position: Int,
-                    positionOffset: Float,
-                    positionOffsetPixels: Int
-                ) {
-                }
-            })
-        }
-
-
-        val download = findViewById<ImageView>(R.id.download)
-        download!!.setOnClickListener {
-            download(urls[contentSlider!!.currentItem])
-        }
-
+        setupSlidr()
+        setupContentSlider()
+        setupDownloadButton()
     }
 
 
@@ -104,10 +84,53 @@ class ViewContentActivity() : AppCompatActivity() {
         position = arguments?.getIntExtra(POSITION, 0)!!
     }
 
+    private fun setupContentSlider(){
+        contentSliderAdapter = ContentSliderAdapter(applicationContext, urls)
+        contentSlider = findViewById(R.id.photo)
+        contentSlider.apply {
+            adapter = contentSliderAdapter
+            currentItem = position
+            addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+                override fun onPageSelected(position: Int) {
+                    contentSliderAdapter!!.pausePlayers()
+                }
 
 
-    override fun onStop() {
+                override fun onPageScrollStateChanged(state: Int) {}
+                override fun onPageScrolled(
+                    position: Int,
+                    positionOffset: Float,
+                    positionOffsetPixels: Int
+                ) {
+                }
+            })
+        }
+    }
+
+    private fun setupDownloadButton(){
+        val download = findViewById<ImageView>(R.id.download)
+        download!!.setOnClickListener {
+            download(urls[contentSlider.currentItem])
+        }
+    }
+
+    private fun setupSlidr(){
+        val config = SlidrConfig.Builder()
+            .position(SlidrPosition.BOTTOM)
+            .sensitivity(0.05f)
+            .distanceThreshold(0.01f)
+            .build()
+        Slidr.attach(this, config)
+    }
+
+    override fun onPause() {
+        contentSliderAdapter!!.pausePlayers()
+        super.onPause()
+    }
+
+    override fun onDestroy() {
         contentSliderAdapter!!.releasePlayers()
-        super.onStop()
+
+        super.onDestroy()
     }
 }

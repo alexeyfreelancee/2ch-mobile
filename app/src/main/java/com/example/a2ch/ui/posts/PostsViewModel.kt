@@ -15,7 +15,6 @@ import com.example.a2ch.models.util.Error
 import com.example.a2ch.models.util.WARNING
 import com.example.a2ch.util.Event
 import com.example.a2ch.util.isWebLink
-import com.example.a2ch.util.log
 import com.omadahealth.github.swipyrefreshlayout.library.SwipyRefreshLayoutDirection
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -29,7 +28,7 @@ class PostsViewModel(private val repository: Repository) : ViewModel() {
     private val _scrollToBottom = MutableLiveData<Event<Any>>()
     val scrollToBottom: LiveData<Event<Any>> = _scrollToBottom
 
-    private val _dataLoading = MutableLiveData<Boolean>(false)
+    private val _dataLoading = MutableLiveData<Boolean>()
     val dataLoading: LiveData<Boolean> = _dataLoading
 
     private val _openContentDialog = MutableLiveData<Event<ContentDialogData>>()
@@ -53,8 +52,8 @@ class PostsViewModel(private val repository: Repository) : ViewModel() {
     private val _removeFromFavourites = MutableLiveData<Event<Boolean>>()
     val removeFromFavourites: LiveData<Event<Boolean>> get() = _removeFromFavourites
 
-    private val _newPosts = MutableLiveData<Int>()
-    val newPosts: LiveData<Int> = _newPosts
+    private val _unreadPosts = MutableLiveData<Int>()
+    val unreadPosts: LiveData<Int> = _unreadPosts
 
     var threadNum = ""
     var board = ""
@@ -77,14 +76,14 @@ class PostsViewModel(private val repository: Repository) : ViewModel() {
                 )
             }
         }
-        _dataLoading.value = false
+        _dataLoading.value = true
     }
 
     fun getUnreadPosts() {
         CoroutineScope(Dispatchers.IO).launch {
             val newPosts = repository.computeUnreadPosts(threadNum, board)
             newPosts?.let {
-                _newPosts.postValue(it)
+                _unreadPosts.postValue(it)
             }
 
         }
@@ -92,7 +91,6 @@ class PostsViewModel(private val repository: Repository) : ViewModel() {
 
     fun readPost(position: Int) {
         CoroutineScope(Dispatchers.IO).launch {
-
             repository.readPost(board, threadNum, position)
         }
     }
@@ -194,7 +192,7 @@ class PostsViewModel(private val repository: Repository) : ViewModel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             vibrator?.vibrate(
                 VibrationEffect.createOneShot(
-                    500, VibrationEffect.EFFECT_HEAVY_CLICK
+                    500, VibrationEffect.EFFECT_CLICK
                 )
             )
         } else {

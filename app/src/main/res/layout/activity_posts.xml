@@ -27,7 +27,7 @@
             app:layout_constraintStart_toStartOf="parent"
             android:background="@color/backgroundColor"
             app:layout_constraintTop_toTopOf="parent"
-            app:refreshing="@{viewmodel.dataLoading}"
+
             app:srl_direction="both">
 
 

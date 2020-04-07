@@ -8,11 +8,6 @@
         android:title="scroll down"
         app:showAsAction="always" />
 
-    <item
-        android:id="@+id/opt_scroll_up"
-        android:icon="@drawable/ic_upward"
-        android:title="scroll up"
-        app:showAsAction="always" />
 
 
     <item

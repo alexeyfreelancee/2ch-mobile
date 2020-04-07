@@ -9,7 +9,7 @@ data class ThreadPost(
     @SerializedName("num")
     val num: String = "",
     @SerializedName("name")
-    val name: String = "",
+    var name: String = "",
     @SerializedName("files")
     val files: List<FilesItem> = ArrayList(),
     @SerializedName("comment")

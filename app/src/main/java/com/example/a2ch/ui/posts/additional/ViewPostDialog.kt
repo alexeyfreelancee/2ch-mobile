@@ -4,11 +4,19 @@ package com.example.a2ch.ui.posts.additional
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.os.Build
 import android.os.Bundle
+import android.os.VibrationEffect
+import android.os.Vibrator
+import android.provider.MediaStore
 import android.view.View
 import android.view.Window
 import android.widget.ImageView
+import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.startActivity
 import com.bumptech.glide.Glide
 import com.example.a2ch.R
@@ -32,6 +40,7 @@ class ViewPostDialog(
         setCancelable(true)
         setContentView(R.layout.dialog_post)
 
+        val parent = findViewById<RelativeLayout>(R.id.parent)
         val name = findViewById<HtmlTextView>(R.id.name)
         val num = findViewById<TextView>(R.id.num)
         val date = findViewById<TextView>(R.id.date)
@@ -134,9 +143,41 @@ class ViewPostDialog(
         } catch (ex: Exception) {
         }
 
+        parent.setOnClickListener {
+            makeViewScreenshot(it)
+        }
 
+        comment.setOnClickListener {
+            makeViewScreenshot(it)
+        }
     }
 
+    private fun makeViewScreenshot(view: View) {
+        val context = view.context
+        val bitmap = loadBitmapFromView(view)
+        MediaStore.Images.Media.insertImage(context.contentResolver, bitmap, "2ch screenshot", "");
+        vibrate(context)
+    }
+
+    private fun vibrate(context: Context) {
+        val vibrator = ContextCompat.getSystemService<Vibrator>(context, Vibrator::class.java)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            vibrator?.vibrate(
+                VibrationEffect.createOneShot(
+                    500, VibrationEffect.EFFECT_CLICK
+                )
+            )
+        } else {
+            vibrator?.vibrate(500)
+        }
+    }
+
+    private fun loadBitmapFromView(v: View): Bitmap? {
+        val b = Bitmap.createBitmap(v.width, v.height, Bitmap.Config.ARGB_8888)
+        val c = Canvas(b)
+        v.draw(c)
+        return b
+    }
 
     private fun showContent(post: ThreadPost, position: Int) {
         val urls = arrayListOf<String>()

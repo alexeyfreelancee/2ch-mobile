@@ -24,9 +24,7 @@ import org.kodein.di.android.kodein
 import org.kodein.di.generic.instance
 
 
-class PostsActivity : AppCompatActivity(), KodeinAware,
-    PostsAdapterListener {
-
+class PostsActivity : AppCompatActivity(), KodeinAware{
     override val kodein by kodein()
     private val factory: PostsViewModelFactory by instance()
     private lateinit var viewModel: PostsViewModel
@@ -36,27 +34,28 @@ class PostsActivity : AppCompatActivity(), KodeinAware,
     private var thread = ""
 
     private lateinit var scrollDown: MenuItem
-    private lateinit var scrollUp: MenuItem
 
     private lateinit var addToFavourites: MenuItem
     private lateinit var removeFromFavourites: MenuItem
 
     private var unreadPostsCount = 0
-    private var wasScrolledToUnread = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+
         viewModel = ViewModelProvider(this, factory).get(PostsViewModel::class.java)
+        initObservers()
         DataBindingUtil.setContentView<ActivityPostsBinding>(this, R.layout.activity_posts).apply {
             viewmodel = viewModel
             lifecycleOwner = this@PostsActivity
         }
         postListAdapter = PostListAdapter(viewModel)
 
-
         initSwipeToRefresh()
+
         initViewModelData()
-        initObservers()
+
         initPostList()
 
     }
@@ -65,6 +64,7 @@ class PostsActivity : AppCompatActivity(), KodeinAware,
         board = intent.getStringExtra(BOARD_NAME)
         thread = intent.getStringExtra(THREAD_NUM)
         viewModel.apply {
+
             board = this@PostsActivity.board
             threadNum = this@PostsActivity.thread
         }
@@ -74,6 +74,9 @@ class PostsActivity : AppCompatActivity(), KodeinAware,
 
 
     private fun initObservers() {
+        viewModel.dataLoading.observe(this, Observer {
+            swipe_refresh.isRefreshing = it
+        })
         viewModel.posts.observe(this, Observer {
             postListAdapter.updateList(it)
         })
@@ -95,9 +98,13 @@ class PostsActivity : AppCompatActivity(), KodeinAware,
             val url = it.peekContent()
             startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
         })
-        viewModel.newPosts.observe(this, Observer {
-            toast("$it unread")
-            unreadPostsCount = it
+        viewModel.unreadPosts.observe(this, Observer {
+            if(it!=0){
+                toast("$it unread")
+                scrollDown.isVisible = true
+                unreadPostsCount = it
+            }
+
         })
         viewModel.isFavourite.observe(this, Observer {
             if (it) {
@@ -139,11 +146,7 @@ class PostsActivity : AppCompatActivity(), KodeinAware,
                 startAddPostActivity()
             }
             R.id.opt_scroll_down -> {
-                if (unreadPostsCount == 0 || wasScrolledToUnread) scrollDown()
-                else scrollToUnread()
-            }
-            R.id.opt_scroll_up -> {
-                scrollUp()
+                scrollToUnread()
             }
             R.id.opt_download -> {
                 viewModel.downloadAll(applicationContext)
@@ -157,10 +160,9 @@ class PostsActivity : AppCompatActivity(), KodeinAware,
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.posts_menu, menu)
 
-        scrollUp = menu!!.findItem(R.id.opt_scroll_up)
-        scrollUp.isVisible = false
+        scrollDown = menu!!.findItem(R.id.opt_scroll_down)
+        scrollDown.isVisible = false
 
-        scrollDown = menu.findItem(R.id.opt_scroll_down)
         addToFavourites = menu.findItem(R.id.opt_addFavourites)
         removeFromFavourites = menu.findItem(R.id.opt_removeFavourites)
 
@@ -212,11 +214,11 @@ class PostsActivity : AppCompatActivity(), KodeinAware,
         swipe_refresh.setOnRefreshListener { direction ->
             viewModel.loadPosts(direction)
         }
+
     }
 
 
     private fun initPostList() {
-        postListAdapter.listener = this
         post_list.adapter = postListAdapter
     }
 
@@ -225,28 +227,11 @@ class PostsActivity : AppCompatActivity(), KodeinAware,
         val total = postListAdapter.itemCount - 1
         val lastReadPost = total - unreadPostsCount
         post_list.layoutManager?.scrollToPosition(lastReadPost)
-        wasScrolledToUnread = true
+        scrollDown.isVisible = false
     }
 
     private fun scrollDown() {
         post_list.layoutManager?.scrollToPosition(postListAdapter.itemCount - 1)
-        scrollDown.isVisible = false
-        scrollUp.isVisible = true
-    }
-
-    private fun scrollUp() {
-        post_list.layoutManager?.scrollToPosition(0)
-        scrollDown.isVisible = true
-        scrollUp.isVisible = false
-    }
-
-    override fun upReached() {
-        scrollUp.isVisible = false
-        scrollDown.isVisible = true
-    }
-
-    override fun bottomReached() {
-        scrollUp.isVisible = true
         scrollDown.isVisible = false
     }
 

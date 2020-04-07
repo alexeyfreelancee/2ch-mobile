@@ -85,6 +85,7 @@
 
 
             <View
+                android:visibility="@{thread.comment.empty ? View.GONE : View.VISIBLE}"
                 android:onClick="@{(view) -> viewmodel.startPostsActivity(thread.num)}"
                android:layout_toEndOf="@id/thread_photo"
                 android:layout_width="match_parent"

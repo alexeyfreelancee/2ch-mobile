@@ -47,55 +47,40 @@ dependencies {
     //Multidex
     implementation 'com.android.support:multidex:1.0.3'
     //MVVM
+    kapt "com.android.databinding:compiler:$android_plugin_version"
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.0-alpha01'
-
     //retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.7.2'
     implementation 'com.squareup.retrofit2:converter-gson:2.7.1'
     implementation 'com.squareup.okhttp3:logging-interceptor:4.3.1'
-
     //glide
     kapt 'com.github.bumptech.glide:compiler:4.11.0'
     def glide_version = "4.11.0"
     implementation "com.github.bumptech.glide:glide:$glide_version"
     annotationProcessor "com.github.bumptech.glide:compiler:$glide_version"
-
     //Coroutines
     def coroutines_version = "1.2.1"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
-
     //Kodein Dependency Injection
     implementation "org.kodein.di:kodein-di-generic-jvm:6.2.1"
     implementation "org.kodein.di:kodein-di-framework-android-x:6.2.1"
-
-
     //CardView
     implementation "androidx.cardview:cardview:1.0.0"
-
     //Captcha
     implementation 'com.google.android.gms:play-services-safetynet:17.0.0'
-
     //Bottom refresh
     implementation 'com.github.omadahealth:swipy:1.2.3@aar'
-
     //PhotoView
     implementation 'com.github.chrisbanes:PhotoView:2.0.0'
-
-    //Jsoup
-    implementation 'org.jsoup:jsoup:1.8.3'
-
     //Exoplayer
     implementation 'com.google.android.exoplayer:exoplayer:2.11.3'
-
     //Html text view
     implementation 'org.sufficientlysecure:html-textview:3.9'
-
     //Navigation
     implementation "androidx.navigation:navigation-fragment-ktx:2.3.0-alpha04"
     implementation "androidx.navigation:navigation-ui-ktx:2.3.0-alpha04"
-
     //Database
     def room_version = "2.2.5"
     // Room
@@ -103,5 +88,6 @@ dependencies {
     implementation "androidx.legacy:legacy-support-v4:1.0.0"
     kapt "androidx.room:room-compiler:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
-
+    //slidr
+    implementation 'com.r0adkll:slidableactivity:2.1.0'
 }

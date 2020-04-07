@@ -36,7 +36,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.posts.additional.ViewContentActivity"
-            android:theme="@style/NoAnimation"/>
+            android:theme="@style/ViewContent"/>
     </application>
 
 </manifest>
