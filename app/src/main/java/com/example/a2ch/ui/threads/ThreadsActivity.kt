@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.animation.AnimationUtils
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
@@ -17,7 +18,6 @@ import com.example.a2ch.ui.posts.PostsActivity
 import com.example.a2ch.util.BOARD_NAME
 import com.example.a2ch.util.THREAD_NUM
 import com.example.a2ch.util.initError
-import com.example.a2ch.util.toast
 import kotlinx.android.synthetic.main.activity_category.*
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.kodein
@@ -28,12 +28,12 @@ class ThreadsActivity : AppCompatActivity(), KodeinAware {
     override val kodein by kodein()
     private val factory: CategoryViewModelFactory by instance()
     private lateinit var threadsListAdapter: ThreadListAdapter
-    private lateinit var viewModel: CategoryViewModel
+    private lateinit var viewModel: ThreadsViewModel
     private var boardName = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this, factory).get(CategoryViewModel::class.java)
+        viewModel = ViewModelProvider(this, factory).get(ThreadsViewModel::class.java)
         threadsListAdapter = ThreadListAdapter(viewModel)
 
         intent.getStringExtra(BOARD_NAME)?.let {
@@ -59,6 +59,7 @@ class ThreadsActivity : AppCompatActivity(), KodeinAware {
     private fun initObservers() {
         viewModel.threads.observe(this, Observer {
             threadsListAdapter.updateList(it)
+            thread_list.scheduleLayoutAnimation()
         })
 
         viewModel.category.observe(this, Observer {

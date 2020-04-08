@@ -31,9 +31,9 @@ class HistoryViewModel(private val repository: Repository) : ViewModel() {
     }
 
     fun startPostsActivity(thread: ThreadPost) {
-        _startPostsActivity.postValue(Event(
+        _startPostsActivity.value = Event(
             StartPostsData(thread.board, thread.num)
-        ))
+        )
     }
 }
 @Suppress("UNCHECKED_CAST")

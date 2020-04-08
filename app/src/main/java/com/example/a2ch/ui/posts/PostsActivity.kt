@@ -18,6 +18,7 @@ import com.example.a2ch.ui.posts.additional.ViewContentActivity
 import com.example.a2ch.ui.posts.additional.ViewPostDialog
 import com.example.a2ch.util.*
 import com.omadahealth.github.swipyrefreshlayout.library.SwipyRefreshLayoutDirection
+import kotlinx.android.synthetic.main.activity_category.*
 import kotlinx.android.synthetic.main.activity_posts.*
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.kodein
@@ -64,7 +65,6 @@ class PostsActivity : AppCompatActivity(), KodeinAware{
         board = intent.getStringExtra(BOARD_NAME)
         thread = intent.getStringExtra(THREAD_NUM)
         viewModel.apply {
-
             board = this@PostsActivity.board
             threadNum = this@PostsActivity.thread
         }
@@ -74,9 +74,6 @@ class PostsActivity : AppCompatActivity(), KodeinAware{
 
 
     private fun initObservers() {
-        viewModel.dataLoading.observe(this, Observer {
-            swipe_refresh.isRefreshing = it
-        })
         viewModel.posts.observe(this, Observer {
             postListAdapter.updateList(it)
         })

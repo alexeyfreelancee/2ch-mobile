@@ -59,7 +59,6 @@ class BoardsFragment : Fragment(), KodeinAware {
 
         viewModel.boards.observe(viewLifecycleOwner, Observer {
             boardListAdapter.updateList(it)
-
         })
     }
 

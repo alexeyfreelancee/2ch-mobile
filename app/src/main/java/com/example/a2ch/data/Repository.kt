@@ -16,7 +16,10 @@ import com.example.a2ch.models.threads.ThreadBase
 import com.example.a2ch.models.threads.ThreadItem
 import com.example.a2ch.models.threads.ThreadPost
 import com.example.a2ch.models.util.MakePostResult
-import com.example.a2ch.util.*
+import com.example.a2ch.util.isNetworkAvailable
+import com.example.a2ch.util.parseDigits
+import com.example.a2ch.util.parseThreadDate
+import kotlinx.coroutines.*
 import java.io.File
 
 
@@ -24,17 +27,17 @@ class Repository(private val retrofit: RetrofitClient, private val db: AppDataba
 
 
     suspend fun loadBoards(): BoardsBase {
-        return retrofit.dvach.getBoards()
+        val result = CoroutineScope(Dispatchers.IO).async {
+            retrofit.dvach.getBoards()
+        }
+        return result.await()
     }
 
     suspend fun loadBoardInfo(board: String): ThreadBase {
-        val threadsBase = retrofit.dvach.getThreads(board)
-
-        threadsBase.threadItems.forEach {
-            val thread = it.posts[0]
-            thread.date = getDate(thread.timestamp)
+        val result = CoroutineScope(Dispatchers.IO).async {
+            retrofit.dvach.getThreads(board)
         }
-        return threadsBase
+        return result.await()
     }
 
 
@@ -46,13 +49,16 @@ class Repository(private val retrofit: RetrofitClient, private val db: AppDataba
         captchaAnswer: String,
         captchaId: String
     ): Boolean {
-        val result = retrofit.dvach.makePostWithCaptcha(
-            1, "post",
-            username, board, thread,
-            "2chaptcha",
-            captchaId, comment, captchaAnswer
-        )
-        return result.error == null
+        val result = CoroutineScope(Dispatchers.IO).async {
+            retrofit.dvach.makePostWithCaptcha(
+                1, "post",
+                username, board, thread,
+                "2chaptcha",
+                captchaId, comment, captchaAnswer
+            )
+        }
+
+        return result.await().error == null
     }
 
     // не работает, тк всеми любимая мартышка не может сделать так,
@@ -64,6 +70,7 @@ class Repository(private val retrofit: RetrofitClient, private val db: AppDataba
         comment: String,
         usercode: String
     ): MakePostResult {
+
         val responseUsercode = retrofit.dvach.getPasscode("auth", usercode)
         return retrofit.dvach.makePostWithPasscode(
             1, "post", username, board, thread, comment, responseUsercode
@@ -75,82 +82,101 @@ class Repository(private val retrofit: RetrofitClient, private val db: AppDataba
     }
 
     suspend fun isFavourite(board: String, threadNum: String): Boolean {
-        val thread = getThread(board, threadNum)
-        return thread?.isFavourite ?: false
+        val thread = CoroutineScope(Dispatchers.IO).async {
+            getThread(board, threadNum)
+        }
+        return thread.await()?.isFavourite ?: false
 
     }
 
     suspend fun loadPosts(thread: String, board: String): List<ThreadPost> {
-        if (isNetworkAvailable()) {
-            addToDatabase(board, thread)
+        val result = CoroutineScope(Dispatchers.IO).async {
+            if (isNetworkAvailable()) {
+                addToDatabase(board, thread)
+            }
+            db.threadDao().getThread(board, thread)
         }
-        val dbThread = db.threadDao().getThread(board, thread)
 
-        return dbThread?.posts ?: getThread(board, thread)!!.posts
+
+        return result.await()?.posts ?: getThread(board, thread)!!.posts
 
     }
 
     suspend fun getPost(href: String, threadNum: String): ThreadPost {
         //href example /b/res/216879164.html#216879164\
+
         val boardId = href.split("/")
         val postId = href
             .substring(href.lastIndexOf("#") + 1)
             .parseDigits()
 
+        val dbPost = CoroutineScope(Dispatchers.IO).async {
+            val dbThread = db.threadDao().getThread(boardId[1], threadNum)
+            dbThread?.posts?.find { post ->
+                post.num == postId
+            }
 
-        val dbThread = db.threadDao().getThread(boardId[1], threadNum)
-        val dbPost = dbThread?.posts?.find { post ->
-            post.num == postId
         }
-        var networkPost: ThreadPost? =null
+        var networkPost: Deferred<ThreadPost?>? = null
 
-        if(isNetworkAvailable() && dbPost == null){
-           networkPost  = retrofit.dvach.getCurrentPost("get_post", boardId[1], postId)[0]
+        if (isNetworkAvailable() && dbPost.await() == null) {
+            networkPost = CoroutineScope(Dispatchers.IO).async {
+                retrofit.dvach.getCurrentPost("get_post", boardId[1], postId)[0]
+            }
         }
 
-        return dbPost ?: networkPost!!
+
+
+        return dbPost.await() ?: networkPost!!.await()!!
     }
 
     private suspend fun addToDatabase(board: String, threadNum: String) {
-        val thread = getThread(board, threadNum)
-        val posts = retrofit.dvach.getPosts(
-            "get_thread", board, threadNum, 1
-        )
-        if (thread != null) {
-            val needToUpdatePosts = thread.posts.size == posts.size
+        CoroutineScope(Dispatchers.IO).launch {
+            val thread = getThread(board, threadNum)
+            val posts = retrofit.dvach.getPosts(
+                "get_thread", board, threadNum, 1
+            )
+            if (thread != null) {
+                val needToUpdatePosts = thread.posts.size == posts.size
 
-            posts.forEach { post ->
-                post.postsCount = posts.size
-                post.board = board
-            }
+                posts.forEach { post ->
+                    post.postsCount = posts.size
+                    post.board = board
+                }
 
-            thread.board = board
-            if(needToUpdatePosts) {
-                //Важно сохранять кол-во прочитанных постов
-               for ((index, post) in thread.posts.withIndex()){
-                   posts[index].isRead = post.isRead
-               }
+                thread.board = board
+                if (needToUpdatePosts) {
+                    //Важно сохранять кол-во прочитанных постов
+                    for ((index, post) in thread.posts.withIndex()) {
+                        posts[index].isRead = post.isRead
+                    }
+                }
+                thread.posts = posts
+                db.threadDao().saveWithTimestamp(thread)
             }
-            thread.posts = posts
-            db.threadDao().saveWithTimestamp(thread)
         }
-
     }
 
     suspend fun getThread(board: String, threadNum: String): ThreadItem? {
-        val thread = db.threadDao().getThread(board, threadNum)
-        return thread ?: loadBoardInfo(board).threadItems.find { it.threadNum == threadNum }
+        val thread = CoroutineScope(Dispatchers.IO).async {
+            db.threadDao().getThread(board, threadNum)
+        }
+
+        return thread.await() ?: loadBoardInfo(board).threadItems.find { it.threadNum == threadNum }
     }
 
     suspend fun addToFavourites(board: String, threadItem: ThreadItem) {
-        threadItem.board = board
+        CoroutineScope(Dispatchers.IO).launch {
+            threadItem.board = board
 
-        threadItem.posts[0].board = board
-        threadItem.isFavourite = true
-        db.threadDao().saveWithTimestamp(threadItem)
+            threadItem.posts[0].board = board
+            threadItem.isFavourite = true
+            db.threadDao().saveWithTimestamp(threadItem)
+        }
     }
 
     suspend fun removeFromFavourites(threadPost: ThreadPost) {
+
         val threadItem = getThread(threadPost.board, threadPost.num)
 
         threadItem?.let {
@@ -161,23 +187,21 @@ class Repository(private val retrofit: RetrofitClient, private val db: AppDataba
     }
 
     suspend fun readPost(board: String, threadNum: String, position: Int) {
-        //TODO optimize
-        /*
         try {
 
             val thread = db.threadDao().getThread(board, threadNum)
 
-            if(thread!=null){
+            if (thread != null) {
                 if (!thread.posts[position].isRead) {
+                    if (position != 0) thread.posts[position - 1].isRead = true
                     thread.posts[position].isRead = true
+                    if (position != thread.posts.size - 1) thread.posts[position + 1].isRead = true
                     db.threadDao().saveThread(thread)
                 }
             }
 
-        } catch (ex: Exception){}
-
-
-         */
+        } catch (ex: Exception) {
+        }
 
     }
 
@@ -205,6 +229,7 @@ class Repository(private val retrofit: RetrofitClient, private val db: AppDataba
     }
 
     suspend fun loadFavourites(): List<ThreadPost> {
+
         val threads = db.threadDao().getFavouriteThreads()
         val result = ArrayList<ThreadPost>()
         threads.forEach {
@@ -260,6 +285,7 @@ class Repository(private val retrofit: RetrofitClient, private val db: AppDataba
     }
 
     private suspend fun getAllPhotos(threadNum: String, board: String): ArrayList<String> {
+
         val photoLinks = ArrayList<String>()
         val posts = retrofit.dvach.getPosts(
             "get_thread", board, threadNum, 1

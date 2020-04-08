@@ -11,7 +11,7 @@
 
         <variable
             name="viewmodel"
-            type="com.example.a2ch.ui.threads.CategoryViewModel" />
+            type="com.example.a2ch.ui.threads.ThreadsViewModel" />
     </data>
 
     <androidx.cardview.widget.CardView
@@ -103,7 +103,7 @@
                 tools:text="20 20 20"
                 android:layout_alignParentEnd="true"
                 android:id="@+id/date"
-                android:text="@{thread.date}"
+               app:date="@{thread.timestamp}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 

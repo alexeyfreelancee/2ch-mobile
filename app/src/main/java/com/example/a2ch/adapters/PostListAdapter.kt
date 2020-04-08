@@ -1,21 +1,18 @@
 package com.example.a2ch.adapters
 
-import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.example.a2ch.R
 import com.example.a2ch.databinding.PostRowBinding
 import com.example.a2ch.models.threads.ThreadPost
-
 import com.example.a2ch.ui.posts.PostsViewModel
-import com.example.a2ch.util.PostsAdapterListener
+import com.example.a2ch.util.ThreadPostsCallback
 import com.example.a2ch.util.setTextViewHTML
 import com.example.a2ch.util.toast
 import kotlinx.android.synthetic.main.post_row.view.*
-import kotlin.collections.ArrayList
 
 
 @Suppress("DEPRECATION")
@@ -24,10 +21,9 @@ class PostListAdapter(private val viewModel: PostsViewModel) :
     private val items = ArrayList<ThreadPost>()
 
     fun updateList(newList: List<ThreadPost>) {
-        if (items.size != newList.size) {
+        if(newList.size != items.size){
             items.clear()
             items.addAll(newList)
-
             notifyDataSetChanged()
         }
 
@@ -58,7 +54,7 @@ class PostListAdapter(private val viewModel: PostsViewModel) :
                 viewModel.makeViewScreenshot(it)
                 return@setOnLongClickListener true
             }
-            itemView.comment.setOnLongClickListener{
+            itemView.comment.setOnLongClickListener {
                 viewModel.makeViewScreenshot(itemView)
                 context.toast("Скриншот сохранен в галерею")
                 return@setOnLongClickListener true
@@ -66,13 +62,13 @@ class PostListAdapter(private val viewModel: PostsViewModel) :
 
             setTextViewHTML(itemView.comment, post.comment, viewModel)
 
-            if(!post.isRead){
-               viewModel.readPost(position)
+            if (!post.isRead) {
+                viewModel.readPost(position)
             }
 
         }
     }
 
 
-
 }
+

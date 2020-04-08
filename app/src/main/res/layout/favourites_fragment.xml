@@ -45,6 +45,7 @@
             android:id="@+id/favourites_list"
             android:layout_width="match_parent"
             android:overScrollMode="never"
+            android:layoutAnimation="@anim/fall_down_animator"
             android:layout_height="match_parent"
             android:text="@string/favourites"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"

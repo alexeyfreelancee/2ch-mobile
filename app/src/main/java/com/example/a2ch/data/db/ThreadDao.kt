@@ -22,6 +22,8 @@ interface ThreadDao {
             timestamp = System.currentTimeMillis()
         })
     }
+
+
     @Query("select * from thread_table where board like :board and threadNum like :threadNum")
     suspend fun getThread(board: String, threadNum: String) : ThreadItem?
 

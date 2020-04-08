@@ -18,6 +18,7 @@ import com.example.a2ch.util.BOARD_NAME
 import com.example.a2ch.util.THREAD_NUM
 import com.example.a2ch.util.log
 import com.example.a2ch.util.toast
+import kotlinx.android.synthetic.main.favourites_fragment.*
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.kodein
 import org.kodein.di.generic.instance
@@ -46,7 +47,7 @@ class FavouritesFragment : Fragment(), KodeinAware {
     private fun initObservers() {
         viewModel.threads.observe(viewLifecycleOwner, Observer {
             favouritesAdapter.updateList(it)
-            log(it.size)
+            favourites_list.scheduleLayoutAnimation()
         })
         viewModel.startPostsActivity.observe(viewLifecycleOwner, Observer {
             val data = it.peekContent()

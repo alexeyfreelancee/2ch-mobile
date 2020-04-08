@@ -59,8 +59,8 @@ class PostsViewModel(private val repository: Repository) : ViewModel() {
     var board = ""
 
     fun loadPosts(direction: SwipyRefreshLayoutDirection) {
-        _dataLoading.value = true
-        CoroutineScope(Dispatchers.IO).launch {
+        viewModelScope.launch {
+            _dataLoading.value = true
             try {
                 val postList = repository.loadPosts(threadNum, board)
                 _posts.postValue(postList)
@@ -75,8 +75,8 @@ class PostsViewModel(private val repository: Repository) : ViewModel() {
                     )
                 )
             }
+            _dataLoading.value = false
         }
-        _dataLoading.value = true
     }
 
     fun getUnreadPosts() {
@@ -164,7 +164,7 @@ class PostsViewModel(private val repository: Repository) : ViewModel() {
 
     }
 
-    fun downloadAll(context: Context){
+    fun downloadAll(context: Context) {
         CoroutineScope(Dispatchers.IO).launch {
             repository.downloadAll(threadNum, board, context)
 

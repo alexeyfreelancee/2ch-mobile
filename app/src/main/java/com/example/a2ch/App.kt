@@ -23,8 +23,8 @@ import org.kodein.di.generic.singleton
 class App : MultiDexApplication(), KodeinAware {
 
     override val kodein = Kodein.lazy {
-        bind() from eagerSingleton { RetrofitClient }
-        bind() from  singleton {
+        bind() from singleton { RetrofitClient }
+        bind() from  eagerSingleton {
             Room.databaseBuilder(this@App, AppDatabase::class.java, "dvach-db")
                 .build()
         }

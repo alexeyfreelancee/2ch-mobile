@@ -1,6 +1,7 @@
 package com.example.a2ch.models.threads
 
 import androidx.room.Entity
+import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
@@ -8,13 +9,13 @@ import com.google.gson.annotations.SerializedName
 data class ThreadItem(
     @PrimaryKey
     @SerializedName("thread_num")
-    val threadNum: String = "",
+    var threadNum: String = "",
     @SerializedName("posts")
-    var posts: List<ThreadPost>,
+    var posts: List<ThreadPost> = ArrayList(),
     @SerializedName("posts_count")
     var postsCount: Int = 0,
     var isFavourite: Boolean = false,
     var board: String = "",
-    var timestamp: Long
+    var timestamp: Long = 0
 
 )

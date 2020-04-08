@@ -5,14 +5,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModel
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.a2ch.databinding.FavouriteRowBinding
 import com.example.a2ch.databinding.ThreadRowBinding
-import com.example.a2ch.models.threads.ThreadItem
-import com.example.a2ch.ui.threads.CategoryViewModel
 import com.example.a2ch.models.threads.ThreadPost
 import com.example.a2ch.ui.favourite.FavouritesViewModel
-import kotlin.collections.ArrayList
+import com.example.a2ch.ui.threads.ThreadsViewModel
+import com.example.a2ch.util.ThreadPostsCallback
 
 
 class ThreadListAdapter(private val viewModel: ViewModel) :
@@ -23,7 +23,7 @@ class ThreadListAdapter(private val viewModel: ViewModel) :
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
 
-        val root = if(viewModel is CategoryViewModel){
+        val root = if (viewModel is ThreadsViewModel) {
             ThreadRowBinding.inflate(inflater, parent, false).root
         } else {
             FavouriteRowBinding.inflate(inflater, parent, false).root
@@ -40,6 +40,7 @@ class ThreadListAdapter(private val viewModel: ViewModel) :
         }
     }
 
+
     fun updateList(newList: List<ThreadPost>) {
         items.clear()
         items.addAll(newList)
@@ -47,22 +48,23 @@ class ThreadListAdapter(private val viewModel: ViewModel) :
         notifyDataSetChanged()
     }
 
-    fun removeItem(position: Int){
+    fun removeItem(position: Int) {
         items.removeAt(position)
         notifyItemRemoved(position)
     }
 
-    fun getItem(position: Int): ThreadPost{
+    fun getItem(position: Int): ThreadPost {
         return items[position]
     }
+
     inner class ThreadViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(item: ThreadPost) {
-            if(viewModel is CategoryViewModel){
+            if (viewModel is ThreadsViewModel) {
                 DataBindingUtil.bind<ThreadRowBinding>(itemView)?.apply {
                     thread = item
                     viewmodel = viewModel
                 }
-            } else if (viewModel is FavouritesViewModel){
+            } else if (viewModel is FavouritesViewModel) {
                 DataBindingUtil.bind<FavouriteRowBinding>(itemView)?.apply {
                     thread = item
                     viewmodel = viewModel
@@ -73,3 +75,5 @@ class ThreadListAdapter(private val viewModel: ViewModel) :
         }
     }
 }
+
+

@@ -1,10 +1,7 @@
 package com.example.a2ch.ui.threads
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.*
 import com.example.a2ch.data.Repository
 import com.example.a2ch.models.threads.ThreadBase
 import com.example.a2ch.models.threads.ThreadPost
@@ -16,15 +13,20 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
-class CategoryViewModel(private val repository: Repository) : ViewModel() {
+class ThreadsViewModel(private val repository: Repository) : ViewModel() {
     private val _category = MutableLiveData<ThreadBase>()
     val category: LiveData<ThreadBase> get() = _category
 
     private val _error = MutableLiveData<Event<Error>>()
     val error: LiveData<Event<Error>> get() = _error
 
-    private val _threads = MutableLiveData<List<ThreadPost>>()
-    val threads: LiveData<List<ThreadPost>> = _threads
+    val threads: LiveData<List<ThreadPost>> = Transformations.map(category) {
+        val threadList = ArrayList<ThreadPost>()
+        it.threadItems.forEach {
+            threadList.add(it.posts[0])
+        }
+        threadList
+    }
 
     var boardName = ""
 
@@ -35,13 +37,11 @@ class CategoryViewModel(private val repository: Repository) : ViewModel() {
     val startPostsActivity: LiveData<Event<String>> get() = _startPostsActivity
 
     fun update() {
-        CoroutineScope(Dispatchers.IO).launch {
-            _dataLoading.postValue(true)
-            Log.d("TAGG", boardName)
+        viewModelScope.launch {
+            _dataLoading.value = true
             try {
                 val result = repository.loadBoardInfo(boardName)
                 _category.postValue(result)
-                parseThreads(result)
             } catch (ex: Exception) {
                 ex.printStackTrace()
                 _error.postValue(
@@ -50,19 +50,10 @@ class CategoryViewModel(private val repository: Repository) : ViewModel() {
                     )
                 )
             }
-
-            _dataLoading.postValue(false)
+            _dataLoading.value = false
         }
-
     }
 
-    private fun parseThreads(result: ThreadBase) {
-        val threadList = ArrayList<ThreadPost>()
-        result.threadItems.forEach {
-            threadList.add(it.posts[0])
-        }
-        _threads.postValue(threadList)
-    }
 
     fun startPostsActivity(threadNum: String) {
         _startPostsActivity.postValue(Event(threadNum))
@@ -76,7 +67,7 @@ class CategoryViewModelFactory(
 ) : ViewModelProvider.NewInstanceFactory() {
 
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-        return CategoryViewModel(
+        return ThreadsViewModel(
             repository
         ) as T
     }

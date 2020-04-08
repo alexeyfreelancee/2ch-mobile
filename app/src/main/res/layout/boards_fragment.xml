@@ -59,6 +59,7 @@
                 android:id="@+id/board_list"
                 tools:item="@layout/board_row"
                 android:overScrollMode="never"
+                android:layoutAnimation="@anim/fall_down_animator"
                 android:layout_width="match_parent"
                 android:visibility="@{viewmodel.success ? View.VISIBLE : View.GONE}"
                 android:layout_height="match_parent"

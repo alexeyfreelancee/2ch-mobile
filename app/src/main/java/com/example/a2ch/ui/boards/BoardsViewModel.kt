@@ -1,9 +1,6 @@
 package com.example.a2ch.ui.boards
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.*
 import com.example.a2ch.data.Repository
 import com.example.a2ch.models.boards.Board
 import com.example.a2ch.models.boards.BoardsBase
@@ -30,7 +27,7 @@ class BoardsViewModel(private val repository: Repository) : ViewModel() {
     }
 
     fun loadBoards() {
-        CoroutineScope(Dispatchers.IO).launch {
+        viewModelScope.launch {
             _dataLoading.postValue(true)
 
             try {

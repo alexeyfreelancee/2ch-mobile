@@ -54,7 +54,7 @@
                 android:layout_below="@id/name"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="4dp"
-                android:text="@{'#' + post.num}"
+                android:text='@{String.format("%s%s",@string/diez, post.num)}'
                 tools:text="#dkfjasldkfja" />
 
             <org.sufficientlysecure.htmltextview.HtmlTextView

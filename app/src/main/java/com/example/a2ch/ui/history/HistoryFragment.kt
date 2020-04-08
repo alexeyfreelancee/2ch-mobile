@@ -16,6 +16,7 @@ import com.example.a2ch.ui.posts.PostsActivity
 import com.example.a2ch.util.BOARD_NAME
 import com.example.a2ch.util.THREAD_NUM
 import com.example.a2ch.util.log
+import kotlinx.android.synthetic.main.history_fragment.*
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.kodein
 import org.kodein.di.generic.instance
@@ -48,8 +49,8 @@ class HistoryFragment : Fragment(), KodeinAware {
 
     private fun initObservers() {
         viewModel.threads.observe(viewLifecycleOwner, Observer {
-            log(it.size)
             historyListAdapter.updateList(it)
+            history_list.scheduleLayoutAnimation()
         })
         viewModel.startPostsActivity.observe(viewLifecycleOwner, Observer {
             val data = it.peekContent()

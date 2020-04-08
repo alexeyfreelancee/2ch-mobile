@@ -5,6 +5,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.example.a2ch.models.threads.ThreadBase
 import com.example.a2ch.models.threads.ThreadItem
+import com.example.a2ch.models.threads.ThreadPost
 
 @Database(
     entities = [ThreadItem::class],
