@@ -42,6 +42,10 @@ class HistoryFragment : Fragment(), KodeinAware {
         return binding.root
     }
 
+    fun loadHistory(){
+        viewModel.loadHistory();
+    }
+
     private fun initHistoryList() {
         historyListAdapter = HistoryListAdapter(viewModel)
         binding.root.findViewById<RecyclerView>(R.id.history_list).adapter = historyListAdapter
@@ -58,10 +62,7 @@ class HistoryFragment : Fragment(), KodeinAware {
         })
     }
 
-    override fun onResume() {
-        super.onResume()
-        viewModel.loadHistory()
-    }
+
 
 
     private fun startPostsActivity(board: String, thread: String){

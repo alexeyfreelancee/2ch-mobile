@@ -16,11 +16,14 @@ interface DvachApi {
     @GET("makaba/mobile.fcgi?task=get_boards")
     suspend fun getBoards(): BoardsBase
 
-    @GET("{board}/index.json")
+    @GET("{board}/catalog_num.json")
     suspend fun getThreads(
         @Path("board") board: String
     ): ThreadBase
 
+
+
+    //http(s)://2ch.hk/makaba/mobile.fcgi?task=get_thread&board=abu&thread=39220&post=252
     @GET("makaba/mobile.fcgi")
     suspend fun getPosts(
         @Query("task") task: String,

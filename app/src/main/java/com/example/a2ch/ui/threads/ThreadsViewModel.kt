@@ -1,15 +1,19 @@
 package com.example.a2ch.ui.threads
 
-import android.util.Log
+
 import androidx.lifecycle.*
+import androidx.paging.LivePagedListBuilder
+import androidx.paging.PagedList
 import com.example.a2ch.data.Repository
+import com.example.a2ch.data.ThreadDataSourceFactory
 import com.example.a2ch.models.threads.ThreadBase
 import com.example.a2ch.models.threads.ThreadPost
 import com.example.a2ch.models.util.CRITICAL
 import com.example.a2ch.models.util.Error
+import com.example.a2ch.models.util.WARNING
 import com.example.a2ch.util.Event
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import com.example.a2ch.util.NO_INTERNET
+import com.example.a2ch.util.isNetworkAvailable
 import kotlinx.coroutines.launch
 
 
@@ -20,15 +24,9 @@ class ThreadsViewModel(private val repository: Repository) : ViewModel() {
     private val _error = MutableLiveData<Event<Error>>()
     val error: LiveData<Event<Error>> get() = _error
 
-    val threads: LiveData<List<ThreadPost>> = Transformations.map(category) {
-        val threadList = ArrayList<ThreadPost>()
-        it.threadItems.forEach {
-            threadList.add(it.posts[0])
-        }
-        threadList
-    }
+    var threads: LiveData<PagedList<ThreadPost>> = MutableLiveData()
 
-    var boardName = ""
+    private var boardName = ""
 
     private val _dataLoading = MutableLiveData<Boolean>()
     val dataLoading: LiveData<Boolean> = _dataLoading
@@ -36,12 +34,23 @@ class ThreadsViewModel(private val repository: Repository) : ViewModel() {
     private val _startPostsActivity = MutableLiveData<Event<String>>()
     val startPostsActivity: LiveData<Event<String>> get() = _startPostsActivity
 
-    fun update() {
+
+    fun setBoardName(board: String) {
+        boardName = board
+        loadData()
+    }
+
+    fun loadData() {
+        loadCategoryInfo()
+        setupThreads()
+    }
+
+    private fun loadCategoryInfo() {
         viewModelScope.launch {
             _dataLoading.value = true
             try {
-                val result = repository.loadBoardInfo(boardName)
-                _category.postValue(result)
+                val threadBase = repository.loadBoardInfo(boardName)
+                _category.value = threadBase
             } catch (ex: Exception) {
                 ex.printStackTrace()
                 _error.postValue(
@@ -54,9 +63,28 @@ class ThreadsViewModel(private val repository: Repository) : ViewModel() {
         }
     }
 
+    private fun setupThreads() {
+        val config = PagedList.Config.Builder()
+            .setEnablePlaceholders(false)
+            .setPageSize(10)
+            .build()
+
+        threads = LivePagedListBuilder(
+            ThreadDataSourceFactory(
+                repository,
+                boardName
+            ), config
+        ).build()
+    }
 
     fun startPostsActivity(threadNum: String) {
-        _startPostsActivity.postValue(Event(threadNum))
+        viewModelScope.launch {
+            if (isNetworkAvailable() || repository.getThreadFromDb(boardName, threadNum) != null) {
+                _startPostsActivity.postValue(Event(threadNum))
+            } else {
+                _error.value = Event(Error(WARNING, NO_INTERNET))
+            }
+        }
     }
 }
 

@@ -3,8 +3,9 @@ package com.example.a2ch.util
 
 import android.app.Activity
 import android.content.Context
-import android.content.res.ColorStateList
 import android.graphics.Color
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
 import android.text.Html
 import android.text.Spannable
 import android.text.SpannableStringBuilder
@@ -18,11 +19,13 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
+import com.example.a2ch.App
 import com.example.a2ch.models.util.CRITICAL
 import com.example.a2ch.models.util.Error
 import com.example.a2ch.ui.posts.PostsViewModel
@@ -125,22 +128,14 @@ fun parseThreadDate(timestamp: Long): String {
     val sdf = SimpleDateFormat("EEE, dd MMM", Locale.getDefault())
     return sdf.format(date)
 }
-
-
 fun isNetworkAvailable(): Boolean {
-    val runtime = Runtime.getRuntime()
-    try {
-        val ipProcess = runtime.exec("/system/bin/ping -c 1 8.8.8.8")
-        val exitValue = ipProcess.waitFor()
-        return exitValue == 0
-    } catch (e: IOException) {
-        e.printStackTrace()
-    } catch (e: InterruptedException) {
-        e.printStackTrace()
-    }
-    return false
-
+    val connectivityManager: ConnectivityManager =
+        App.provideContext()?.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    val activeNetworkInfo: NetworkInfo? = connectivityManager.activeNetworkInfo
+    return activeNetworkInfo != null && activeNetworkInfo.isConnected
 }
+
+
 
 fun setTextViewHTML(text: TextView, html: String?, viewModel: PostsViewModel) {
     val sequence = Html.fromHtml(html)

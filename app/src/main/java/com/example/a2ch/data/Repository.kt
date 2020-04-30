@@ -34,10 +34,9 @@ class Repository(private val retrofit: RetrofitClient, private val db: AppDataba
     }
 
     suspend fun loadBoardInfo(board: String): ThreadBase {
-        val result = CoroutineScope(Dispatchers.IO).async {
+        return withContext(CoroutineScope(Dispatchers.IO).coroutineContext) {
             retrofit.dvach.getThreads(board)
         }
-        return result.await()
     }
 
 
@@ -92,7 +91,7 @@ class Repository(private val retrofit: RetrofitClient, private val db: AppDataba
     suspend fun loadPosts(thread: String, board: String): List<ThreadPost> {
         val result = CoroutineScope(Dispatchers.IO).async {
             if (isNetworkAvailable()) {
-                addToDatabase(board, thread)
+                addPostsToDb(board, thread)
             }
             db.threadDao().getThread(board, thread)
         }
@@ -104,7 +103,6 @@ class Repository(private val retrofit: RetrofitClient, private val db: AppDataba
 
     suspend fun getPost(href: String, threadNum: String): ThreadPost {
         //href example /b/res/216879164.html#216879164\
-
         val boardId = href.split("/")
         val postId = href
             .substring(href.lastIndexOf("#") + 1)
@@ -130,13 +128,16 @@ class Repository(private val retrofit: RetrofitClient, private val db: AppDataba
         return dbPost.await() ?: networkPost!!.await()!!
     }
 
-    private suspend fun addToDatabase(board: String, threadNum: String) {
+    private suspend fun addPostsToDb(board: String, threadNum: String) {
         CoroutineScope(Dispatchers.IO).launch {
             val thread = getThread(board, threadNum)
-            val posts = retrofit.dvach.getPosts(
-                "get_thread", board, threadNum, 1
-            )
-            if (thread != null) {
+            val posts = try {
+                retrofit.dvach.getPosts(
+                    "get_thread", board, threadNum, 1
+                )
+            } catch (ex: java.lang.Exception){null}
+
+            if (thread != null && posts!=null) {
                 val needToUpdatePosts = thread.posts.size == posts.size
 
                 posts.forEach { post ->
@@ -157,13 +158,16 @@ class Repository(private val retrofit: RetrofitClient, private val db: AppDataba
         }
     }
 
-    suspend fun getThread(board: String, threadNum: String): ThreadItem? {
-        val thread = CoroutineScope(Dispatchers.IO).async {
-            db.threadDao().getThread(board, threadNum)
+    suspend fun getThreadFromDb(board:String, threadNum: String) : ThreadItem?{
+        return withContext(CoroutineScope(Dispatchers.IO).coroutineContext){
+            db.threadDao().getThread(board,threadNum)
         }
-
-        return thread.await() ?: loadBoardInfo(board).threadItems.find { it.threadNum == threadNum }
     }
+
+     suspend fun getThread(board: String, threadNum: String): ThreadItem? {
+        return withContext(CoroutineScope(Dispatchers.IO).coroutineContext) {
+            db.threadDao().getThread(board, threadNum)
+        } ?:  loadBoardInfo(board).threadItems.find { it.num == threadNum }    }
 
     suspend fun addToFavourites(board: String, threadItem: ThreadItem) {
         CoroutineScope(Dispatchers.IO).launch {
@@ -176,19 +180,17 @@ class Repository(private val retrofit: RetrofitClient, private val db: AppDataba
     }
 
     suspend fun removeFromFavourites(threadPost: ThreadPost) {
+        val thread = getThread(threadPost.board, threadPost.num)
 
-        val threadItem = getThread(threadPost.board, threadPost.num)
-
-        threadItem?.let {
-            threadItem.isFavourite = false
-            db.threadDao().saveWithTimestamp(threadItem)
+        thread?.let {
+            thread.isFavourite = false
+            db.threadDao().saveWithTimestamp(thread)
         }
 
     }
 
     suspend fun readPost(board: String, threadNum: String, position: Int) {
         try {
-
             val thread = db.threadDao().getThread(board, threadNum)
 
             if (thread != null) {
@@ -196,22 +198,22 @@ class Repository(private val retrofit: RetrofitClient, private val db: AppDataba
                     if (position != 0) thread.posts[position - 1].isRead = true
                     thread.posts[position].isRead = true
                     if (position != thread.posts.size - 1) thread.posts[position + 1].isRead = true
-                    db.threadDao().saveThread(thread)
+                    db.threadDao().updateThread(thread)
                 }
             }
 
-        } catch (ex: Exception) {
-        }
+        } catch (ex: Exception) {}
 
     }
 
     suspend fun computeUnreadPosts(threadNum: String, board: String): Int? {
+        val thread = db.threadDao().getThread(board, threadNum)
         var postsWereRead = 0
-        db.threadDao().getThread(board, threadNum)?.posts?.forEach {
+        thread?.posts?.forEach {
             if (it.isRead) postsWereRead++
         }
 
-        val postsSaved = db.threadDao().getThread(board, threadNum)?.posts?.size ?: 0
+        val postsSaved = thread?.posts?.size ?: 0
         val unreadPosts = postsSaved - postsWereRead
 
 
@@ -245,7 +247,7 @@ class Repository(private val retrofit: RetrofitClient, private val db: AppDataba
 
 
         threads.forEach {
-            val date = parseThreadDate(it.timestamp)
+            val date = parseThreadDate(it.saveTime)
             if (!dates.contains(date)) {
                 result.add(ThreadPost(isDate = true, date = date))
             }

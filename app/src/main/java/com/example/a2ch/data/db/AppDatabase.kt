@@ -9,7 +9,7 @@ import com.example.a2ch.models.threads.ThreadPost
 
 @Database(
     entities = [ThreadItem::class],
-    version = 2
+    version = 3
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase: RoomDatabase(){

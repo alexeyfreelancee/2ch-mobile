@@ -15,6 +15,7 @@ import com.example.a2ch.models.util.Error
 import com.example.a2ch.models.util.WARNING
 import com.example.a2ch.util.Event
 import com.example.a2ch.util.isWebLink
+import com.example.a2ch.util.log
 import com.omadahealth.github.swipyrefreshlayout.library.SwipyRefreshLayoutDirection
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -59,8 +60,9 @@ class PostsViewModel(private val repository: Repository) : ViewModel() {
     var board = ""
 
     fun loadPosts(direction: SwipyRefreshLayoutDirection) {
-        viewModelScope.launch {
-            _dataLoading.value = true
+        CoroutineScope(Dispatchers.IO).launch {
+
+            _dataLoading.postValue(true)
             try {
                 val postList = repository.loadPosts(threadNum, board)
                 _posts.postValue(postList)
@@ -69,13 +71,14 @@ class PostsViewModel(private val repository: Repository) : ViewModel() {
                     _scrollToBottom.postValue(Event(Any()))
             } catch (ex: Exception) {
                 ex.printStackTrace()
-                _error.postValue(
+                _error.postValue (
                     Event(
                         Error(CRITICAL, "Тред умер")
                     )
                 )
             }
-            _dataLoading.value = false
+            _dataLoading.postValue(false)
+
         }
     }
 
@@ -85,7 +88,6 @@ class PostsViewModel(private val repository: Repository) : ViewModel() {
             newPosts?.let {
                 _unreadPosts.postValue(it)
             }
-
         }
     }
 
@@ -167,9 +169,7 @@ class PostsViewModel(private val repository: Repository) : ViewModel() {
     fun downloadAll(context: Context) {
         CoroutineScope(Dispatchers.IO).launch {
             repository.downloadAll(threadNum, board, context)
-
         }
-
     }
 
     fun openContentDialog(post: ThreadPost, position: Int) {

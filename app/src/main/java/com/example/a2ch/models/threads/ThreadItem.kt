@@ -8,14 +8,24 @@ import com.google.gson.annotations.SerializedName
 @Entity(tableName = "thread_table")
 data class ThreadItem(
     @PrimaryKey
-    @SerializedName("thread_num")
-    var threadNum: String = "",
+    @SerializedName("num")
+    var num: String = "",
     @SerializedName("posts")
     var posts: List<ThreadPost> = ArrayList(),
+    @SerializedName("files")
+    val files: List<FilesItem> = ArrayList(),
     @SerializedName("posts_count")
     var postsCount: Int = 0,
+    @SerializedName("comment")
+    var comment: String = "",
+    @SerializedName("name")
+    var name:String = "",
+    @SerializedName("timestamp")
+    var loadTime: Long = 0,
     var isFavourite: Boolean = false,
     var board: String = "",
-    var timestamp: Long = 0
+    var saveTime: Long = 0
+
+
 
 )

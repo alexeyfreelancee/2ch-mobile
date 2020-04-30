@@ -23,7 +23,7 @@ class HistoryViewModel(private val repository: Repository) : ViewModel() {
 
 
 
-     fun loadHistory(){
+     fun loadHistory() {
         CoroutineScope(Dispatchers.IO).launch {
             val threads = repository.loadHistory()
             _threads.postValue(threads)
@@ -36,6 +36,7 @@ class HistoryViewModel(private val repository: Repository) : ViewModel() {
         )
     }
 }
+
 @Suppress("UNCHECKED_CAST")
 class HistoryViewModelFactory(
     private val repository: Repository

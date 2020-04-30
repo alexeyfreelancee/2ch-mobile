@@ -15,13 +15,9 @@
         android:layout_width="match_parent"
         android:background="@color/backgroundColor"
         android:layout_height="wrap_content"
-        app:onRefreshListener="@{viewmodel::update}"
+        app:onRefreshListener="@{viewmodel::loadData}"
         app:refreshing="@{viewmodel.dataLoading}">
 
-        <androidx.core.widget.NestedScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fillViewport="true">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -61,19 +57,21 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/thread_list"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="0dp"
                     android:layout_alignParentBottom="true"
                     android:layoutAnimation="@anim/fall_down_animator"
                     android:overScrollMode="never"
-                    app:layout_constraintEnd_toEndOf="parent"
                     android:visibility="@{viewmodel.threads.empty || viewmodel.threads == null ? View.GONE : View.VISIBLE}"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
-        </androidx.core.widget.NestedScrollView>
+
 
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

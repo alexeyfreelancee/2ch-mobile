@@ -75,16 +75,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.nav_boards -> {
                 supportFragmentManager.beginTransaction().hide(activeFragment).show(boardsFragment).commit()
                 activeFragment = boardsFragment
+
                 searchView.visible()
             }
             R.id.nav_favourites ->{
                 supportFragmentManager.beginTransaction().hide(activeFragment).show(favouritesFragment).commit()
                 activeFragment = favouritesFragment
+                favouritesFragment.loadFavourites()
                 searchView.gone()
             }
             R.id.nav_history -> {
                 supportFragmentManager.beginTransaction().hide(activeFragment).show(historyFragment).commit()
                 activeFragment = historyFragment
+                historyFragment.loadHistory()
                 searchView.gone()
             }
         }

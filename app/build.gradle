@@ -2,6 +2,8 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+
+
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
@@ -79,8 +81,8 @@ dependencies {
     //Html text view
     implementation 'org.sufficientlysecure:html-textview:3.9'
     //Navigation
-    implementation "androidx.navigation:navigation-fragment-ktx:2.3.0-alpha04"
-    implementation "androidx.navigation:navigation-ui-ktx:2.3.0-alpha04"
+    implementation "androidx.navigation:navigation-fragment-ktx:2.3.0-alpha05"
+    implementation "androidx.navigation:navigation-ui-ktx:2.3.0-alpha05"
     //Database
     def room_version = "2.2.5"
     // Room
@@ -90,4 +92,10 @@ dependencies {
     implementation "androidx.room:room-ktx:$room_version"
     //slidr
     implementation 'com.r0adkll:slidableactivity:2.1.0'
+
+
+
+    //PagingLibrary
+    implementation 'android.arch.paging:runtime:1.0.1'
+
 }

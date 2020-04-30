@@ -18,6 +18,7 @@ import com.example.a2ch.ui.posts.PostsActivity
 import com.example.a2ch.util.BOARD_NAME
 import com.example.a2ch.util.THREAD_NUM
 import com.example.a2ch.util.initError
+import com.example.a2ch.util.log
 import kotlinx.android.synthetic.main.activity_category.*
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.kodein
@@ -34,15 +35,10 @@ class ThreadsActivity : AppCompatActivity(), KodeinAware {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this, factory).get(ThreadsViewModel::class.java)
-        threadsListAdapter = ThreadListAdapter(viewModel)
-
         intent.getStringExtra(BOARD_NAME)?.let {
             boardName = it
-            viewModel.boardName = it
         }
-        viewModel.update()
-
-
+        viewModel.setBoardName(boardName)
         DataBindingUtil.setContentView<ActivityCategoryBinding>(
             this,
             R.layout.activity_category
@@ -57,11 +53,6 @@ class ThreadsActivity : AppCompatActivity(), KodeinAware {
 
 
     private fun initObservers() {
-        viewModel.threads.observe(this, Observer {
-            threadsListAdapter.updateList(it)
-            thread_list.scheduleLayoutAnimation()
-        })
-
         viewModel.category.observe(this, Observer {
             supportActionBar?.title = it.boardName
         })
@@ -76,16 +67,6 @@ class ThreadsActivity : AppCompatActivity(), KodeinAware {
         })
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.threads_menu, menu)
-        return super.onCreateOptionsMenu(menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.opt_add) startAddThreadActivity()
-        return super.onOptionsItemSelected(item)
-    }
-
     private fun startPostsActivity(thread: String){
         startActivity(
             Intent(applicationContext, PostsActivity::class.java)
@@ -94,24 +75,12 @@ class ThreadsActivity : AppCompatActivity(), KodeinAware {
         )
     }
 
-    private fun startAddThreadActivity() {
-        startActivity(
-            Intent(applicationContext, MakePostActivity::class.java)
-                .putExtra(BOARD_NAME, boardName)
-                .putExtra(THREAD_NUM, "0")
-        )
-    }
-
     private fun initThreadList() {
-        val linearLayoutManager = object : LinearLayoutManager(this) {
-            override fun canScrollVertically(): Boolean {
-                return false
-            }
-        }
-        linearLayoutManager.isAutoMeasureEnabled = true
-        thread_list.apply {
-            adapter = threadsListAdapter
-            layoutManager = linearLayoutManager
-        }
+        viewModel.threads.observe(this, Observer {
+            threadsListAdapter.submitList(it)
+            thread_list.scheduleLayoutAnimation()
+        })
+        threadsListAdapter = ThreadListAdapter(viewModel)
+        thread_list.adapter = threadsListAdapter
     }
 }

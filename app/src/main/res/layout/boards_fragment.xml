@@ -28,7 +28,7 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:visibility="@{viewmodel.success ? View.GONE : View.VISIBLE}"
+                android:visibility="@{viewmodel.error == null ? View.GONE : View.VISIBLE}"
                 android:orientation="vertical"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -61,7 +61,7 @@
                 android:overScrollMode="never"
                 android:layoutAnimation="@anim/fall_down_animator"
                 android:layout_width="match_parent"
-                android:visibility="@{viewmodel.success ? View.VISIBLE : View.GONE}"
+                android:visibility="@{viewmodel.error == null ? View.VISIBLE : View.GONE}"
                 android:layout_height="match_parent"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 

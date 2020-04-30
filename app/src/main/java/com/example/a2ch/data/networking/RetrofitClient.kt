@@ -4,12 +4,19 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 
 object RetrofitClient {
     private const val DVACH_API = "https://2ch.hk/"
 
+    private val client = OkHttpClient.Builder()
+        .readTimeout(60, TimeUnit.SECONDS)
+        .connectTimeout(60, TimeUnit.SECONDS)
+        .build()
+
     val dvach: DvachApi = Retrofit.Builder()
         .baseUrl(DVACH_API)
+        .client(client)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
         .create(DvachApi::class.java)

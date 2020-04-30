@@ -54,9 +54,7 @@ class PostsActivity : AppCompatActivity(), KodeinAware{
         postListAdapter = PostListAdapter(viewModel)
 
         initSwipeToRefresh()
-
         initViewModelData()
-
         initPostList()
 
     }
@@ -139,9 +137,9 @@ class PostsActivity : AppCompatActivity(), KodeinAware{
             R.id.opt_removeFavourites -> {
                 viewModel.removeFromFavourites()
             }
-            R.id.opt_addPost -> {
-                startAddPostActivity()
-            }
+           // R.id.opt_addPost -> {
+       //         startAddPostActivity()
+      //      }
             R.id.opt_scroll_down -> {
                 scrollToUnread()
             }

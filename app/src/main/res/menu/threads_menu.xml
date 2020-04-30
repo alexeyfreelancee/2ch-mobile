@@ -5,11 +5,5 @@
 
 
 
-    <item
-        android:title="@string/search"
-        app:showAsAction="always"
-
-        android:icon="@drawable/ic_add"
-        android:id="@+id/opt_add">
-    </item>
+   
 </menu>

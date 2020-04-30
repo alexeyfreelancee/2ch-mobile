@@ -4,9 +4,11 @@ import androidx.lifecycle.*
 import com.example.a2ch.data.Repository
 import com.example.a2ch.models.boards.Board
 import com.example.a2ch.models.boards.BoardsBase
+import com.example.a2ch.models.util.Error
+import com.example.a2ch.models.util.WARNING
 import com.example.a2ch.util.Event
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import com.example.a2ch.util.NO_INTERNET
+import com.example.a2ch.util.isNetworkAvailable
 import kotlinx.coroutines.launch
 
 class BoardsViewModel(private val repository: Repository) : ViewModel() {
@@ -19,8 +21,8 @@ class BoardsViewModel(private val repository: Repository) : ViewModel() {
     private val _boards = MutableLiveData<List<Board>>()
     val boards: LiveData<List<Board>> = _boards
 
-    private val _success = MutableLiveData<Boolean>(true)
-    val success : LiveData<Boolean> = _success
+    private val _error = MutableLiveData<Event<Error>>()
+    val error : LiveData<Event<Error>> = _error
 
     init {
         loadBoards()
@@ -28,26 +30,30 @@ class BoardsViewModel(private val repository: Repository) : ViewModel() {
 
     fun loadBoards() {
         viewModelScope.launch {
-            _dataLoading.postValue(true)
+            _dataLoading.value = (true)
+
 
             try {
                 val boards = repository.loadBoards()
-                val resultList = getResultList(boards)
-
-                _boards.postValue(resultList)
-                _success.postValue(true)
+                _boards.value = (getResultList(boards))
+                _error.value = null
             } catch (ex: Exception) {
-                _success.postValue(false)
+                _error.value = (Event(Error(WARNING, NO_INTERNET)))
                 ex.printStackTrace()
             }
 
-            _dataLoading.postValue(false)
+            _dataLoading.value = (false)
         }
 
     }
 
     fun startThreadActivity(id: String) {
-        _startCategory.postValue(Event(id))
+        if(isNetworkAvailable()){
+            _startCategory.postValue(Event(id))
+        } else{
+            _error.value = Event(Error(WARNING, NO_INTERNET))
+        }
+
     }
 
 
@@ -71,7 +77,6 @@ class BoardsViewModel(private val repository: Repository) : ViewModel() {
         resultList.addAll(boards.adult!!)
         resultList.add(Board(name = "Пользовательские", isHeader = true))
         resultList.addAll(boards.userBoards!!)
-
         return resultList
     }
 }

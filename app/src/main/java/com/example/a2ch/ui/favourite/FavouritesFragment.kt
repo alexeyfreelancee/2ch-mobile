@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.a2ch.R
+import com.example.a2ch.adapters.FavouritesAdapter
 import com.example.a2ch.adapters.ThreadListAdapter
 import com.example.a2ch.databinding.FavouritesFragmentBinding
 import com.example.a2ch.ui.posts.PostsActivity
@@ -28,7 +29,7 @@ class FavouritesFragment : Fragment(), KodeinAware {
     private val factory: FavouritesViewModelFactory by instance()
     private lateinit var binding: FavouritesFragmentBinding
     private lateinit var viewModel: FavouritesViewModel
-    private lateinit var favouritesAdapter: ThreadListAdapter
+    private lateinit var favouritesAdapter: FavouritesAdapter
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -56,7 +57,7 @@ class FavouritesFragment : Fragment(), KodeinAware {
     }
 
     private fun initFavouritesList() {
-        favouritesAdapter = ThreadListAdapter(viewModel)
+        favouritesAdapter = FavouritesAdapter(viewModel)
         val recyclerView = binding.root.findViewById(R.id.favourites_list) as RecyclerView
         recyclerView.adapter = favouritesAdapter
 
@@ -85,10 +86,9 @@ class FavouritesFragment : Fragment(), KodeinAware {
         itemTouchHelper.attachToRecyclerView(recyclerView)
     }
 
-    override fun onResume() {
-        super.onResume()
-        viewModel.loadFavourites()
-    }
+   fun loadFavourites(){
+       viewModel.loadFavourites()
+   }
 
     private fun startPostsActivity(board: String, thread: String){
         startActivity(
