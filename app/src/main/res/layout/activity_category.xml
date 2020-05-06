@@ -8,7 +8,7 @@
         <import type="android.view.View"/>
         <variable
             name="viewmodel"
-            type="com.example.a2ch.ui.threads.ThreadsViewModel" />
+            type="com.alexey_vena.a2ch.ui.threads.ThreadsViewModel" />
     </data>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout

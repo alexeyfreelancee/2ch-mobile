@@ -10,7 +10,7 @@
 
         <variable
             name="viewmodel"
-            type="com.example.a2ch.ui.posts.PostsViewModel" />
+            type="com.alexey_vena.a2ch.ui.posts.PostsViewModel" />
     </data>
 
 
@@ -30,9 +30,15 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/post_list"
             android:layout_width="match_parent"
+
             android:layout_height="match_parent"
             android:background="@color/backgroundColor"
             android:overScrollMode="never"
+            app:fastScrollEnabled="true"
+            app:fastScrollHorizontalThumbDrawable="@drawable/thumb_drawable"
+            app:fastScrollHorizontalTrackDrawable="@drawable/line_drawable"
+            app:fastScrollVerticalThumbDrawable="@drawable/thumb_drawable"
+            app:fastScrollVerticalTrackDrawable="@drawable/line_drawable"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

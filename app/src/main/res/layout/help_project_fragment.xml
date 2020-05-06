@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <variable
+            name="viewmodel"
+            type="com.alexey_vena.a2ch.ui.help_project.HelpProjectViewModel" />
+    </data>
+    <RelativeLayout
+        android:background="@color/backgroundColor"
+        android:layout_width="match_parent"
+        android:padding="16dp"
+        android:orientation="vertical"
+        android:layout_height="match_parent"
+        tools:context=".ui.help_project.HelpProjectFragment">
+
+        <TextView
+            android:id="@+id/a"
+            android:textSize="18sp"
+            android:onClick="@{(view)-> viewmodel.copyText(view, @string/card_copied, @string/card)}"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/help_money" />
+
+        <TextView
+            android:layout_below="@id/a"
+            android:id="@+id/b"
+            android:layout_marginTop="16dp"
+            android:layout_width="wrap_content"
+            android:textSize="18sp"
+            android:text="@string/help_ad"
+            android:layout_height="wrap_content"/>
+
+
+        <Button
+            android:layout_below="@id/b"
+            android:id="@+id/c"
+            android:layout_marginTop="8dp"
+            android:onClick="@{(view) -> viewmodel.watchAd()}"
+            android:text="@string/watch_ad"
+            android:layout_width="wrap_content"
+            android:textSize="18sp"
+            android:layout_height="wrap_content"/>
+
+
+        <TextView
+            android:layout_below="@id/c"
+            android:id="@+id/d"
+            android:layout_marginTop="16dp"
+            android:layout_width="wrap_content"
+            android:textSize="18sp"
+            android:onClick="@{(view) -> viewmodel.copyText(view, @string/mail_copied, @string/mail)}"
+            android:text="@string/help_thx"
+            android:layout_height="wrap_content"/>
+
+
+        <ImageView
+            android:layout_below="@id/d"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_width="wrap_content"
+            android:scaleType="fitCenter"
+            android:src="@drawable/thx"
+            android:layout_height="wrap_content"/>
+
+    </RelativeLayout>
+</layout>

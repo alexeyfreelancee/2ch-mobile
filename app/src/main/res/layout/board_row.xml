@@ -9,11 +9,11 @@
 
         <variable
             name="viewmodel"
-            type="com.example.a2ch.ui.boards.BoardsViewModel" />
+            type="com.alexey_vena.a2ch.ui.boards.BoardsViewModel" />
 
         <variable
             name="category"
-            type="com.example.a2ch.models.boards.Board" />
+            type="com.alexey_vena.a2ch.models.boards.Board" />
     </data>
 
     <RelativeLayout

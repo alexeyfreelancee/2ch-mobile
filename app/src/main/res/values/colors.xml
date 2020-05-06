@@ -5,4 +5,5 @@
     <color name="colorAccent">#FB7000</color>
     <color name="backgroundColor">#EEEEEE</color>
     <color name="darkerGray">@android:color/darker_gray</color>
+    <color name="transparent">@android:color/transparent</color>
 </resources>

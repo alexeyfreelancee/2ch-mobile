@@ -1,9 +1,0 @@
-package com.example.a2ch.util
-
-
-const val BOARD_NAME = "categoryName"
-const val THREAD_NUM = "threadNum"
-const val URL = "URL"
-const val URLS = "URLS"
-const val POSITION = "POSITION"
-const val NO_INTERNET = "Нет подключения к интернету"

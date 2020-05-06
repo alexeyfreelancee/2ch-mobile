@@ -7,11 +7,11 @@
         <import type="android.view.View"/>
         <variable
             name="thread"
-            type="com.example.a2ch.models.threads.ThreadPost" />
+            type="com.alexey_vena.a2ch.models.threads.ThreadPost" />
 
         <variable
             name="viewmodel"
-            type="com.example.a2ch.ui.history.HistoryViewModel" />
+            type="com.alexey_vena.a2ch.ui.history.HistoryViewModel" />
     </data>
 
     <androidx.cardview.widget.CardView
@@ -95,7 +95,7 @@
                 tools:text="20 20 20"
                 android:layout_alignParentEnd="true"
                 android:id="@+id/date"
-                android:text="@{thread.date}"
+                app:date="@{thread.timestamp}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 

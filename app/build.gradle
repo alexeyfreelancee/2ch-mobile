@@ -13,7 +13,7 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
     defaultConfig {
-        applicationId "com.example.a2ch"
+        applicationId "com.alexey_vena.a2ch"
         minSdkVersion 19
         targetSdkVersion 29
         versionCode 1
@@ -70,8 +70,6 @@ dependencies {
     implementation "org.kodein.di:kodein-di-framework-android-x:6.2.1"
     //CardView
     implementation "androidx.cardview:cardview:1.0.0"
-    //Captcha
-    implementation 'com.google.android.gms:play-services-safetynet:17.0.0'
     //Bottom refresh
     implementation 'com.github.omadahealth:swipy:1.2.3@aar'
     //PhotoView
@@ -80,9 +78,8 @@ dependencies {
     implementation 'com.google.android.exoplayer:exoplayer:2.11.3'
     //Html text view
     implementation 'org.sufficientlysecure:html-textview:3.9'
-    //Navigation
-    implementation "androidx.navigation:navigation-fragment-ktx:2.3.0-alpha05"
-    implementation "androidx.navigation:navigation-ui-ktx:2.3.0-alpha05"
+    //Jsoup
+    implementation 'org.jsoup:jsoup:1.13.1'
     //Database
     def room_version = "2.2.5"
     // Room
@@ -93,7 +90,8 @@ dependencies {
     //slidr
     implementation 'com.r0adkll:slidableactivity:2.1.0'
 
-
+    //Admob
+    implementation 'com.google.android.gms:play-services-ads:19.1.0'
 
     //PagingLibrary
     implementation 'android.arch.paging:runtime:1.0.1'

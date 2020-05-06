@@ -3,7 +3,7 @@
     <data>
         <variable
             name="thread"
-            type="com.example.a2ch.models.threads.ThreadPost" />
+            type="com.alexey_vena.a2ch.models.threads.ThreadPost" />
     </data>
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"

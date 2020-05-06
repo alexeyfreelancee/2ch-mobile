@@ -2,13 +2,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+
     <item
         android:id="@+id/opt_scroll_down"
         android:icon="@drawable/ic_bottom"
         android:title="scroll down"
         app:showAsAction="always" />
 
-
+    <item
+        android:id="@+id/opt_addPost"
+        android:title="@string/add_post"
+        android:icon="@drawable/ic_add"
+        app:showAsAction="always" />
 
     <item
         android:id="@+id/opt_addFavourites"
@@ -20,10 +25,7 @@
         android:title="@string/remove_fav"
         app:showAsAction="never" />
 
-  <!--  <item
-        android:id="@+id/opt_addPost"
-        android:title="@string/add_post"
-        app:showAsAction="never" /> -->
+
 
     <item
         android:id="@+id/opt_download"

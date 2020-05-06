@@ -8,7 +8,7 @@
         <import type="android.view.View"/>
         <variable
             name="viewmodel"
-            type="com.example.a2ch.ui.boards.BoardsViewModel" />
+            type="com.alexey_vena.a2ch.ui.boards.BoardsViewModel" />
     </data>
 
 

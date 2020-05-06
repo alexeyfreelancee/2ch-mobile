@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:background="#000">
 
-    <com.example.a2ch.util.ViewPagerFixed
+    <com.alexey_vena.a2ch.views.ViewPagerFixed
         android:id="@+id/photo"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

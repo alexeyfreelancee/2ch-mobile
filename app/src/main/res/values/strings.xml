@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">2ch</string>
+    <string name="app_name">Двачан</string>
     <string name="thematics">Тематика</string>
     <string name="art">Творчество</string>
     <string name="news">Политика</string>
@@ -11,7 +11,7 @@
     <string name="users">Кастом</string>
 
     <string name="threads">Треды</string>
-    <string name="posts">replies</string>
+    <string name="posts">posts</string>
     <string name="search">Search</string>
     <string name="makepost">Запостить</string>
     <string name="username">Имя пользователя</string>
@@ -33,4 +33,16 @@
     <string name="empty">Здесь ничего нет</string>
     <string name="download">Скачать все медиа</string>
     <string name="diez">#</string>
+    <string name="help_project">Поддержать проект</string>
+    <string name="watch_ad">Посмотреть рекламу</string>
+    <string name="help_money">Поддержать проект вы можете отправив добровольное пожертвование на карту <font color="#FB7000">4890494631222460</font>\n(нажмите чтобы скопировать)</string>
+    <string name="help_ad">Так же вы можете посмотреть рекламу, кликнув по кнопке ниже.</string>
+    <string name="help_thx">Свои пожелания проекту отправляйте на почту <font color="#FB7000">alexey.solovev43@gmail.com</font>\n(нажмите чтобы скопировать)</string>
+    <string name="card_copied">Номер карты скопирован в буфер обмена</string>
+    <string name="mail_copied">Почта скопирована в буфер обмена</string>
+    <string name="card">4890494631222460</string>
+    <string name="mail">alexey.solovev43@gmail.com</string>
+    <string name="add_thread">Добавить тред</string>
+    <string name="show_captcha">Нажмите чтобы загрузить капчу</string>
+    <string name="success_captcha">Вы прошли капчу</string>
 </resources>

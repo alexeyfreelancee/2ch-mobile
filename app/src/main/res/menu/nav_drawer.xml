@@ -25,4 +25,16 @@
 
 
     </group>
+
+    <group
+        android:id="@+id/second_group"
+        android:checkableBehavior="single">
+
+
+        <item
+            android:id="@+id/help_project"
+            android:icon="@drawable/ic_help"
+            android:title="@string/help_project" />
+
+    </group>
 </menu>

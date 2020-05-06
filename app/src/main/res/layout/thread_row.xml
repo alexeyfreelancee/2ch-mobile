@@ -7,11 +7,11 @@
         <import type="android.view.View"/>
         <variable
             name="thread"
-            type="com.example.a2ch.models.threads.ThreadPost" />
+            type="com.alexey_vena.a2ch.models.threads.ThreadPost" />
 
         <variable
             name="viewmodel"
-            type="com.example.a2ch.ui.threads.ThreadsViewModel" />
+            type="com.alexey_vena.a2ch.ui.threads.ThreadsViewModel" />
     </data>
 
     <androidx.cardview.widget.CardView
