@@ -4,6 +4,7 @@ import androidx.paging.DataSource
 import androidx.paging.PositionalDataSource
 import com.alexey_vena.a2ch.data.Repository
 import com.alexey_vena.a2ch.models.threads.ThreadPost
+import com.alexey_vena.a2ch.util.log
 import kotlinx.coroutines.runBlocking
 
 class ThreadsDataSource(private val repository: Repository, private val board: String) :
@@ -13,19 +14,23 @@ class ThreadsDataSource(private val repository: Repository, private val board: S
     private suspend fun loadThreads(): ArrayList<ThreadPost> {
         val threadBase = repository.loadBoardInfo(board)
         val threadList = ArrayList<ThreadPost>()
-        threadBase.threadItems.forEach { thread ->
-            threadList.add(
-                ThreadPost(
-                    name = thread.name,
-                    comment = thread.comment,
-                    subject = thread.subject,
-                    timestamp = thread.loadTime,
-                    postsCount = thread.postsCount,
-                    files = thread.files,
-                    num = thread.num
+        threadBase?.threadItems?.forEach { thread ->
+
+            if (!thread.subject.startsWith("Актуальный список мобильных приложений.")) {
+                threadList.add(
+                    ThreadPost(
+                        name = thread.name,
+                        comment = thread.comment,
+                        subject = thread.subject,
+                        timestamp = thread.loadTime,
+                        postsCount = thread.postsCount,
+                        files = thread.files,
+                        num = thread.num
+                    )
                 )
-            )
+            }
         }
+
         this.threadList = threadList
         return threadList
     }
@@ -34,8 +39,11 @@ class ThreadsDataSource(private val repository: Repository, private val board: S
 
         runBlocking {
             val threads = threadList ?: loadThreads()
-            val endPosition =  params.startPosition + params.loadSize
-            if(endPosition<= threads.size){
+
+            val endPosition = if(params.loadSize > threads.size) threads.size  else params.startPosition + params.loadSize
+
+            if (endPosition <= threads.size) {
+
                 callback.onResult(
                     threads.subList(
                         params.startPosition,
@@ -48,11 +56,10 @@ class ThreadsDataSource(private val repository: Repository, private val board: S
     }
 
     override fun loadInitial(params: LoadInitialParams, callback: LoadInitialCallback<ThreadPost>) {
-
         runBlocking {
             val threads = threadList ?: loadThreads()
-            val endPosition = params.requestedStartPosition + params.requestedLoadSize
-            if(endPosition<= threads.size){
+            val endPosition = if(params.requestedLoadSize > threads.size) threads.size  else params.requestedStartPosition + params.requestedLoadSize
+            if (endPosition <= threads.size) {
                 callback.onResult(
                     threads.subList(
                         params.requestedStartPosition,

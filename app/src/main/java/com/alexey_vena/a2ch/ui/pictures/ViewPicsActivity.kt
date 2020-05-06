@@ -10,7 +10,6 @@ import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
 import com.alexey_vena.a2ch.R
-import com.alexey_vena.a2ch.adapters.ContentSliderAdapter
 import com.alexey_vena.a2ch.util.POSITION
 import com.alexey_vena.a2ch.util.URLS
 import com.alexey_vena.a2ch.views.ViewPagerFixed
@@ -21,7 +20,7 @@ import com.r0adkll.slidr.model.SlidrPosition
 import java.io.File
 
 
-class ViewPicsActivity() : AppCompatActivity() {
+class ViewPicsActivity : AppCompatActivity() {
     private var contentSliderAdapter: ContentSliderAdapter? = null
     private var urls = ArrayList<String>()
     private var position: Int = 0
@@ -84,7 +83,11 @@ class ViewPicsActivity() : AppCompatActivity() {
     }
 
     private fun setupContentSlider(){
-        contentSliderAdapter = ContentSliderAdapter(applicationContext, urls)
+        contentSliderAdapter =
+            ContentSliderAdapter(
+                applicationContext,
+                urls
+            )
         contentSlider = findViewById(R.id.photo)
         contentSlider.apply {
             adapter = contentSliderAdapter

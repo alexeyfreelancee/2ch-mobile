@@ -6,23 +6,19 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import android.os.Build
 import android.os.Bundle
-import android.os.VibrationEffect
-import android.os.Vibrator
 import android.provider.MediaStore
 import android.view.View
 import android.view.Window
 import android.widget.ImageView
-import android.widget.RelativeLayout
+import android.widget.ScrollView
 import android.widget.TextView
-import androidx.core.content.ContextCompat
-import com.bumptech.glide.Glide
 import com.alexey_vena.a2ch.R
 import com.alexey_vena.a2ch.models.threads.ThreadPost
-import com.alexey_vena.a2ch.ui.posts.PostsViewModel
 import com.alexey_vena.a2ch.ui.pictures.ViewPicsActivity
+import com.alexey_vena.a2ch.ui.posts.PostsViewModel
 import com.alexey_vena.a2ch.util.*
+import com.bumptech.glide.Glide
 import org.sufficientlysecure.htmltextview.HtmlTextView
 
 
@@ -39,7 +35,7 @@ class ViewPostDialog(
         setCancelable(true)
         setContentView(R.layout.dialog_post)
 
-        val parent = findViewById<RelativeLayout>(R.id.parent)
+        val parent = findViewById<ScrollView>(R.id.parent)
         val name = findViewById<HtmlTextView>(R.id.name)
         val num = findViewById<TextView>(R.id.num)
         val date = findViewById<TextView>(R.id.date)
@@ -102,52 +98,54 @@ class ViewPostDialog(
         try {
             Glide.with(ctx)
 
-                .load("https://2ch.hk${post.files[0].path}")
+                .load("https://2ch.hk${post.files[0].thumbnail}")
                 .apply(myOptions)
                 .into(photo1)
 
             Glide.with(ctx)
-                .load("https://2ch.hk${post.files[1].path}")
+                .load("https://2ch.hk${post.files[1].thumbnail}")
                 .apply(myOptions)
                 .into(photo2)
 
             Glide.with(ctx)
-                .load("https://2ch.hk${post.files[2].path}")
+                .load("https://2ch.hk${post.files[2].thumbnail}")
                 .apply(myOptions)
                 .into(photo3)
 
             Glide.with(ctx)
-                .load("https://2ch.hk${post.files[3].path}")
+                .load("https://2ch.hk${post.files[3].thumbnail}")
                 .apply(myOptions)
                 .into(photo4)
             Glide.with(ctx)
-                .load("https://2ch.hk${post.files[4].path}")
+                .load("https://2ch.hk${post.files[4].thumbnail}")
                 .apply(myOptions)
                 .into(photo5)
 
             Glide.with(ctx)
-                .load("https://2ch.hk${post.files[5].path}")
+                .load("https://2ch.hk${post.files[5].thumbnail}")
                 .apply(myOptions)
                 .into(photo6)
 
             Glide.with(ctx)
-                .load("https://2ch.hk${post.files[6].path}")
+                .load("https://2ch.hk${post.files[6].thumbnail}")
                 .apply(myOptions)
                 .into(photo7)
 
             Glide.with(ctx)
-                .load("https://2ch.hk${post.files[7].path}")
+                .load("https://2ch.hk${post.files[7].thumbnail}")
                 .apply(myOptions)
                 .into(photo8)
         } catch (ex: Exception) {
         }
 
-        parent.setOnClickListener {
-            makeViewScreenshot(it)
+        parent.setOnLongClickListener {
+            makeViewScreenshot(parent)
+            return@setOnLongClickListener true
         }
 
-        comment.setOnClickListener {
-            makeViewScreenshot(it)
+        comment.setOnLongClickListener() {
+            makeViewScreenshot(parent)
+            return@setOnLongClickListener true
         }
     }
 
@@ -155,21 +153,9 @@ class ViewPostDialog(
         val context = view.context
         val bitmap = loadBitmapFromView(view)
         MediaStore.Images.Media.insertImage(context.contentResolver, bitmap, "2ch screenshot", "");
-        vibrate(context)
+        context.toast("Скриншот сохранен в галерею")
     }
 
-    private fun vibrate(context: Context) {
-        val vibrator = ContextCompat.getSystemService<Vibrator>(context, Vibrator::class.java)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            vibrator?.vibrate(
-                VibrationEffect.createOneShot(
-                    500, VibrationEffect.EFFECT_CLICK
-                )
-            )
-        } else {
-            vibrator?.vibrate(500)
-        }
-    }
 
     private fun loadBitmapFromView(v: View): Bitmap? {
         val b = Bitmap.createBitmap(v.width, v.height, Bitmap.Config.ARGB_8888)
@@ -183,19 +169,16 @@ class ViewPostDialog(
         post.files.forEach {
             urls.add("https://2ch.hk${it.path}")
         }
+
         val urlsResult = StringBuilder()
         urls.forEach {
             urlsResult.append("${it},")
         }
 
-
         context.startActivity(
-            Intent(context, ViewPicsActivity::class.java).putExtra(
-                URLS,
-                urlsResult.toString()
-            ).putExtra(
-                POSITION, position
-            )
+            Intent(context, ViewPicsActivity::class.java)
+                .putExtra(URLS, urlsResult.toString())
+                .putExtra(POSITION, position)
         )
 
     }

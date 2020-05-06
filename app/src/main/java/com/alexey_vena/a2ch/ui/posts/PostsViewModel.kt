@@ -13,10 +13,12 @@ import com.alexey_vena.a2ch.models.util.Error
 import com.alexey_vena.a2ch.models.util.WARNING
 import com.alexey_vena.a2ch.util.Event
 import com.alexey_vena.a2ch.util.isWebLink
+import com.alexey_vena.a2ch.util.log
 import com.alexey_vena.a2ch.util.toast
 import com.omadahealth.github.swipyrefreshlayout.library.SwipyRefreshLayoutDirection
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
@@ -24,8 +26,7 @@ class PostsViewModel(private val repository: Repository) : ViewModel() {
     private val _posts = MutableLiveData<List<ThreadPost>>()
     val posts: LiveData<List<ThreadPost>> = _posts
 
-    private val _scrollToBottom = MutableLiveData<Event<Any>>()
-    val scrollToBottom: LiveData<Event<Any>> = _scrollToBottom
+
 
     private val _dataLoading = MutableLiveData<Boolean>()
     val dataLoading: LiveData<Boolean> = _dataLoading
@@ -59,20 +60,17 @@ class PostsViewModel(private val repository: Repository) : ViewModel() {
     var threadNum = ""
     var board = ""
 
-    fun loadPosts(direction: SwipyRefreshLayoutDirection) {
+    fun loadPosts() {
         CoroutineScope(Dispatchers.IO).launch {
-
             _dataLoading.postValue(true)
             try {
                 val postList = repository.loadPosts(threadNum, board)
                 _posts.postValue(postList)
-
-                if (direction == SwipyRefreshLayoutDirection.BOTTOM)
-                    _scrollToBottom.postValue(Event(Any()))
             } catch (ex: Exception) {
                 ex.printStackTrace()
                 _error.postValue(Event(Error(CRITICAL, "Тред умер")))
             }
+            delay(500)
             _dataLoading.postValue(false)
 
         }
@@ -120,9 +118,7 @@ class PostsViewModel(private val repository: Repository) : ViewModel() {
             }
         } catch (ex: Exception) {
             _error.postValue(
-                Event(
-                    Error(WARNING, "Нет подключения к интернету")
-                )
+                Event(Error(WARNING, "Нет подключения к интернету"))
             )
         }
 
@@ -178,6 +174,7 @@ class PostsViewModel(private val repository: Repository) : ViewModel() {
     fun openContentDialog(post: ThreadPost, position: Int) {
         val urls = arrayListOf<String>()
         post.files.forEach {
+
             urls.add("https://2ch.hk${it.path}")
         }
         val contentDialogData = ContentDialogData(urls, position)

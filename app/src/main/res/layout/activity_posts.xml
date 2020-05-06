@@ -14,18 +14,9 @@
     </data>
 
 
-    <com.omadahealth.github.swipyrefreshlayout.library.SwipyRefreshLayout
-        android:id="@+id/swipe_refresh"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/backgroundColor"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:refreshing="@{viewmodel.dataLoading}"
-        app:srl_direction="both">
-
+        android:layout_height="match_parent">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/post_list"
@@ -45,8 +36,17 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <ProgressBar
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:visibility="@{viewmodel.dataLoading ? View.VISIBLE : View.GONE}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    </com.omadahealth.github.swipyrefreshlayout.library.SwipyRefreshLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 
 
 </layout>

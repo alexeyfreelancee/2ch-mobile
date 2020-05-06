@@ -1,6 +1,7 @@
 package com.alexey_vena.a2ch.ui.threads
 
 
+import android.os.Handler
 import androidx.lifecycle.*
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
@@ -13,6 +14,7 @@ import com.alexey_vena.a2ch.models.util.WARNING
 import com.alexey_vena.a2ch.util.Event
 import com.alexey_vena.a2ch.util.NO_INTERNET
 import com.alexey_vena.a2ch.util.isNetworkAvailable
+import com.alexey_vena.a2ch.util.log
 import kotlinx.coroutines.launch
 
 
@@ -41,25 +43,25 @@ class ThreadsViewModel(private val repository: Repository) : ViewModel() {
 
     fun loadData() {
         _dataLoading.value = true
-        loadCategoryInfo()
+        checkErrors()
         setupThreads()
-        _dataLoading.value = false
+        Handler().postDelayed({
+            _dataLoading.value = false
+        }, 500)
     }
 
-    private fun loadCategoryInfo() {
-        viewModelScope.launch {
-            try {
-                val threadBase = repository.loadBoardInfo(boardName)
-                _category.value = threadBase
-            } catch (ex: Exception) {
-                ex.printStackTrace()
-                _error.postValue(
-                    Event(
-                        Error(CRITICAL, "Доски не существует")
-                    )
-                )
-            }
+    private fun checkErrors() = viewModelScope.launch {
+        val threadBase = repository.loadBoardInfo(boardName)
+        if (threadBase == null) {
+            error()
+        } else {
+            if (threadBase.threadItems.isEmpty()) error()
+            _category.value = threadBase
         }
+    }
+
+    fun error() {
+        _error.value = (Event(Error(CRITICAL, "Доски не существует")))
     }
 
     private fun setupThreads() {

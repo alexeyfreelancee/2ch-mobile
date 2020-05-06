@@ -38,7 +38,7 @@
             android:layout_height="wrap_content">
 
             <ImageView
-                app:imageUrl="@{thread.files[0].path}"
+                app:imageUrl="@{thread.files[0].thumbnail}"
                 android:background="@android:color/darker_gray"
                 android:onClick="@{(view) -> viewmodel.startPostsActivity(thread.num)}"
                 android:visibility="@{thread.files.empty ? View.GONE : View.VISIBLE}"

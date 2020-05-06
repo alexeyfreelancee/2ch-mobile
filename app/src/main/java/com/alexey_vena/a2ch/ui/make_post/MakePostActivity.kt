@@ -51,6 +51,7 @@ class MakePostActivity : AppCompatActivity(), KodeinAware, CaptchaListener {
             binding.editText.setText(text)
             binding.editText.setSelection(binding.editText.text.length)
         }
+        viewModel.checkNamesEnabled()
     }
 
 

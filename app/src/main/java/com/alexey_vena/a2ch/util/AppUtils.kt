@@ -47,7 +47,7 @@ fun View.gone() {
     this.visibility = View.GONE
 }
 
-fun log(vararg message: Any) {
+fun log(vararg message: Any?) {
     message.forEach {msg->
         when (msg) {
             is String -> Log.d("TAGG", msg)

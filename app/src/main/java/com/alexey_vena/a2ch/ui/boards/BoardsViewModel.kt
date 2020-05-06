@@ -15,42 +15,32 @@ class BoardsViewModel(private val repository: Repository) : ViewModel() {
     private val _startCategory = MutableLiveData<Event<String>>()
     val startCategory: LiveData<Event<String>> = _startCategory
 
-    private val _dataLoading = MutableLiveData<Boolean>()
-    val dataLoading: LiveData<Boolean> get() = _dataLoading
 
     private val _boards = MutableLiveData<List<Board>>()
     val boards: LiveData<List<Board>> = _boards
 
     private val _error = MutableLiveData<Event<Error>>()
-    val error : LiveData<Event<Error>> = _error
+    val error: LiveData<Event<Error>> = _error
 
     init {
         loadBoards()
     }
 
-    fun loadBoards() {
-        viewModelScope.launch {
-            _dataLoading.value = (true)
-
-
-            try {
-                val boards = repository.loadBoards()
-                _boards.value = (getResultList(boards))
-                _error.value = null
-            } catch (ex: Exception) {
-                _error.value = (Event(Error(WARNING, NO_INTERNET)))
-                ex.printStackTrace()
-            }
-
-            _dataLoading.value = (false)
+    fun loadBoards() = viewModelScope.launch {
+        try {
+            val boards = repository.loadBoards()
+            _boards.value = (getResultList(boards))
+            _error.value = null
+        } catch (ex: Exception) {
+            _error.value = (Event(Error(WARNING, NO_INTERNET)))
+            ex.printStackTrace()
         }
-
     }
 
     fun startThreadActivity(id: String) {
-        if(isNetworkAvailable()){
+        if (isNetworkAvailable()) {
             _startCategory.postValue(Event(id))
-        } else{
+        } else {
             _error.value = Event(Error(WARNING, NO_INTERNET))
         }
 

@@ -3,6 +3,7 @@ package com.alexey_vena.a2ch.ui.posts
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -35,29 +36,29 @@ class PostsActivity : AppCompatActivity(), KodeinAware {
     private var board = ""
     private var thread = ""
 
-    private lateinit var scrollDown: MenuItem
 
     private lateinit var addToFavourites: MenuItem
     private lateinit var removeFromFavourites: MenuItem
 
     private var unreadPostsCount = 0
 
+    private var recyclerViewState: Parcelable? = null
+
+    private lateinit var binding : ActivityPostsBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-
         viewModel = ViewModelProvider(this, factory).get(PostsViewModel::class.java)
         initObservers()
-        DataBindingUtil.setContentView<ActivityPostsBinding>(this, R.layout.activity_posts).apply {
+        binding = DataBindingUtil.setContentView<ActivityPostsBinding>(this, R.layout.activity_posts).apply {
             viewmodel = viewModel
             lifecycleOwner = this@PostsActivity
         }
         postListAdapter = PostListAdapter(viewModel)
 
-        initSwipeToRefresh()
-        initViewModelData()
-        initPostList()
 
+        initViewModelData()
+        binding.postList.adapter = postListAdapter
     }
 
     private fun initViewModelData() {
@@ -67,15 +68,23 @@ class PostsActivity : AppCompatActivity(), KodeinAware {
             board = this@PostsActivity.board
             threadNum = this@PostsActivity.thread
         }
+
+        viewModel.getUnreadPosts()
+        viewModel.checkFavourite()
     }
 
+    override fun onResume() {
+        recyclerViewState = binding.postList.layoutManager?.onSaveInstanceState()
+        viewModel.loadPosts()
+        super.onResume()
+    }
 
     private fun initObservers() {
         viewModel.posts.observe(this, Observer {
             postListAdapter.updateList(it)
-        })
-        viewModel.scrollToBottom.observe(this, Observer {
-            scrollDown()
+            if(recyclerViewState!=null){
+                binding.postList.layoutManager?.onRestoreInstanceState(recyclerViewState)
+            }
         })
         viewModel.contentDialogData.observe(this, Observer {
             val data = it.peekContent()
@@ -95,7 +104,6 @@ class PostsActivity : AppCompatActivity(), KodeinAware {
         viewModel.unreadPosts.observe(this, Observer {
             if (it != 0) {
                 toast("$it unread")
-                scrollDown.isVisible = true
                 unreadPostsCount = it
             }
 
@@ -151,8 +159,9 @@ class PostsActivity : AppCompatActivity(), KodeinAware {
             R.id.opt_removeFavourites -> {
                 viewModel.removeFromFavourites()
             }
-            R.id.opt_scroll_down -> {
-                scrollToUnread()
+            R.id.opt_update ->{
+                recyclerViewState = binding.postList.layoutManager?.onSaveInstanceState()
+                viewModel.loadPosts()
             }
             R.id.opt_addPost -> {
                 if (isNetworkAvailable()) startAddPostActivity() else toast(NO_INTERNET)
@@ -170,19 +179,13 @@ class PostsActivity : AppCompatActivity(), KodeinAware {
     }
 
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.posts_menu, menu)
-
-        scrollDown = menu!!.findItem(R.id.opt_scroll_down)
-        scrollDown.isVisible = false
 
         addToFavourites = menu.findItem(R.id.opt_addFavourites)
         removeFromFavourites = menu.findItem(R.id.opt_removeFavourites)
 
 
-
-        viewModel.getUnreadPosts()
-        viewModel.checkFavourite()
         return true
     }
 
@@ -221,33 +224,14 @@ class PostsActivity : AppCompatActivity(), KodeinAware {
         )
     }
 
-    private fun initSwipeToRefresh() {
-        swipe_refresh.setOnRefreshListener { direction ->
-            viewModel.loadPosts(direction)
-        }
-
-    }
-
-
-    private fun initPostList() {
-        post_list.adapter = postListAdapter
-    }
+//    private fun scrollToUnread() {
+//        val total = postListAdapter.itemCount - 1
+//        val lastReadPost = total - unreadPostsCount
+//        post_list.layoutManager?.scrollToPosition(lastReadPost)
+//        scrollDown.isVisible = false
+//    }
 
 
-    private fun scrollToUnread() {
-        val total = postListAdapter.itemCount - 1
-        val lastReadPost = total - unreadPostsCount
-        post_list.layoutManager?.scrollToPosition(lastReadPost)
-        scrollDown.isVisible = false
-    }
 
-    private fun scrollDown() {
-        post_list.layoutManager?.scrollToPosition(postListAdapter.itemCount - 1)
-        scrollDown.isVisible = false
-    }
 
-    override fun onResume() {
-        viewModel.loadPosts(SwipyRefreshLayoutDirection.TOP)
-        super.onResume()
-    }
 }

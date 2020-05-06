@@ -6,18 +6,22 @@ import com.alexey_vena.a2ch.data.Repository
 import com.alexey_vena.a2ch.models.util.Error
 import com.alexey_vena.a2ch.models.util.WARNING
 import com.alexey_vena.a2ch.util.Event
+import com.alexey_vena.a2ch.util.log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class SendPostViewModel(private val repository: Repository) : ViewModel() {
-
     var comment = ""
     var board = ""
     var thread = ""
+    var username = repository.loadUsername()
     private var captchaKey = ""
-    val captchaResponse = MutableLiveData<String>("")
+    val captchaResponse = MutableLiveData("")
 
+    val dataLoading = MutableLiveData<Boolean>()
+
+    val namesEnabled = MutableLiveData<Boolean>()
 
     private val _openCaptchaDialog = MutableLiveData<Event<String>>()
     val openCaptchaDialog: LiveData<Event<String>> get() = _openCaptchaDialog
@@ -28,20 +32,31 @@ class SendPostViewModel(private val repository: Repository) : ViewModel() {
     private val _success = MutableLiveData<Any>()
     val success: LiveData<Any> = _success
 
+
+
+     fun checkNamesEnabled() = viewModelScope.launch{
+        val boardInfo = repository.loadBoardInfo(board)
+        boardInfo?.let {
+            namesEnabled.value = boardInfo.namesEnabled == 1
+        }
+
+    }
     fun makePost() {
         if (checkFields()) {
             CoroutineScope(Dispatchers.IO).launch {
+                dataLoading.postValue(true)
                 try {
                     val result = repository.makePostWithCaptcha(
-                         board,
+                        board,
                         thread, comment,
-                        captchaKey, captchaResponse.value!!
+                        captchaKey, captchaResponse.value!!, username
                     )
                     checkResult(result)
                 } catch (ex: Exception) {
                     ex.printStackTrace()
                     _error.postValue(Event(Error(WARNING, "Не получилось отправить запрос")))
                 }
+                dataLoading.postValue(false)
             }
         }
     }

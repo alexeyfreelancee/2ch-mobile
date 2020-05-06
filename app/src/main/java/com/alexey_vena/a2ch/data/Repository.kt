@@ -15,7 +15,6 @@ import com.alexey_vena.a2ch.models.threads.ThreadBase
 import com.alexey_vena.a2ch.models.threads.ThreadItem
 import com.alexey_vena.a2ch.models.threads.ThreadPost
 import com.alexey_vena.a2ch.util.isNetworkAvailable
-import com.alexey_vena.a2ch.util.log
 import com.alexey_vena.a2ch.util.parseDigits
 import com.alexey_vena.a2ch.util.parseThreadDate
 import kotlinx.coroutines.*
@@ -32,7 +31,6 @@ class Repository(
     private val prefsHelper: SharedPrefsHelper
 ) {
 
-
     suspend fun loadBoards(): BoardsBase {
         val result = CoroutineScope(Dispatchers.IO).async {
             retrofit.dvach.getBoards()
@@ -40,10 +38,16 @@ class Repository(
         return result.await()
     }
 
-    suspend fun loadBoardInfo(board: String): ThreadBase {
-        return withContext(CoroutineScope(Dispatchers.IO).coroutineContext) {
-            retrofit.dvach.getThreads(board)
+    suspend fun loadBoardInfo(board: String): ThreadBase? {
+        return try {
+            withContext(CoroutineScope(Dispatchers.IO).coroutineContext) {
+                retrofit.dvach.getThreads(board)
+            }
+        } catch (ex: Exception) {
+            ex.printStackTrace()
+            null
         }
+
     }
 
     fun loadUsername(): String {
@@ -55,9 +59,10 @@ class Repository(
         thread: String,
         comment: String,
         captchaKey: String,
-        captchaResponse: String
+        captchaResponse: String,
+        username: String
     ): String {
-        if(loadBoardInfo(board).threadItems.find { it.num == thread } == null){
+        if (loadBoardInfo(board)?.threadItems?.find { it.num == thread } == null) {
             return "Тред умер"
         }
         try {
@@ -66,7 +71,8 @@ class Repository(
                 thread = thread,
                 captchaKey = captchaKey,
                 comment = java.net.URLDecoder.decode(comment, "utf-8"),
-                captchaResponse = captchaResponse
+                captchaResponse = captchaResponse,
+                username = username
             )
             val postData = urlParameters.toByteArray(StandardCharsets.UTF_8)
             val request = "https://2ch.hk/makaba/posting.fcgi"
@@ -77,12 +83,13 @@ class Repository(
                 requestMethod = "POST"
                 setRequestProperty("Content-Type", "application/x-www-form-urlencoded")
                 setRequestProperty("charset", "utf-8")
-                setRequestProperty("Content-Length",  postData.size.toString())
+                setRequestProperty("Content-Length", postData.size.toString())
                 useCaches = false
             }
 
             DataOutputStream(conn.outputStream).use { wr -> wr.write(postData) }
-            return if(conn.responseCode == 200) "OK" else conn.responseMessage
+            prefsHelper.saveUsername(username)
+            return if (conn.responseCode == 200) "OK" else conn.responseMessage
 
 
         } catch (ex: Exception) {
@@ -94,7 +101,7 @@ class Repository(
     private fun buildPostUrl(
         json: Int = 1,
         task: String = "post",
-
+        username:String,
         board: String,
         thread: String,
         captchaType: String = "recaptcha",
@@ -105,7 +112,7 @@ class Repository(
         return "json=$json&task=$task&board=$board" +
                 "&thread=$thread&captcha_type=$captchaType" +
                 "&captcha-key=$captchaKey" +
-                "&g-recaptcha-response=$captchaResponse&comment=$comment"
+                "&g-recaptcha-response=$captchaResponse&comment=$comment&name=$username"
     }
 
 
@@ -201,7 +208,7 @@ class Repository(
     suspend fun getThread(board: String, threadNum: String): ThreadItem? {
         return withContext(CoroutineScope(Dispatchers.IO).coroutineContext) {
             db.threadDao().getThread(board, threadNum)
-        } ?: loadBoardInfo(board).threadItems.find { it.num == threadNum }
+        } ?: loadBoardInfo(board)?.threadItems?.find { it.num == threadNum }
     }
 
     suspend fun addToFavourites(board: String, threadItem: ThreadItem) {

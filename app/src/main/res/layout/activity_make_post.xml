@@ -3,8 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
 
     xmlns:tools="http://schemas.android.com/tools">
+
     <data>
-        <import type="android.view.View"/>
+
+        <import type="android.view.View" />
+
         <variable
             name="viewmodel"
             type="com.alexey_vena.a2ch.ui.make_post.SendPostViewModel" />
@@ -17,20 +20,45 @@
         android:padding="16dp"
         tools:context=".ui.make_post.MakePostActivity">
 
+        <ProgressBar
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:visibility="@{viewmodel.dataLoading? View.VISIBLE : View.GONE, default = gone}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <Button
-            android:background="@null"
-            android:onClick="@{(view)-> viewmodel.makePost()}"
             android:id="@+id/b_make_post"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@null"
+            android:onClick="@{(view)-> viewmodel.makePost()}"
             android:text="@string/makepost"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
         <EditText
+            android:id="@+id/editText2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:ems="10"
+            android:gravity="top"
+            android:hint="@string/username"
+            android:inputType="textPersonName"
+            android:text="@={viewmodel.username}"
+            android:visibility="@{viewmodel.namesEnabled ? View.VISIBLE : View.GONE , default = gone}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
             android:id="@+id/editText"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:layout_marginTop="16dp"
             android:layout_marginBottom="2dp"
             android:background="@null"
             android:ems="10"
@@ -41,29 +69,24 @@
             app:layout_constraintBottom_toTopOf="@+id/captcha_img"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
+            app:layout_constraintTop_toBottomOf="@+id/editText2" />
 
 
         <TextView
-            android:onClick="@{(view)-> viewmodel.loadCaptcha(view)}"
             android:id="@+id/captcha_img"
-            android:textAlignment="center"
             android:layout_width="0dp"
-            android:clickable="@{viewmodel.captchaResponse.empty == false ? false : true}"
-            android:text="@{viewmodel.captchaResponse.empty == false ?  @string/success_captcha:@string/show_captcha }"
-            android:textSize="18sp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="8dp"
+            android:clickable="@{viewmodel.captchaResponse.empty == false ? false : true}"
+            android:onClick="@{(view)-> viewmodel.loadCaptcha(view)}"
+            android:text="@{viewmodel.captchaResponse.empty == false ?  @string/success_captcha:@string/show_captcha }"
+            android:textAlignment="center"
+            android:textSize="18sp"
             app:layout_constraintBottom_toTopOf="@+id/b_make_post"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/editText" />
-
-
-
-
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

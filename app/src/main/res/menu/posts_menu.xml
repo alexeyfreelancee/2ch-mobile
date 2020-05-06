@@ -3,12 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
+
+
     <item
-        android:id="@+id/opt_scroll_down"
-        android:icon="@drawable/ic_bottom"
+        android:id="@+id/opt_update"
+        android:icon="@drawable/ic_update"
         android:title="scroll down"
         app:showAsAction="always" />
-
     <item
         android:id="@+id/opt_addPost"
         android:title="@string/add_post"

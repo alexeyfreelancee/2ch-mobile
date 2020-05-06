@@ -13,7 +13,7 @@
     </data>
 
     <RelativeLayout
-
+        android:background="?attr/selectableItemBackground"
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -80,7 +80,7 @@
                 android:onClick="@{(view) ->viewmodel.openContentDialog(post,0)}"
                 android:scaleType="centerCrop"
                 android:visibility="@{post.files.size() > 0 ? View.VISIBLE : View.GONE,default = gone}"
-                app:imageUrl="@{post.files[0].path}" />
+                app:imageUrl="@{post.files[0].thumbnail}" />
 
             <ImageView
                 android:id="@+id/photo2"
@@ -94,7 +94,7 @@
                 android:onClick="@{(view) ->viewmodel.openContentDialog(post,1)}"
                 android:scaleType="centerCrop"
                 android:visibility="@{post.files.size() > 1 ? View.VISIBLE : View.GONE,default = gone}"
-                app:imageUrl="@{post.files[1].path}" />
+                app:imageUrl="@{post.files[1].thumbnail}" />
 
             <ImageView
                 android:id="@+id/photo3"
@@ -108,7 +108,7 @@
                 android:onClick="@{(view) ->viewmodel.openContentDialog(post,2)}"
                 android:scaleType="centerCrop"
                 android:visibility="@{post.files.size() > 2 ? View.VISIBLE : View.GONE,default = gone}"
-                app:imageUrl="@{post.files[2].path}" />
+                app:imageUrl="@{post.files[2].thumbnail}" />
 
             <ImageView
                 android:id="@+id/photo4"
@@ -122,7 +122,7 @@
                 android:onClick="@{(view) ->viewmodel.openContentDialog(post,3)}"
                 android:scaleType="centerCrop"
                 android:visibility="@{post.files.size() > 3 ? View.VISIBLE : View.GONE,default = gone}"
-                app:imageUrl="@{post.files[3].path}" />
+                app:imageUrl="@{post.files[3].thumbnail}" />
 
 
             <ImageView
@@ -136,7 +136,7 @@
                 android:onClick="@{(view) ->viewmodel.openContentDialog(post,0)}"
                 android:scaleType="centerCrop"
                 android:visibility="@{post.files.size() > 4 ? View.VISIBLE : View.GONE,default = gone}"
-                app:imageUrl="@{post.files[4].path}" />
+                app:imageUrl="@{post.files[4].thumbnail}" />
 
             <ImageView
                 android:id="@+id/photo6"
@@ -150,7 +150,7 @@
                 android:onClick="@{(view) ->viewmodel.openContentDialog(post,0)}"
                 android:scaleType="centerCrop"
                 android:visibility="@{post.files.size() > 5 ? View.VISIBLE : View.GONE,default = gone}"
-                app:imageUrl="@{post.files[5].path}" />
+                app:imageUrl="@{post.files[5].thumbnail}" />
 
             <ImageView
                 android:id="@+id/photo7"
@@ -164,7 +164,7 @@
                 android:onClick="@{(view) ->viewmodel.openContentDialog(post,0)}"
                 android:scaleType="centerCrop"
                 android:visibility="@{post.files.size() > 6 ? View.VISIBLE : View.GONE,default = gone}"
-                app:imageUrl="@{post.files[6].path}" />
+                app:imageUrl="@{post.files[6].thumbnail}" />
 
             <ImageView
                 android:id="@+id/photo8"
@@ -178,7 +178,7 @@
                 android:onClick="@{(view) ->viewmodel.openContentDialog(post,0)}"
                 android:scaleType="centerCrop"
                 android:visibility="@{post.files.size() > 7 ? View.VISIBLE : View.GONE,default = gone}"
-                app:imageUrl="@{post.files[7].path}" />
+                app:imageUrl="@{post.files[7].thumbnail}" />
         </RelativeLayout>
 
 

@@ -1,4 +1,4 @@
-package com.alexey_vena.a2ch.adapters
+package com.alexey_vena.a2ch.ui.pictures
 
 import android.content.Context
 import android.graphics.drawable.Drawable

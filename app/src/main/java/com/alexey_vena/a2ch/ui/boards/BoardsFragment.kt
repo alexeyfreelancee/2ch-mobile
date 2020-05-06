@@ -42,7 +42,9 @@ class BoardsFragment : Fragment(), KodeinAware {
         }.root
     }
 
-
+    fun loadBoards(){
+        viewModel?.loadBoards()
+    }
     private fun initObservers() {
         viewModel?.startCategory?.observe(viewLifecycleOwner, Observer {
             val name = it.peekContent()

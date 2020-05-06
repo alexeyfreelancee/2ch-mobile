@@ -3,11 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
-    <item
-        android:id="@+id/opt_addThread"
-        android:title="@string/add_thread"
-        android:icon="@drawable/ic_add"
-        app:showAsAction="always" />
+<!--    <item-->
+<!--        android:id="@+id/opt_addThread"-->
+<!--        android:title="@string/add_thread"-->
+<!--        android:icon="@drawable/ic_add"-->
+<!--        app:showAsAction="always" />-->
 
    
 </menu>

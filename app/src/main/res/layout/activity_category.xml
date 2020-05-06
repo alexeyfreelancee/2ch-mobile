@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:animateLayoutChanges="true"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:animateLayoutChanges="true">
 
     <data>
-        <import type="android.view.View"/>
+
+        <import type="android.view.View" />
+
         <variable
             name="viewmodel"
             type="com.alexey_vena.a2ch.ui.threads.ThreadsViewModel" />
@@ -13,65 +15,36 @@
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
-        android:background="@color/backgroundColor"
         android:layout_height="wrap_content"
+        android:background="@color/backgroundColor"
         app:onRefreshListener="@{viewmodel::loadData}"
         app:refreshing="@{viewmodel.dataLoading}">
 
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/thread_list"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layoutAnimation="@anim/fall_down_animator"
+                android:overScrollMode="never"
+                android:visibility="@{viewmodel.threads.empty || viewmodel.threads == null ? View.GONE : View.VISIBLE}"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
 
 
-                <LinearLayout
-                    android:id="@+id/linearLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp"
-                    android:visibility="@{viewmodel.category.boardInfo.empty || viewmodel.category.boardInfo == null ? View.GONE : View.VISIBLE}"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_scrollFlags="enterAlways|scroll">
-
-
-                    <org.sufficientlysecure.htmltextview.HtmlTextView
-                        android:id="@+id/info"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        app:html="@{viewmodel.category.boardInfo}"
-                        android:linksClickable="true"
-                        android:autoLink="web"
-                        android:textColor="#000"
-                        android:textSize="18sp"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/outer"
-                        tools:text="Программы и операционные vk.com обсуждаются в /s/. Воздержитесь от холиваров. Конференция доски в Телеграме " />
-
-
-                </LinearLayout>
-
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/thread_list"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_alignParentBottom="true"
-                    android:layoutAnimation="@anim/fall_down_animator"
-                    android:overScrollMode="never"
-                    android:visibility="@{viewmodel.threads.empty || viewmodel.threads == null ? View.GONE : View.VISIBLE}"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
-
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
+        </LinearLayout>
 
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

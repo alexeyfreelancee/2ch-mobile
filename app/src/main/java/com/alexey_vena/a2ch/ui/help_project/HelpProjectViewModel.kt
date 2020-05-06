@@ -31,19 +31,7 @@ class HelpProjectViewModel() : ViewModel() {
 
     }
 
-    private fun vibrate(context: Context){
-        val vibrator = context.getSystemService(VIBRATOR_SERVICE) as Vibrator
-        vibrator.vibrate(100)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            vibrator.vibrate(
-                VibrationEffect.createOneShot(
-                    150, VibrationEffect.EFFECT_CLICK
-                )
-            )
-        } else {
-            vibrator.vibrate(150)
-        }
-    }
+
     private fun addToClipboard(context: Context, text:String){
         val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val clip = ClipData.newPlainText("Двачан", text)
@@ -51,7 +39,6 @@ class HelpProjectViewModel() : ViewModel() {
     }
 
     fun copyText(view: View, toast:String, copyText:String){
-        vibrate(view.context)
         addToClipboard(view.context, copyText)
         textCopied.value = Event(toast)
     }
