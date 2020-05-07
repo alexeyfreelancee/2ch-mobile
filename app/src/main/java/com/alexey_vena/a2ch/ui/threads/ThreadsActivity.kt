@@ -46,25 +46,7 @@ class ThreadsActivity : AppCompatActivity(), KodeinAware {
         initObservers()
     }
 
-//    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-//        menuInflater.inflate(R.menu.threads_menu, menu)
-//        return super.onCreateOptionsMenu(menu)
-//    }
-//
-//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-//        if(item.itemId == R.id.opt_addThread){
-//            if(isNetworkAvailable()){
-//                startActivity(Intent(applicationContext, MakePostActivity::class.java).apply {
-//                    putExtra(BOARD_NAME, boardName)
-//                    putExtra(THREAD_NUM, "0")
-//                })
-//            } else{
-//                toast(NO_INTERNET)
-//            }
-//
-//        }
-//        return true
-//    }
+
 
     private fun initObservers() {
         viewModel.category.observe(this, Observer {
@@ -75,7 +57,9 @@ class ThreadsActivity : AppCompatActivity(), KodeinAware {
             val threadNum = it.peekContent()
            startPostsActivity(threadNum)
         })
-
+        viewModel.update.observe(this, Observer {
+            initThreadList()
+        })
         viewModel.error.observe(this, Observer {
             initError(this, it)
         })
@@ -96,5 +80,26 @@ class ThreadsActivity : AppCompatActivity(), KodeinAware {
         })
         threadsListAdapter = ThreadListAdapter(viewModel)
         thread_list.adapter = threadsListAdapter
+        viewModel.dataLoading.value = false
     }
 }
+
+//    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+//        menuInflater.inflate(R.menu.threads_menu, menu)
+//        return super.onCreateOptionsMenu(menu)
+//    }
+//
+//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+//        if(item.itemId == R.id.opt_addThread){
+//            if(isNetworkAvailable()){
+//                startActivity(Intent(applicationContext, MakePostActivity::class.java).apply {
+//                    putExtra(BOARD_NAME, boardName)
+//                    putExtra(THREAD_NUM, "0")
+//                })
+//            } else{
+//                toast(NO_INTERNET)
+//            }
+//
+//        }
+//        return true
+//    }

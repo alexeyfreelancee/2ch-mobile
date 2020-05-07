@@ -15,6 +15,7 @@ import com.alexey_vena.a2ch.databinding.HistoryFragmentBinding
 import com.alexey_vena.a2ch.ui.posts.PostsActivity
 import com.alexey_vena.a2ch.util.BOARD_NAME
 import com.alexey_vena.a2ch.util.THREAD_NUM
+import com.alexey_vena.a2ch.util.log
 import kotlinx.android.synthetic.main.history_fragment.*
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.kodein
@@ -42,19 +43,21 @@ class HistoryFragment : Fragment(), KodeinAware {
     }
 
     fun loadHistory(){
-        viewModel?.loadHistory();
+        viewModel?.loadHistory()
+        initHistoryList()
     }
 
     private fun initHistoryList() {
+        viewModel?.threads?.observe(viewLifecycleOwner, Observer {
+            historyListAdapter?.submitList(it)
+            history_list.scheduleLayoutAnimation()
+        })
         historyListAdapter = HistoryListAdapter(viewModel)
         binding.root.findViewById<RecyclerView>(R.id.history_list).adapter = historyListAdapter
     }
 
     private fun initObservers() {
-        viewModel?.threads?.observe(viewLifecycleOwner, Observer {
-            historyListAdapter?.updateList(it)
-            history_list.scheduleLayoutAnimation()
-        })
+
         viewModel?.startPostsActivity?.observe(viewLifecycleOwner, Observer {
             val data = it.peekContent()
             startPostsActivity(data.board, data.thread)

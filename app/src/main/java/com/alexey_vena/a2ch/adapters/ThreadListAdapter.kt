@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.alexey_vena.a2ch.databinding.ThreadRowBinding
 import com.alexey_vena.a2ch.models.threads.ThreadPost
 import com.alexey_vena.a2ch.ui.threads.ThreadsViewModel
+import com.alexey_vena.a2ch.util.ThreadDiffUtil
 
 
 class ThreadListAdapter(private val viewModel: ThreadsViewModel) :
@@ -39,20 +40,4 @@ class ThreadListAdapter(private val viewModel: ThreadsViewModel) :
     }
 }
 
-class ThreadDiffUtil(
-) : DiffUtil.ItemCallback<ThreadPost>() {
-
-    override fun areItemsTheSame(oldItem: ThreadPost, newItem: ThreadPost): Boolean {
-        return oldItem.num == newItem.num
-    }
-
-    override fun areContentsTheSame(old: ThreadPost, new: ThreadPost): Boolean {
-        return old.name == new.name
-                && old.comment == new.comment
-                && old.date == new.date
-                && old.postsCount == new.postsCount
-    }
-
-
-}
 

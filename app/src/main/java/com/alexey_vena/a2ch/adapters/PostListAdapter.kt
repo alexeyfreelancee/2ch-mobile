@@ -60,9 +60,7 @@ class PostListAdapter(private val viewModel: PostsViewModel) :
 
                 setTextViewHTML(itemView.comment, post.comment, viewModel)
 
-                if (!post.isRead) {
-                    viewModel.readPost(position)
-                }
+
             }
 
 

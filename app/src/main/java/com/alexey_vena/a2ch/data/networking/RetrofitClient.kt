@@ -17,7 +17,7 @@ object RetrofitClient {
 
     private val client = OkHttpClient.Builder()
         .readTimeout(60, TimeUnit.SECONDS)
-        .addInterceptor(interceptor)
+      //  .addInterceptor(interceptor)
         .connectTimeout(60, TimeUnit.SECONDS)
         .build()
 

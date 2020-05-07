@@ -4,19 +4,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.alexey_vena.a2ch.databinding.HistoryRowBinding
 import com.alexey_vena.a2ch.databinding.TimeRowBinding
 import com.alexey_vena.a2ch.models.threads.ThreadPost
 import com.alexey_vena.a2ch.ui.history.HistoryViewModel
+import com.alexey_vena.a2ch.util.ThreadDiffUtil
 import com.alexey_vena.a2ch.util.log
 
 class HistoryListAdapter(private val viewModel: HistoryViewModel?) :
-    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    PagedListAdapter<ThreadPost, RecyclerView.ViewHolder>(ThreadDiffUtil()) {
     private val THREAD = 1
     private val TIME = 0
 
-    private val items = ArrayList<ThreadPost>()
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -28,23 +30,19 @@ class HistoryListAdapter(private val viewModel: HistoryViewModel?) :
 
     }
 
-    override fun getItemCount(): Int = items.size
+
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
-            is ThreadViewHolder -> holder.bind(items[position])
-            is DateViewHolder -> holder.bind(items[position])
+            is ThreadViewHolder -> holder.bind(getItem(position)!!)
+            is DateViewHolder -> holder.bind(getItem(position)!!)
         }
     }
 
-    fun updateList(newList: List<ThreadPost>) {
-        items.clear()
-        items.addAll(newList)
-        notifyDataSetChanged()
-    }
+
 
     override fun getItemViewType(position: Int): Int {
-        val thread = items[position]
+        val thread = getItem(position)!!
         return if (thread.isDate) {
             TIME
         } else {
@@ -54,7 +52,6 @@ class HistoryListAdapter(private val viewModel: HistoryViewModel?) :
 
     inner class DateViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(item: ThreadPost) {
-            log("date")
             DataBindingUtil.bind<TimeRowBinding>(itemView)?.apply {
                 thread = item
             }
@@ -63,7 +60,6 @@ class HistoryListAdapter(private val viewModel: HistoryViewModel?) :
 
     inner class ThreadViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(item: ThreadPost) {
-            log("thread")
             DataBindingUtil.bind<HistoryRowBinding>(itemView)?.apply {
                 thread = item
                 viewmodel = viewModel

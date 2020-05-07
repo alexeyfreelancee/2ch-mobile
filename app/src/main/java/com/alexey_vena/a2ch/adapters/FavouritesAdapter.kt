@@ -4,55 +4,49 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.alexey_vena.a2ch.databinding.FavouriteRowBinding
 import com.alexey_vena.a2ch.models.threads.ThreadPost
 import com.alexey_vena.a2ch.ui.favourite.FavouritesViewModel
+import com.alexey_vena.a2ch.util.ThreadDiffUtil
 
 class FavouritesAdapter(private val viewModel: FavouritesViewModel?) :
-    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    private val items = ArrayList<ThreadPost>()
-
+    PagedListAdapter<ThreadPost, RecyclerView.ViewHolder>(ThreadDiffUtil()) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         return ThreadViewHolder(FavouriteRowBinding.inflate(inflater, parent, false).root)
     }
 
-    override fun getItemCount(): Int = items.size
+
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
-            is ThreadViewHolder -> holder.bind(items[position])
+            is ThreadViewHolder ->{
+                getItem(position)?.let {
+                    holder.bind(it)
+                }
+            }
         }
     }
 
-
-    fun updateList(newList: List<ThreadPost>) {
-        items.clear()
-        items.addAll(newList)
-        notifyDataSetChanged()
+    fun loadItem(position: Int) : ThreadPost?{
+        return getItem(position)
     }
-
-    fun removeItem(position: Int) {
-        items.removeAt(position)
+    fun removeItem(position: Int){
         notifyItemRemoved(position)
     }
 
-    fun getItem(position: Int): ThreadPost {
-        return items[position]
-    }
 
     inner class ThreadViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(item: ThreadPost) {
-
             DataBindingUtil.bind<FavouriteRowBinding>(itemView)?.apply {
                 thread = item
                 viewmodel = viewModel
             }
-
-
         }
     }
 
 
 }
+

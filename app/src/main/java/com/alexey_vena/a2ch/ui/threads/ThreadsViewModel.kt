@@ -29,12 +29,13 @@ class ThreadsViewModel(private val repository: Repository) : ViewModel() {
 
     private var boardName = ""
 
-    private val _dataLoading = MutableLiveData<Boolean>()
-    val dataLoading: LiveData<Boolean> = _dataLoading
+
+    val dataLoading =  MutableLiveData<Boolean>()
 
     private val _startPostsActivity = MutableLiveData<Event<String>>()
     val startPostsActivity: LiveData<Event<String>> get() = _startPostsActivity
 
+     val update = MutableLiveData<Event<Any>>()
 
     fun setBoardName(board: String) {
         boardName = board
@@ -42,12 +43,15 @@ class ThreadsViewModel(private val repository: Repository) : ViewModel() {
     }
 
     fun loadData() {
-        _dataLoading.value = true
-        checkErrors()
-        setupThreads()
-        Handler().postDelayed({
-            _dataLoading.value = false
-        }, 500)
+        if(isNetworkAvailable()){
+            dataLoading.value = true
+            checkErrors()
+            setupThreads()
+            update.value = Event(Any())
+        } else{
+            _error.value = (Event(Error(WARNING, NO_INTERNET)))
+        }
+
     }
 
     private fun checkErrors() = viewModelScope.launch {

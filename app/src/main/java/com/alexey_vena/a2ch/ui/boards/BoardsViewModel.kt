@@ -63,8 +63,6 @@ class BoardsViewModel(private val repository: Repository) : ViewModel() {
         resultList.addAll(boards.games!!)
         resultList.add(Board(name = "Японская культура", isHeader = true))
         resultList.addAll(boards.japanese!!)
-        resultList.add(Board(name = "Взрослым", isHeader = true))
-        resultList.addAll(boards.adult!!)
         resultList.add(Board(name = "Пользовательские", isHeader = true))
         resultList.addAll(boards.userBoards!!)
         return resultList

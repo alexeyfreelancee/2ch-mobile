@@ -35,8 +35,8 @@
     <string name="diez">#</string>
     <string name="help_project">Поддержать проект</string>
     <string name="watch_ad">Посмотреть рекламу</string>
-    <string name="help_money">Поддержать проект вы можете отправив добровольное пожертвование на карту <font color="#FB7000">4890494631222460</font>\n(нажмите чтобы скопировать)</string>
-    <string name="help_ad">Так же вы можете посмотреть рекламу, кликнув по кнопке ниже.</string>
+
+    <string name="help_ad">Поддержать проект вы можете просмотрев рекламу, кликнув по кнопке ниже.</string>
     <string name="help_thx">Свои пожелания проекту отправляйте на почту <font color="#FB7000">alexey.solovev43@gmail.com</font>\n(нажмите чтобы скопировать)</string>
     <string name="card_copied">Номер карты скопирован в буфер обмена</string>
     <string name="mail_copied">Почта скопирована в буфер обмена</string>

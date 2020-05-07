@@ -20,8 +20,6 @@ import com.alexey_vena.a2ch.ui.pictures.ViewPicsActivity
 import com.alexey_vena.a2ch.ui.posts.dialogs.PostActionDialog
 import com.alexey_vena.a2ch.ui.posts.dialogs.ViewPostDialog
 import com.alexey_vena.a2ch.util.*
-import com.omadahealth.github.swipyrefreshlayout.library.SwipyRefreshLayoutDirection
-import kotlinx.android.synthetic.main.activity_posts.*
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.kodein
 import org.kodein.di.generic.instance
@@ -36,30 +34,31 @@ class PostsActivity : AppCompatActivity(), KodeinAware {
     private var board = ""
     private var thread = ""
 
-
-    private lateinit var addToFavourites: MenuItem
-    private lateinit var removeFromFavourites: MenuItem
-
-    private var unreadPostsCount = 0
+    private var addToFavourites: MenuItem? = null
+    private var removeFromFavourites: MenuItem? = null
 
     private var recyclerViewState: Parcelable? = null
 
-    private lateinit var binding : ActivityPostsBinding
+    private lateinit var binding: ActivityPostsBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         viewModel = ViewModelProvider(this, factory).get(PostsViewModel::class.java)
         initObservers()
-        binding = DataBindingUtil.setContentView<ActivityPostsBinding>(this, R.layout.activity_posts).apply {
-            viewmodel = viewModel
-            lifecycleOwner = this@PostsActivity
-        }
-        postListAdapter = PostListAdapter(viewModel)
+        binding =
+            DataBindingUtil.setContentView<ActivityPostsBinding>(this, R.layout.activity_posts)
+                .apply {
+                    viewmodel = viewModel
+                    lifecycleOwner = this@PostsActivity
+                }
+
 
 
         initViewModelData()
-        binding.postList.adapter = postListAdapter
+        initPostList()
     }
+
+
 
     private fun initViewModelData() {
         board = intent.getStringExtra(BOARD_NAME)
@@ -69,23 +68,16 @@ class PostsActivity : AppCompatActivity(), KodeinAware {
             threadNum = this@PostsActivity.thread
         }
 
-        viewModel.getUnreadPosts()
-        viewModel.checkFavourite()
+
     }
 
     override fun onResume() {
-        recyclerViewState = binding.postList.layoutManager?.onSaveInstanceState()
         viewModel.loadPosts()
         super.onResume()
     }
 
     private fun initObservers() {
-        viewModel.posts.observe(this, Observer {
-            postListAdapter.updateList(it)
-            if(recyclerViewState!=null){
-                binding.postList.layoutManager?.onRestoreInstanceState(recyclerViewState)
-            }
-        })
+
         viewModel.contentDialogData.observe(this, Observer {
             val data = it.peekContent()
             showContent(data.urls, data.position)
@@ -101,35 +93,29 @@ class PostsActivity : AppCompatActivity(), KodeinAware {
             val url = it.peekContent()
             startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
         })
-        viewModel.unreadPosts.observe(this, Observer {
-            if (it != 0) {
-                toast("$it unread")
-                unreadPostsCount = it
-            }
 
-        })
         viewModel.isFavourite.observe(this, Observer {
             if (it) {
-                removeFromFavourites.isVisible = true
-                addToFavourites.isVisible = false
+                removeFromFavourites?.isVisible = true
+                addToFavourites?.isVisible = false
             } else {
-                removeFromFavourites.isVisible = false
-                addToFavourites.isVisible = true
+                removeFromFavourites?.isVisible = false
+                addToFavourites?.isVisible = true
             }
         })
         viewModel.removeFromFavourites.observe(this, Observer {
             val success = it.peekContent()
             if (success) {
-                removeFromFavourites.isVisible = false
-                addToFavourites.isVisible = true
+                removeFromFavourites?.isVisible = false
+                addToFavourites?.isVisible = true
                 toast("Тред удален из избранного")
             }
         })
         viewModel.addToFavourites.observe(this, Observer {
             val success = it.peekContent()
             if (success) {
-                removeFromFavourites.isVisible = true
-                addToFavourites.isVisible = false
+                removeFromFavourites?.isVisible = true
+                addToFavourites?.isVisible = false
                 toast("Тред добавлен в избранное")
             }
         })
@@ -148,8 +134,19 @@ class PostsActivity : AppCompatActivity(), KodeinAware {
                     .putExtra(THREAD_ANSWER, it.peekContent())
             )
         })
-    }
 
+    }
+    private fun initPostList() {
+        postListAdapter = PostListAdapter(viewModel)
+        binding.postList.adapter = postListAdapter
+        viewModel.posts.observe(this, Observer {
+            postListAdapter.updateList(it)
+            if (recyclerViewState != null) {
+                binding.postList.layoutManager?.onRestoreInstanceState(recyclerViewState)
+            }
+        })
+        recyclerViewState = binding.postList.layoutManager?.onSaveInstanceState()
+    }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
@@ -159,7 +156,7 @@ class PostsActivity : AppCompatActivity(), KodeinAware {
             R.id.opt_removeFavourites -> {
                 viewModel.removeFromFavourites()
             }
-            R.id.opt_update ->{
+            R.id.opt_update -> {
                 recyclerViewState = binding.postList.layoutManager?.onSaveInstanceState()
                 viewModel.loadPosts()
             }
@@ -186,6 +183,7 @@ class PostsActivity : AppCompatActivity(), KodeinAware {
         removeFromFavourites = menu.findItem(R.id.opt_removeFavourites)
 
 
+        viewModel.checkFavourite()
         return true
     }
 
@@ -230,8 +228,6 @@ class PostsActivity : AppCompatActivity(), KodeinAware {
 //        post_list.layoutManager?.scrollToPosition(lastReadPost)
 //        scrollDown.isVisible = false
 //    }
-
-
 
 
 }

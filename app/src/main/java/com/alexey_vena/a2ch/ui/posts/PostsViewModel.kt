@@ -15,7 +15,7 @@ import com.alexey_vena.a2ch.util.Event
 import com.alexey_vena.a2ch.util.isWebLink
 import com.alexey_vena.a2ch.util.log
 import com.alexey_vena.a2ch.util.toast
-import com.omadahealth.github.swipyrefreshlayout.library.SwipyRefreshLayoutDirection
+
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -52,8 +52,7 @@ class PostsViewModel(private val repository: Repository) : ViewModel() {
     private val _removeFromFavourites = MutableLiveData<Event<Boolean>>()
     val removeFromFavourites: LiveData<Event<Boolean>> get() = _removeFromFavourites
 
-    private val _unreadPosts = MutableLiveData<Int>()
-    val unreadPosts: LiveData<Int> = _unreadPosts
+
 
      val openPostActionDialog = MutableLiveData<Event<ArrayList<Any>>>()
      val answerPost = MutableLiveData<Event<String>>()
@@ -61,7 +60,7 @@ class PostsViewModel(private val repository: Repository) : ViewModel() {
     var board = ""
 
     fun loadPosts() {
-        CoroutineScope(Dispatchers.IO).launch {
+       viewModelScope.launch {
             _dataLoading.postValue(true)
             try {
                 val postList = repository.loadPosts(threadNum, board)
@@ -76,20 +75,9 @@ class PostsViewModel(private val repository: Repository) : ViewModel() {
         }
     }
 
-    fun getUnreadPosts() {
-        CoroutineScope(Dispatchers.IO).launch {
-            val newPosts = repository.computeUnreadPosts(threadNum, board)
-            newPosts?.let {
-                _unreadPosts.postValue(it)
-            }
-        }
-    }
 
-    fun readPost(position: Int) {
-        CoroutineScope(Dispatchers.IO).launch {
-            repository.readPost(board, threadNum, position)
-        }
-    }
+
+
 
     fun addToFavourites() = viewModelScope.launch {
         try {

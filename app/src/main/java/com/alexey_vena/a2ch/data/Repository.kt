@@ -101,7 +101,7 @@ class Repository(
     private fun buildPostUrl(
         json: Int = 1,
         task: String = "post",
-        username:String,
+        username: String,
         board: String,
         thread: String,
         captchaType: String = "recaptcha",
@@ -221,84 +221,42 @@ class Repository(
         }
     }
 
-    suspend fun removeFromFavourites(threadPost: ThreadPost) {
-        val thread = getThread(threadPost.board, threadPost.num)
-
-        thread?.let {
-            thread.isFavourite = false
-            db.threadDao().saveWithTimestamp(thread)
-        }
-
-    }
-
-    suspend fun readPost(board: String, threadNum: String, position: Int) {
-        try {
-            val thread = db.threadDao().getThread(board, threadNum)
-
-            if (thread != null) {
-                if (!thread.posts[position].isRead) {
-                    if (position != 0) thread.posts[position - 1].isRead = true
-                    thread.posts[position].isRead = true
-                    if (position != thread.posts.size - 1) thread.posts[position + 1].isRead = true
-                    db.threadDao().updateThread(thread)
-                }
-            }
-
-        } catch (ex: Exception) {
-        }
-
-    }
-
-    suspend fun computeUnreadPosts(threadNum: String, board: String): Int? {
-        val thread = db.threadDao().getThread(board, threadNum)
-        var postsWereRead = 0
-        thread?.posts?.forEach {
-            if (it.isRead) postsWereRead++
-        }
-
-        val postsSaved = thread?.posts?.size ?: 0
-        val unreadPosts = postsSaved - postsWereRead
-
-
-        return if (postsSaved == 0 || unreadPosts == 0 || postsWereRead == 0) {
-            null
-        } else {
-            unreadPosts
-        }
-    }
-
-
     suspend fun removeFromFavourites(threadItem: ThreadItem) {
         threadItem.isFavourite = false
         db.threadDao().saveWithTimestamp(threadItem)
     }
 
     suspend fun loadFavourites(): List<ThreadPost> {
-
-        val threads = db.threadDao().getFavouriteThreads()
-        val result = ArrayList<ThreadPost>()
-        threads.forEach {
-            result.add(it.posts[0])
+        return withContext(CoroutineScope(Dispatchers.IO).coroutineContext) {
+            val threads = db.threadDao().getFavouriteThreads()
+            val result = ArrayList<ThreadPost>()
+            threads.forEach {
+                result.add(it.posts[0])
+            }
+            result
         }
-        return result
+
     }
 
     suspend fun loadHistory(): List<ThreadPost> {
-        val dates = HashSet<String>()
-        val threads = db.threadDao().getHistoryThreads()
-        val result = ArrayList<ThreadPost>()
+        return withContext(CoroutineScope(Dispatchers.IO).coroutineContext){
+            val dates = HashSet<String>()
+            val threads = db.threadDao().getHistoryThreads()
+            val result = ArrayList<ThreadPost>()
 
 
-        threads.forEach {
-            val date = parseThreadDate(it.saveTime)
-            if (!dates.contains(date)) {
-                result.add(ThreadPost(isDate = true, date = date))
+            threads.forEach {
+                val date = parseThreadDate(it.saveTime)
+                if (!dates.contains(date)) {
+                    result.add(ThreadPost(isDate = true, date = date))
+                }
+                dates.add(date)
+                result.add(it.posts[0])
             }
-            dates.add(date)
-            result.add(it.posts[0])
+
+             result
         }
 
-        return result
     }
 
 

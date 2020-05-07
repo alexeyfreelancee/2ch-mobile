@@ -82,22 +82,21 @@ class ViewPostDialog(
         photo4.setOnClickListener {
             showContent(post, 3)
         }
-        photo1.setOnClickListener {
+        photo5.setOnClickListener {
             showContent(post, 4)
         }
-        photo2.setOnClickListener {
+        photo6.setOnClickListener {
             showContent(post, 5)
         }
-        photo3.setOnClickListener {
+        photo7.setOnClickListener {
             showContent(post, 6)
         }
-        photo4.setOnClickListener {
+        photo8.setOnClickListener {
             showContent(post, 7)
         }
 
         try {
             Glide.with(ctx)
-
                 .load("https://2ch.hk${post.files[0].thumbnail}")
                 .apply(myOptions)
                 .into(photo1)

@@ -15,7 +15,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
-
 import com.alexey_vena.a2ch.R
 import com.alexey_vena.a2ch.ui.boards.BoardsFragment
 import com.alexey_vena.a2ch.ui.favourite.FavouritesFragment
@@ -24,7 +23,6 @@ import com.alexey_vena.a2ch.ui.history.HistoryFragment
 import com.alexey_vena.a2ch.util.gone
 import com.alexey_vena.a2ch.util.toast
 import com.alexey_vena.a2ch.util.visible
-import com.google.android.gms.ads.MobileAds
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.actvity_main.*
 
@@ -40,10 +38,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.actvity_main)
-        if (savedInstanceState == null) {
-            initFragments()
-        }
 
+        initFragments()
         setSupportActionBar(toolbar)
         checkPermissions()
         initNavigationDrawer()
@@ -53,7 +49,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         menuInflater.inflate(R.menu.search_option, menu)
 
         val searchItem = menu?.findItem(R.id.opt_search)
-         searchView = searchItem?.actionView as SearchView
+        searchView = searchItem?.actionView as SearchView
 
         searchView.imeOptions = EditorInfo.IME_ACTION_DONE
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -76,25 +72,29 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.nav_boards -> {
-                supportFragmentManager.beginTransaction().hide(activeFragment).show(boardsFragment).commit()
+                supportFragmentManager.beginTransaction().hide(activeFragment).show(boardsFragment)
+                    .commit()
                 activeFragment = boardsFragment
                 boardsFragment.loadBoards()
                 searchView.visible()
             }
-            R.id.nav_favourites ->{
-                supportFragmentManager.beginTransaction().hide(activeFragment).show(favouritesFragment).commit()
+            R.id.nav_favourites -> {
+                supportFragmentManager.beginTransaction().hide(activeFragment)
+                    .show(favouritesFragment).commit()
                 activeFragment = favouritesFragment
-                favouritesFragment.loadFavourites()
+
                 searchView.gone()
             }
             R.id.nav_history -> {
-                supportFragmentManager.beginTransaction().hide(activeFragment).show(historyFragment).commit()
+                supportFragmentManager.beginTransaction().hide(activeFragment).show(historyFragment)
+                    .commit()
                 activeFragment = historyFragment
                 historyFragment.loadHistory()
                 searchView.gone()
             }
-            R.id.help_project ->{
-                supportFragmentManager.beginTransaction().hide(activeFragment).show(helpFragment).commit()
+            R.id.help_project -> {
+                supportFragmentManager.beginTransaction().hide(activeFragment).show(helpFragment)
+                    .commit()
                 activeFragment = helpFragment
                 searchView.gone()
             }
@@ -129,7 +129,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         ) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 requestPermissions(
-                    arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE, android.Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                    arrayOf(
+                        android.Manifest.permission.READ_EXTERNAL_STORAGE,
+                        android.Manifest.permission.WRITE_EXTERNAL_STORAGE
+                    ),
                     1234
                 )
             }
@@ -142,10 +145,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
-        if(requestCode == 1234){
-            if(grantResults.isEmpty()
+        if (requestCode == 1234) {
+            if (grantResults.isEmpty()
                 && grantResults[0] != PackageManager.PERMISSION_GRANTED
-                && grantResults[1] != PackageManager.PERMISSION_GRANTED){
+                && grantResults[1] != PackageManager.PERMISSION_GRANTED
+            ) {
                 toast("Вы не сможете загружать фотокарточки")
             }
         }
@@ -154,7 +158,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun initFragments() {
         supportFragmentManager.beginTransaction()
-            .add(R.id.fragment_container, favouritesFragment, "favouritesFragment").hide(favouritesFragment)
+            .add(R.id.fragment_container, favouritesFragment, "favouritesFragment")
+            .hide(favouritesFragment)
             .commit()
         supportFragmentManager.beginTransaction()
             .add(R.id.fragment_container, historyFragment, "historyFragment").hide(historyFragment)
