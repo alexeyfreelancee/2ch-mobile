@@ -10,7 +10,7 @@
 
         <variable
             name="viewmodel"
-            type="com.alexey_vena.a2ch.ui.threads.ThreadsViewModel" />
+            type="com.dvach_2ch.a2ch.ui.threads.ThreadsViewModel" />
     </data>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout

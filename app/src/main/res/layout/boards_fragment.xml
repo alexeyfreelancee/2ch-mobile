@@ -10,7 +10,7 @@
 
         <variable
             name="viewmodel"
-            type="com.alexey_vena.a2ch.ui.boards.BoardsViewModel" />
+            type="com.dvach_2ch.a2ch.ui.boards.BoardsViewModel" />
     </data>
 
 

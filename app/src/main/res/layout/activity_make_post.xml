@@ -10,7 +10,7 @@
 
         <variable
             name="viewmodel"
-            type="com.alexey_vena.a2ch.ui.make_post.SendPostViewModel" />
+            type="com.dvach_2ch.a2ch.ui.make_post.SendPostViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
