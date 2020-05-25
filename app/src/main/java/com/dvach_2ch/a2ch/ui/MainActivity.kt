@@ -38,11 +38,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.actvity_main)
-
         initFragments()
         setSupportActionBar(toolbar)
         checkPermissions()
         initNavigationDrawer()
+
+        supportActionBar?.title = "Борды"
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -72,6 +73,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.nav_boards -> {
+                supportActionBar?.title = "Борды"
                 supportFragmentManager.beginTransaction().hide(activeFragment).show(boardsFragment)
                     .commit()
                 activeFragment = boardsFragment
@@ -79,6 +81,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 searchView.visible()
             }
             R.id.nav_favourites -> {
+                supportActionBar?.title = "Избранное"
                 supportFragmentManager.beginTransaction().hide(activeFragment)
                     .show(favouritesFragment).commit()
                 activeFragment = favouritesFragment
@@ -86,6 +89,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 searchView.gone()
             }
             R.id.nav_history -> {
+                supportActionBar?.title = "История"
                 supportFragmentManager.beginTransaction().hide(activeFragment).show(historyFragment)
                     .commit()
                 activeFragment = historyFragment
@@ -93,6 +97,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 searchView.gone()
             }
             R.id.help_project -> {
+                supportActionBar?.title = "Помощь проекту"
                 supportFragmentManager.beginTransaction().hide(activeFragment).show(helpFragment)
                     .commit()
                 activeFragment = helpFragment

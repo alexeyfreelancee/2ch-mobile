@@ -15,7 +15,7 @@ import android.widget.ScrollView
 import android.widget.TextView
 import com.dvach_2ch.a2ch.R
 import com.dvach_2ch.a2ch.models.threads.ThreadPost
-import com.dvach_2ch.a2ch.ui.pictures.ViewPicsActivity
+import com.dvach_2ch.a2ch.ui.media_slider.MediaSliderActivity
 import com.dvach_2ch.a2ch.ui.posts.PostsViewModel
 import com.dvach_2ch.a2ch.util.*
 import com.bumptech.glide.Glide
@@ -174,7 +174,7 @@ class ViewPostDialog(
         }
 
         context.startActivity(
-            Intent(context, ViewPicsActivity::class.java)
+            Intent(context, MediaSliderActivity::class.java)
                 .putExtra(URLS, urlsResult.toString())
                 .putExtra(POSITION, position)
         )

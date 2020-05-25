@@ -2,6 +2,8 @@ package com.dvach_2ch.a2ch.util
 
 
 import android.app.Activity
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.graphics.Color
 import android.net.ConnectivityManager
@@ -110,6 +112,12 @@ fun String.isWebLink(): Boolean {
 
 }
 
+fun Context.copyToClipboard(string:String){
+    val clipboardManager = this.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+    val clip = ClipData.newPlainText("thread url", string)
+    clipboardManager.setPrimaryClip(clip)
+    this.toast("Скопировано в буфер обмена")
+}
 
 fun initError(activity: Activity, error:Error) {
 
@@ -124,6 +132,7 @@ fun displayHtml(view: HtmlTextView, html: String?) {
     }
 
 }
+
 
 @BindingAdapter("imageUrl")
 fun loadImage(view: ImageView, url: String?) {

@@ -1,4 +1,4 @@
-package com.dvach_2ch.a2ch.ui.pictures
+package com.dvach_2ch.a2ch.ui.media_slider
 
 import android.content.Context
 import android.graphics.drawable.Drawable
@@ -30,7 +30,7 @@ import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
 
 
-class ContentSliderAdapter(
+class MediaSliderAdapter(
     private val ctx: Context,
     private val urls: ArrayList<String>
 ) : PagerAdapter() {

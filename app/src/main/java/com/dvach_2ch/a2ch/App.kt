@@ -9,6 +9,7 @@ import com.dvach_2ch.a2ch.data.db.AppDatabase
 import com.dvach_2ch.a2ch.data.networking.RetrofitClient
 import com.dvach_2ch.a2ch.ui.boards.BoardsViewModelFactory
 import com.dvach_2ch.a2ch.ui.favourite.FavouritesViewModelFactory
+import com.dvach_2ch.a2ch.ui.gallery.GalleryViewModelFactory
 
 import com.dvach_2ch.a2ch.ui.history.HistoryViewModelFactory
 import com.dvach_2ch.a2ch.ui.make_post.SendPostViewModelFactory
@@ -49,5 +50,6 @@ class App : MultiDexApplication(), KodeinAware {
         bind() from singleton { CategoryViewModelFactory(instance()) }
         bind() from singleton { PostsViewModelFactory(instance()) }
         bind() from singleton { SendPostViewModelFactory(instance()) }
+        bind() from singleton { GalleryViewModelFactory(instance()) }
     }
 }

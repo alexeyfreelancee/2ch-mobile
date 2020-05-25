@@ -13,6 +13,7 @@ import android.text.style.URLSpan
 import android.view.View
 import com.dvach_2ch.a2ch.data.db.AppDatabase
 import com.dvach_2ch.a2ch.data.networking.RetrofitClient
+import com.dvach_2ch.a2ch.models.Thumb
 import com.dvach_2ch.a2ch.models.boards.BoardsBase
 import com.dvach_2ch.a2ch.models.threads.ThreadBase
 import com.dvach_2ch.a2ch.models.threads.ThreadItem
@@ -35,24 +36,28 @@ class Repository(
     private val db: AppDatabase,
     private val prefsHelper: SharedPrefsHelper
 ) {
-    suspend fun loadAnswers(threadNum: String, board: String, mainPostNum: String) : List<ThreadPost>{
-        return withContext(CoroutineScope(Dispatchers.IO).coroutineContext){
+
+    suspend fun loadAnswers(
+        threadNum: String,
+        board: String,
+        mainPostNum: String
+    ): List<ThreadPost> {
+        return withContext(CoroutineScope(Dispatchers.IO).coroutineContext) {
             val posts = loadPosts(threadNum, board)
             val resultList = ArrayList<ThreadPost>()
             posts.forEach {
                 val comment = Html.fromHtml(it.comment).toString()
                 if (comment.contains(mainPostNum)) resultList.add(it)
             }
-             resultList
+            resultList
         }
 
     }
 
     suspend fun loadBoards(): BoardsBase {
-        val result = CoroutineScope(Dispatchers.IO).async {
+        return withContext(CoroutineScope(Dispatchers.IO).coroutineContext) {
             retrofit.dvach.getBoards()
         }
-        return result.await()
     }
 
     suspend fun loadBoardInfo(board: String): ThreadBase? {
@@ -71,7 +76,7 @@ class Repository(
         return prefsHelper.loadUsername() ?: ""
     }
 
-    suspend fun makePostWithCaptcha(
+    suspend fun makePost(
         board: String,
         thread: String,
         comment: String,
@@ -148,7 +153,6 @@ class Repository(
     }
 
     private fun getPostNum(href: String): String {
-
         return href
             .substring(href.lastIndexOf("#") + 1)
             .parseDigits()
@@ -326,7 +330,7 @@ class Repository(
     }
 
     suspend fun downloadAll(threadNum: String, board: String, context: Context) {
-        val photoLinks = getAllPhotos(threadNum, board)
+        val photoLinks = loadAllPhotos(threadNum, board)
         try {
             photoLinks.forEach {
                 download(it, context)
@@ -338,23 +342,43 @@ class Repository(
 
     }
 
-    private suspend fun getAllPhotos(threadNum: String, board: String): ArrayList<String> {
-
-        val photoLinks = ArrayList<String>()
-        val posts = retrofit.dvach.getPosts(
-            "get_thread", board, threadNum, 1
-        )
-        posts.forEach {
-            it.files.forEach { file ->
-                photoLinks.add("https://2ch.hk${file.path}")
+    suspend fun loadAllThumbs(threadNum: String, board: String): ArrayList<Thumb> {
+        return withContext(CoroutineScope(Dispatchers.IO).coroutineContext) {
+            val thumbs = ArrayList<Thumb>()
+            val posts = retrofit.dvach.getPosts(
+                "get_thread", board, threadNum, 1
+            )
+            posts.forEach {
+                it.files.forEach { file ->
+                    val lastIndex = file.path.lastIndexOf(".") + 1
+                    val postfix = file.path.substring(lastIndex, file.path.length)
+                    thumbs.add(Thumb(postfix, file.thumbnail ?: ""))
+                }
             }
+            thumbs
         }
-        return photoLinks
+
+    }
+
+    suspend fun loadAllPhotos(threadNum: String, board: String): ArrayList<String> {
+        return withContext(CoroutineScope(Dispatchers.IO).coroutineContext) {
+            val photoLinks = ArrayList<String>()
+            val posts = retrofit.dvach.getPosts(
+                "get_thread", board, threadNum, 1
+            )
+            posts.forEach {
+                it.files.forEach { file ->
+                    photoLinks.add("https://2ch.hk${file.path}")
+                }
+            }
+            photoLinks
+        }
+
     }
 
     private fun download(url: String, context: Context) {
         val request = DownloadManager.Request(Uri.parse(url))
-        val prefix = if (url.endsWith(".mp4") || url.endsWith("webm")) ".mp4" else ".jpg"
+        val prefix = if (url.endsWith("mp4") || url.endsWith("webm")) ".mp4" else ".jpg"
         val file = createFile(prefix)
         val title = if (prefix == ".mp4") "video" else "photo"
 

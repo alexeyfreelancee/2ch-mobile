@@ -17,6 +17,15 @@
         app:showAsAction="always" />
 
     <item
+        android:id="@+id/copyUrl"
+        android:title="@string/copy_url"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/gallery"
+        android:title="@string/gallery"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/opt_addFavourites"
         android:title="@string/add_fav"
         app:showAsAction="never" />

@@ -1,4 +1,4 @@
-package com.dvach_2ch.a2ch.ui.pictures
+package com.dvach_2ch.a2ch.ui.media_slider
 
 import android.app.DownloadManager
 import android.content.Context
@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
 import com.dvach_2ch.a2ch.R
@@ -17,19 +18,27 @@ import com.dvach_2ch.a2ch.util.toast
 import com.r0adkll.slidr.Slidr
 import com.r0adkll.slidr.model.SlidrConfig
 import com.r0adkll.slidr.model.SlidrPosition
+import kotlinx.android.synthetic.main.view_content_activity.view.*
 import java.io.File
 
 
-class ViewPicsActivity : AppCompatActivity() {
-    private var contentSliderAdapter: ContentSliderAdapter? = null
+class MediaSliderActivity : AppCompatActivity() {
+    private var mediaSliderAdapter: MediaSliderAdapter? = null
     private var urls = ArrayList<String>()
     private var position: Int = 0
     private lateinit var contentSlider: ViewPagerFixed
 
+    private var positionView :TextView? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.view_content_activity)
+
         getData(intent)
+
+
+        positionView = findViewById(R.id.tv_position)
+        positionView?.text = "${position + 1}/${urls.size}"
+
         setupSlidr()
         setupContentSlider()
         setupDownloadButton()
@@ -79,22 +88,24 @@ class ViewPicsActivity : AppCompatActivity() {
             if (it.length > 5) urls.add(it)
         }
 
-        position = arguments?.getIntExtra(POSITION, 0)!!
+        position = arguments?.getIntExtra(POSITION, 0) ?: 0
+
     }
 
     private fun setupContentSlider(){
-        contentSliderAdapter =
-            ContentSliderAdapter(
+        mediaSliderAdapter =
+            MediaSliderAdapter(
                 applicationContext,
                 urls
             )
         contentSlider = findViewById(R.id.photo)
         contentSlider.apply {
-            adapter = contentSliderAdapter
+            adapter = mediaSliderAdapter
             currentItem = position
             addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
                 override fun onPageSelected(position: Int) {
-                    contentSliderAdapter!!.pausePlayers()
+                    positionView?.text = "${position + 1}/${urls.size}"
+                    mediaSliderAdapter!!.pausePlayers()
                 }
 
 
@@ -126,12 +137,12 @@ class ViewPicsActivity : AppCompatActivity() {
     }
 
     override fun onPause() {
-        contentSliderAdapter!!.pausePlayers()
+        mediaSliderAdapter!!.pausePlayers()
         super.onPause()
     }
 
     override fun onDestroy() {
-        contentSliderAdapter!!.releasePlayers()
+        mediaSliderAdapter!!.releasePlayers()
 
         super.onDestroy()
     }

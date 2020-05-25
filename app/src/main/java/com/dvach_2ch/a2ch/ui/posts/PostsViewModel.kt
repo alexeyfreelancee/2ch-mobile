@@ -10,6 +10,7 @@ import com.dvach_2ch.a2ch.models.util.ContentDialogData
 import com.dvach_2ch.a2ch.models.util.Error
 import com.dvach_2ch.a2ch.models.util.WARNING
 import com.dvach_2ch.a2ch.util.Event
+import com.dvach_2ch.a2ch.util.copyToClipboard
 import com.dvach_2ch.a2ch.util.isWebLink
 import com.dvach_2ch.a2ch.util.toast
 
@@ -56,6 +57,10 @@ class PostsViewModel(private val repository: Repository) : ViewModel() {
     var threadNum = ""
     var board = ""
 
+    fun copyThreadUrl(context: Context){
+        val url = "2ch.hk/$board/res/$threadNum.html"
+        context.copyToClipboard(url)
+    }
 
     fun showAnswers(postNum:String) = viewModelScope.launch{
         val answers = repository.loadAnswers(threadNum, board,postNum)

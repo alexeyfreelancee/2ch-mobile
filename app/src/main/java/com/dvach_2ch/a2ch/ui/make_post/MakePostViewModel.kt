@@ -45,7 +45,7 @@ class SendPostViewModel(private val repository: Repository) : ViewModel() {
             CoroutineScope(Dispatchers.IO).launch {
                 dataLoading.postValue(true)
                 try {
-                    val result = repository.makePostWithCaptcha(
+                    val result = repository.makePost(
                         board,
                         thread, comment,
                         captchaKey, captchaResponse.value!!, username

@@ -15,8 +15,9 @@ import com.dvach_2ch.a2ch.R
 import com.dvach_2ch.a2ch.adapters.PostListAdapter
 import com.dvach_2ch.a2ch.databinding.ActivityPostsBinding
 import com.dvach_2ch.a2ch.models.threads.ThreadPost
+import com.dvach_2ch.a2ch.ui.gallery.GalleryActivity
 import com.dvach_2ch.a2ch.ui.make_post.MakePostActivity
-import com.dvach_2ch.a2ch.ui.pictures.ViewPicsActivity
+import com.dvach_2ch.a2ch.ui.media_slider.MediaSliderActivity
 import com.dvach_2ch.a2ch.ui.posts.dialogs.AnswersDialog
 import com.dvach_2ch.a2ch.ui.posts.dialogs.PostActionDialog
 import com.dvach_2ch.a2ch.ui.posts.dialogs.ViewPostDialog
@@ -79,24 +80,24 @@ class PostsActivity : AppCompatActivity(), KodeinAware {
     private fun initObservers() {
 
         viewModel.contentDialogData.observe(this, Observer {
-            if(!it.hasBeenHandled){
+            if (!it.hasBeenHandled) {
                 val data = it.peekContent()
                 showContent(data.urls, data.position)
             }
 
         })
         viewModel.error.observe(this, Observer {
-            if(!it.hasBeenHandled)   initError(this, it.peekContent())
+            if (!it.hasBeenHandled) initError(this, it.peekContent())
         })
         viewModel.openPostDialog.observe(this, Observer {
-            if(!it.hasBeenHandled) openPostDialog(it.peekContent())
+            if (!it.hasBeenHandled) openPostDialog(it.peekContent())
 
         })
         viewModel.showAnswers.observe(this, Observer {
-            if(!it.hasBeenHandled) openAnswersDialog(it.peekContent())
+            if (!it.hasBeenHandled) openAnswersDialog(it.peekContent())
         })
         viewModel.openWebLink.observe(this, Observer {
-            if(!it.hasBeenHandled){
+            if (!it.hasBeenHandled) {
                 val url = it.peekContent()
                 startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
             }
@@ -113,7 +114,7 @@ class PostsActivity : AppCompatActivity(), KodeinAware {
             }
         })
         viewModel.removeFromFavourites.observe(this, Observer {
-            if(!it.hasBeenHandled){
+            if (!it.hasBeenHandled) {
                 val success = it.peekContent()
                 if (success) {
                     removeFromFavourites?.isVisible = false
@@ -124,7 +125,7 @@ class PostsActivity : AppCompatActivity(), KodeinAware {
 
         })
         viewModel.addToFavourites.observe(this, Observer {
-            if(!it.hasBeenHandled){
+            if (!it.hasBeenHandled) {
                 val success = it.peekContent()
                 if (success) {
                     removeFromFavourites?.isVisible = true
@@ -136,7 +137,7 @@ class PostsActivity : AppCompatActivity(), KodeinAware {
         })
 
         viewModel.openPostActionDialog.observe(this, Observer {
-            if(!it.hasBeenHandled){
+            if (!it.hasBeenHandled) {
                 val view = it.peekContent()[0] as View
                 val postNum = it.peekContent()[1] as String
                 val dialog = PostActionDialog(this, viewModel, view, postNum)
@@ -145,7 +146,7 @@ class PostsActivity : AppCompatActivity(), KodeinAware {
 
         })
         viewModel.answerPost.observe(this, Observer {
-            if(!it.hasBeenHandled){
+            if (!it.hasBeenHandled) {
                 startActivity(
                     Intent(applicationContext, MakePostActivity::class.java)
                         .putExtra(BOARD_NAME, board)
@@ -171,8 +172,8 @@ class PostsActivity : AppCompatActivity(), KodeinAware {
         recyclerViewState = binding.postList.layoutManager?.onSaveInstanceState()
     }
 
-    private fun openAnswersDialog(answers:List<ThreadPost>) {
-        val dialog = AnswersDialog(answers, viewModel,this)
+    private fun openAnswersDialog(answers: List<ThreadPost>) {
+        val dialog = AnswersDialog(answers, viewModel, this)
         dialog.show()
     }
 
@@ -180,6 +181,15 @@ class PostsActivity : AppCompatActivity(), KodeinAware {
         when (item.itemId) {
             R.id.opt_addFavourites -> {
                 viewModel.addToFavourites()
+            }
+            R.id.gallery -> {
+                startActivity(Intent(this, GalleryActivity::class.java).apply {
+                    putExtra(THREAD_NUM, thread)
+                    putExtra(BOARD_NAME, board)
+                })
+            }
+            R.id.copyUrl -> {
+                viewModel.copyThreadUrl(this)
             }
             R.id.opt_removeFavourites -> {
                 viewModel.removeFromFavourites()
@@ -224,7 +234,7 @@ class PostsActivity : AppCompatActivity(), KodeinAware {
 
 
         startActivity(
-            Intent(applicationContext, ViewPicsActivity::class.java).putExtra(
+            Intent(applicationContext, MediaSliderActivity::class.java).putExtra(
                 URLS,
                 urlsResult.toString()
             ).putExtra(
@@ -251,6 +261,15 @@ class PostsActivity : AppCompatActivity(), KodeinAware {
         )
     }
 
+    override fun onStart() {
+        super.onStart()
+        supportActionBar?.title = ""
+    }
+
+    override fun onStop() {
+        super.onStop()
+        supportActionBar?.title = ""
+    }
 //    private fun scrollToUnread() {
 //        val total = postListAdapter.itemCount - 1
 //        val lastReadPost = total - unreadPostsCount

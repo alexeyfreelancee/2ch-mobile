@@ -91,9 +91,9 @@ class BoardListAdapter(private val viewModel: BoardsViewModel?) :
 
     inner class CategoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(item: Board) {
-            DataBindingUtil.bind<BoardRowBinding>(itemView).apply {
-                this?.category = item
-                this?.viewmodel = viewModel
+            DataBindingUtil.bind<BoardRowBinding>(itemView)?.apply {
+                this.category = item
+                this.viewmodel = viewModel
             }
         }
     }
