@@ -3,12 +3,15 @@ package com.dvach_2ch.a2ch.adapters
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.dvach_2ch.a2ch.databinding.PostRowBinding
 import com.dvach_2ch.a2ch.models.threads.ThreadPost
 import com.dvach_2ch.a2ch.ui.posts.PostsViewModel
+import com.dvach_2ch.a2ch.util.gone
 import com.dvach_2ch.a2ch.util.setTextViewHTML
+
 import kotlinx.android.synthetic.main.post_row.view.*
 
 
@@ -42,26 +45,22 @@ class PostListAdapter(private val viewModel: PostsViewModel) :
 
     inner class PostViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(post: ThreadPost) {
-            val binding = DataBindingUtil.bind<PostRowBinding>(itemView).apply {
-                this?.post = post
-                this?.viewmodel = viewModel
-            }
-            binding?.let {
+            DataBindingUtil.bind<PostRowBinding>(itemView)?.apply {
+                this.post = post
+                this.viewmodel = viewModel
+
                 itemView.setOnLongClickListener {
-                    viewModel.openPostActionDialog(binding.relative, post.num)
+                    viewModel.openPostActionDialog(this.relative, post.num)
                     return@setOnLongClickListener true
                 }
 
                 setTextViewHTML(itemView.comment, post.comment, viewModel)
-
-
             }
+
 
 
         }
     }
-
-
 
 
 }

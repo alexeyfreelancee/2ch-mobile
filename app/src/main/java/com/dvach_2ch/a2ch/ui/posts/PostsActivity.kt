@@ -1,6 +1,7 @@
 package com.dvach_2ch.a2ch.ui.posts
 
 import android.content.Intent
+import android.content.res.Resources
 import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
@@ -22,6 +23,7 @@ import com.dvach_2ch.a2ch.ui.posts.dialogs.AnswersDialog
 import com.dvach_2ch.a2ch.ui.posts.dialogs.PostActionDialog
 import com.dvach_2ch.a2ch.ui.posts.dialogs.ViewPostDialog
 import com.dvach_2ch.a2ch.util.*
+import com.dvach_2ch.a2ch.views.RecyclerFastScroll
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.kodein
 import org.kodein.di.generic.instance
@@ -160,7 +162,6 @@ class PostsActivity : AppCompatActivity(), KodeinAware {
     }
 
     private fun initPostList() {
-
         postListAdapter = PostListAdapter(viewModel)
         binding.postList.adapter = postListAdapter
         viewModel.posts.observe(this, Observer {
@@ -169,6 +170,7 @@ class PostsActivity : AppCompatActivity(), KodeinAware {
                 binding.postList.layoutManager?.onRestoreInstanceState(recyclerViewState)
             }
         })
+        RecyclerFastScroll(binding.postList, resources.getColor(R.color.colorAccent), resources.getColor(R.color.colorAccent))
         recyclerViewState = binding.postList.layoutManager?.onSaveInstanceState()
     }
 

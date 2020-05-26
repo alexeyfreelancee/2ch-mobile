@@ -6,11 +6,13 @@ import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.dvach_2ch.a2ch.R
 import com.dvach_2ch.a2ch.adapters.BoardListAdapter
 import com.dvach_2ch.a2ch.databinding.BoardsFragmentBinding
 import com.dvach_2ch.a2ch.ui.threads.ThreadsActivity
 import com.dvach_2ch.a2ch.util.BOARD_NAME
 import com.dvach_2ch.a2ch.util.toast
+import com.dvach_2ch.a2ch.views.RecyclerFastScroll
 import kotlinx.android.synthetic.main.boards_fragment.*
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.kodein
@@ -69,7 +71,8 @@ class BoardsFragment : Fragment(), KodeinAware {
 
     private fun initList() {
         boardListAdapter = BoardListAdapter(viewModel)
-        board_list.adapter = boardListAdapter
+        binding.boardList.adapter = boardListAdapter
+        RecyclerFastScroll(binding.boardList, resources.getColor(R.color.colorAccent), resources.getColor(R.color.colorAccent))
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

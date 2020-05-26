@@ -5,11 +5,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.Filterable
+
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.dvach_2ch.a2ch.databinding.BoardRowBinding
 import com.dvach_2ch.a2ch.models.boards.Board
 import com.dvach_2ch.a2ch.ui.boards.BoardsViewModel
+
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -88,6 +90,7 @@ class BoardListAdapter(private val viewModel: BoardsViewModel?) :
             }
         }
     }
+
 
     inner class CategoryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(item: Board) {
