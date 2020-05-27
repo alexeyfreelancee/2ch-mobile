@@ -13,12 +13,12 @@ import androidx.viewpager.widget.ViewPager
 import com.dvach_2ch.a2ch.R
 import com.dvach_2ch.a2ch.util.POSITION
 import com.dvach_2ch.a2ch.util.URLS
+import com.dvach_2ch.a2ch.util.checkDarkTheme
 import com.dvach_2ch.a2ch.views.ViewPagerFixed
 import com.dvach_2ch.a2ch.util.toast
 import com.r0adkll.slidr.Slidr
 import com.r0adkll.slidr.model.SlidrConfig
 import com.r0adkll.slidr.model.SlidrPosition
-import kotlinx.android.synthetic.main.view_content_activity.view.*
 import java.io.File
 
 
@@ -42,6 +42,8 @@ class MediaSliderActivity : AppCompatActivity() {
         setupSlidr()
         setupContentSlider()
         setupDownloadButton()
+
+        if(checkDarkTheme()) setTheme(R.style.DarkMediaSlider)
     }
 
 

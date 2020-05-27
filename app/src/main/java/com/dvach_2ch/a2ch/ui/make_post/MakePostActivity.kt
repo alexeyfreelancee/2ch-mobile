@@ -25,16 +25,14 @@ class MakePostActivity : AppCompatActivity(), KodeinAware, CaptchaListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if(checkDarkTheme()) setTheme(R.style.Dark)
         viewModel = ViewModelProvider(this, factory).get(SendPostViewModel::class.java)
-
         binding = DataBindingUtil.setContentView<ActivityMakePostBinding>(
             this, R.layout.activity_make_post
         ).apply {
             viewmodel = viewModel
             lifecycleOwner = this@MakePostActivity
         }
-
-
         initViewModelData()
         initObservers()
     }

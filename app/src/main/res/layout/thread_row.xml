@@ -33,7 +33,7 @@
             android:focusable="true"
             android:onClick="@{(view) -> viewmodel.startPostsActivity(thread.num)}"
             android:padding="8dp"
-            android:background="?attr/selectableItemBackground"
+            android:background="?attr/cardBackground"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -57,7 +57,7 @@
                 android:layout_toEndOf="@id/thread_photo"
                 android:textSize="18sp"
                 android:visibility="@{thread.subject.empty  ? View.GONE : View.VISIBLE}"
-                android:textColor="#000"
+                android:textColor="?attr/textColor"
                 tools:text="Anon"
                 android:paddingEnd="16dp"
                 android:paddingStart="8dp"
@@ -72,7 +72,7 @@
                 android:onClick="@{(view) -> viewmodel.startPostsActivity(thread.num)}"
                 android:layout_below="@id/name"
                 android:maxLines="5"
-
+                android:textColor="?attr/hintColor"
                 tools:text="dkjfalksjdflkasjdflkdkjfalksjdflkasjdflkasjdflkajsdflkjasldkfjaslkdfjaksdjfaskdjfalskdfjaskdkjfalksjdflkasjdflkasjdflkajsdflkjasldkfjaslkdfjaksdjfaskdjfalskdfjaskdkjfalksjdflkasjdflkasjdflkajsdflkjasldkfjaslkdfjaksdjfaskdjfalskdfjaskdkjfalksjdflkasjdflkasjdflkajsdflkjasldkfjaslkdfjaksdjfaskdjfalskdfjaskdkjfalksjdflkasjdflkasjdflkajsdflkjasldkfjaslkdfjaksdjfaskdjfalskdfjaskdkjfalksjdflkasjdflkasjdflkajsdflkjasldkfjaslkdfjaksdjfaskdjfalskdfjaskasjdflkajsdflkjasldkfjaslkdfjaksdjfaskdjfalskdfjask;ldjfklsdjf;aslkdfj"
                 android:layout_alignParentEnd="true"
                 android:paddingEnd="16dp"
@@ -101,6 +101,7 @@
                 android:layout_below="@id/view"
                 android:layout_marginEnd="16dp"
                 tools:text="20 20 20"
+                android:textColor="?attr/hintColor"
                 android:layout_alignParentEnd="true"
                 android:id="@+id/date"
                app:date="@{thread.timestamp}"
@@ -113,11 +114,11 @@
                 android:layout_toStartOf="@id/date"
                 android:layout_marginTop="5dp"
                 android:layout_below="@id/view"
-
+                android:textColor="?attr/hintColor"
                 android:layout_marginEnd="16dp"
                 tools:text="20 постов"
                 android:id="@+id/replies"
-                android:text='@{String.format("%s %s",thread.postsCount, @string/posts)}'
+                app:posts="@{thread.postsCount + 1}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 

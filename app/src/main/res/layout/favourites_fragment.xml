@@ -13,10 +13,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingBottom="8dp"
-        android:background="@color/backgroundColor"
+        android:background="?attr/backgroundColor"
         tools:context=".ui.favourite.FavouritesFragment">
 
         <LinearLayout
+            android:background="?attr/backgroundColor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -33,6 +34,7 @@
                 android:src="@drawable/empty" />
 
             <TextView
+                android:textColor="?attr/hintColor"
                 android:text="@string/empty"
                 android:textSize="20sp"
                 android:layout_width="match_parent"

@@ -11,7 +11,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:background="@color/backgroundColor"
+        android:background="?attr/backgroundColor"
 
         android:paddingBottom="8dp"
         android:layout_height="match_parent"
@@ -34,6 +34,7 @@
                 android:src="@drawable/empty" />
 
             <TextView
+                android:textColor="?attr/hintColor"
                 android:text="@string/empty"
                 android:textSize="20sp"
                 android:layout_width="match_parent"

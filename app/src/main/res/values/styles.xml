@@ -1,22 +1,31 @@
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+
+    <style name="Default" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">#FB7000</item>
+        <item name="colorPrimaryDark">#FB7000</item>
+        <item name="colorAccent">#FB7000</item>
+        <item name="backgroundColor">#EEEEEE</item>
+        <item name="cardBackground">#FFF</item>
+        <item name="hintColor">@android:color/tab_indicator_text</item>
+        <item name="textColor">#000</item>
+        <item name="buttonColor">@color/darkerGray</item>
+        <item name="android:textColorHighlight">#FB7000</item>
     </style>
 
-
-    <style name="NoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+    <style name="DefaultNoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">#FB7000</item>
+        <item name="colorPrimaryDark">#FB7000</item>
+        <item name="colorAccent">#FB7000</item>
+        <item name="backgroundColor">#EEEEEE</item>
+        <item name="cardBackground">#FFF</item>
+        <item name="hintColor">@android:color/tab_indicator_text</item>
+        <item name="textColor">#000</item>
+        <item name="buttonColor">@color/darkerGray</item>
+        <item name="android:textColorHighlight">#FB7000</item>
     </style>
 
-    <style name="ViewContent" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="DefaultMediaSlider" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowActionBar">false</item>
@@ -24,8 +33,49 @@
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowAnimationStyle">@null</item>
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">#FB7000</item>
+        <item name="colorPrimaryDark">#FB7000</item>
+        <item name="colorAccent">#FB7000</item>
+    </style>
+
+    <style name="Dark" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">#3F51B5</item>
+        <item name="colorPrimaryDark">#303F9F</item>
+        <item name="colorAccent">#2196F3</item>
+        <item name="backgroundColor">#303030</item>
+        <item name="cardBackground">#424242</item>
+        <item name="textColor">#ffffff</item>
+        <item name="hintColor">#a9a9a9</item>
+        <item name="buttonColor">#2196F3</item>
+        <item name="android:textColorHighlight">#2196F3</item>
+    </style>
+
+
+    <style name="DarkNoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">#3F51B5</item>
+        <item name="colorPrimaryDark">#303F9F</item>
+        <item name="colorAccent">#2196F3</item>
+        <item name="backgroundColor">#303030</item>
+        <item name="cardBackground">#424242</item>
+        <item name="textColor">#ffffff</item>
+        <item name="hintColor">#a9a9a9</item>
+        <item name="buttonColor">#2196F3</item>
+        <item name="android:textColorHighlight">#2196F3</item>
+    </style>
+
+
+
+
+    <style name="DarkMediaSlider" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowAnimationStyle">@null</item>
+        <item name="colorPrimary">#3F51B5</item>
+        <item name="colorPrimaryDark">#303F9F</item>
+        <item name="colorAccent">#2196F3</item>
     </style>
 </resources>

@@ -26,6 +26,7 @@ class ThreadsActivity : AppCompatActivity(), KodeinAware {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if(checkDarkTheme()) setTheme(R.style.Dark)
         viewModel = ViewModelProvider(this, factory).get(ThreadsViewModel::class.java)
         intent.getStringExtra(BOARD_NAME)?.let {
             boardName = it

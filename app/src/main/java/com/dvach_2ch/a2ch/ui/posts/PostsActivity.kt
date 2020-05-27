@@ -1,10 +1,10 @@
 package com.dvach_2ch.a2ch.ui.posts
 
 import android.content.Intent
-import android.content.res.Resources
 import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
+import android.util.TypedValue
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -46,7 +46,7 @@ class PostsActivity : AppCompatActivity(), KodeinAware {
     private lateinit var binding: ActivityPostsBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        if (checkDarkTheme()) setTheme(R.style.Dark)
         viewModel = ViewModelProvider(this, factory).get(PostsViewModel::class.java)
         initObservers()
         binding =
@@ -170,7 +170,9 @@ class PostsActivity : AppCompatActivity(), KodeinAware {
                 binding.postList.layoutManager?.onRestoreInstanceState(recyclerViewState)
             }
         })
-        RecyclerFastScroll(binding.postList, resources.getColor(R.color.colorAccent), resources.getColor(R.color.colorAccent))
+        val color = TypedValue()
+        applicationContext.theme.resolveAttribute(R.attr.colorAccent, color, true)
+        RecyclerFastScroll(binding.postList, color.data, color.data)
         recyclerViewState = binding.postList.layoutManager?.onSaveInstanceState()
     }
 

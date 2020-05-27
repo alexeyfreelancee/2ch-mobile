@@ -10,11 +10,12 @@
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:background="@color/backgroundColor"
+        android:background="?attr/backgroundColor"
         android:layout_height="match_parent"
         tools:context=".ui.gallery.GalleryActivity">
 
         <ProgressBar
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="@{viewmodel.dataLoading ? View.VISIBLE : View.GONE}"
@@ -44,6 +45,7 @@
                 tools:layout_editor_absoluteY="138dp" />
 
             <TextView
+                android:textColor="?attr/hintColor"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"

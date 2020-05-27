@@ -16,11 +16,12 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/backgroundColor"
+        android:background="?attr/backgroundColor"
         android:padding="16dp"
         tools:context=".ui.make_post.MakePostActivity">
 
         <ProgressBar
+
             android:layout_width="45dp"
             android:layout_height="45dp"
             android:visibility="@{viewmodel.dataLoading? View.VISIBLE : View.GONE, default = gone}"
@@ -30,6 +31,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <Button
+            android:textColor="?attr/textColor"
             android:id="@+id/b_make_post"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -40,6 +42,8 @@
             app:layout_constraintEnd_toEndOf="parent" />
 
         <EditText
+            android:textColor="?attr/textColor"
+            android:textColorHint="?attr/hintColor"
             android:id="@+id/editText2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -56,6 +60,8 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
+            android:textColor="?attr/textColor"
+            android:textColorHint="?attr/hintColor"
             android:id="@+id/editText"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -74,6 +80,7 @@
 
 
         <TextView
+            android:textColor="?attr/hintColor"
             android:id="@+id/captcha_img"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

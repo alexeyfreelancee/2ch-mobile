@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:textSize="16sp"
             android:text="@{thread.date}"
-            android:textColor="@color/colorAccent"
+            android:textColor="?attr/colorAccent"
             tools:text="23.02.20 15:34"/>
     </RelativeLayout>
 </layout>

@@ -25,7 +25,6 @@
         android:layout_width="45dp"
         android:layout_height="45dp"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:theme="@style/AppTheme" />
+        android:layout_centerVertical="true" />
 
 </RelativeLayout>

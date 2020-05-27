@@ -6,7 +6,7 @@
     android:layout_height="wrap_content">
 
     <LinearLayout
-        android:background="@color/backgroundColor"
+        android:background="?attr/backgroundColor"
         android:layout_width="300dp"
         android:orientation="vertical"
         android:layout_height="wrap_content">
@@ -14,7 +14,7 @@
         <TextView
             android:text="Ответить"
             android:id="@+id/answer"
-            android:textColor="#000"
+            android:textColor="?attr/textColor"
             android:padding="16dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
@@ -27,7 +27,7 @@
 
         <TextView
             android:id="@+id/make_screen"
-            android:textColor="#000"
+            android:textColor="?attr/textColor"
             android:text="Сделать скриншот"
             android:padding="16dp"
             android:layout_width="match_parent"

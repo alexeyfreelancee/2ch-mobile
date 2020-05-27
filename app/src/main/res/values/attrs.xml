@@ -3,4 +3,11 @@
     <declare-styleable name="RecyclerMaxHeight">
         <attr name="maxHeight" format="dimension"/>
     </declare-styleable>
+    <declare-styleable name="ds" >
+        <attr name="backgroundColor" format="color" />
+        <attr name="cardBackground" format="color" />
+        <attr name="textColor" format="color" />
+        <attr name="hintColor" format="color" />
+        <attr name="buttonColor" format="color" />
+    </declare-styleable>
 </resources>

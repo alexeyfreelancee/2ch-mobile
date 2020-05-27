@@ -7,7 +7,7 @@
             type="com.dvach_2ch.a2ch.ui.help_project.HelpProjectViewModel" />
     </data>
     <RelativeLayout
-        android:background="@color/backgroundColor"
+        android:background="?attr/backgroundColor"
         android:layout_width="match_parent"
         android:padding="16dp"
         android:orientation="vertical"
@@ -16,6 +16,7 @@
 
 
         <TextView
+            android:textColor="?attr/hintColor"
             android:id="@+id/b"
             android:layout_width="wrap_content"
             android:textSize="18sp"
@@ -26,6 +27,8 @@
         <Button
             android:layout_below="@id/b"
             android:id="@+id/c"
+            android:padding="8dp"
+            android:background="?attr/buttonColor"
             android:layout_marginTop="8dp"
             android:onClick="@{(view) -> viewmodel.watchAd()}"
             android:text="@string/watch_ad"
@@ -37,6 +40,7 @@
         <TextView
             android:layout_below="@id/c"
             android:id="@+id/d"
+            android:textColor="?attr/hintColor"
             android:layout_marginTop="16dp"
             android:layout_width="wrap_content"
             android:textSize="18sp"

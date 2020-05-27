@@ -10,6 +10,7 @@ import android.webkit.WebViewClient
 import com.dvach_2ch.a2ch.R
 import com.dvach_2ch.a2ch.util.CAPTCHA_URL
 import com.dvach_2ch.a2ch.util.PARSE_HTML
+import com.dvach_2ch.a2ch.util.checkDarkTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -23,12 +24,13 @@ class CaptchaDialog(
 ) : Dialog(ctx) {
     private lateinit var webView: WebView
     private val headerMap = hashMapOf("Referer" to "https://2ch.hk")
-    private var firstRun = true
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         setContentView(R.layout.dialog_captcha)
+
         setupWebView()
     }
 

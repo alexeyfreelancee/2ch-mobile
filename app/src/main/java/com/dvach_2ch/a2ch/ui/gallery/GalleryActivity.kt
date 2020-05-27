@@ -47,6 +47,7 @@ class GalleryActivity : AppCompatActivity(), KodeinAware {
             }
         })
         setupPhotosList()
+        if(checkDarkTheme()) setTheme(R.style.Dark)
     }
 
     override fun onStart() {

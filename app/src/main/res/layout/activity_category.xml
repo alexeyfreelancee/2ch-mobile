@@ -16,21 +16,21 @@
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/backgroundColor"
         app:onRefreshListener="@{viewmodel::loadData}"
         app:refreshing="@{viewmodel.dataLoading}">
 
 
         <LinearLayout
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
 
 
-
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/thread_list"
+                android:background="?attr/backgroundColor"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layoutAnimation="@anim/fall_down_animator"

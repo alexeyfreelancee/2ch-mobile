@@ -20,9 +20,7 @@ import com.dvach_2ch.a2ch.ui.boards.BoardsFragment
 import com.dvach_2ch.a2ch.ui.favourite.FavouritesFragment
 import com.dvach_2ch.a2ch.ui.help_project.HelpProjectFragment
 import com.dvach_2ch.a2ch.ui.history.HistoryFragment
-import com.dvach_2ch.a2ch.util.gone
-import com.dvach_2ch.a2ch.util.toast
-import com.dvach_2ch.a2ch.util.visible
+import com.dvach_2ch.a2ch.util.*
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.actvity_main.*
 
@@ -37,7 +35,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setDarkTheme()
+        if(checkDarkTheme()) setTheme(R.style.DarkNoActionBar)
+
         setContentView(R.layout.actvity_main)
+
+
         initFragments()
         setSupportActionBar(toolbar)
         checkPermissions()

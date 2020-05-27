@@ -21,13 +21,14 @@
 
         <RelativeLayout
             android:id="@+id/relative"
-            android:background="@color/backgroundColor"
+            android:background="?attr/backgroundColor"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="16dp">
 
 
             <TextView
+                android:textColor="?attr/hintColor"
                 android:id="@+id/comment"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -40,6 +41,7 @@
 
             <TextView
                 android:id="@+id/date"
+                android:textColor="?attr/hintColor"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/name"
@@ -52,6 +54,7 @@
 
             <TextView
                 android:id="@+id/num"
+                android:textColor="?attr/hintColor"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/name"
@@ -62,10 +65,10 @@
 
             <org.sufficientlysecure.htmltextview.HtmlTextView
                 android:id="@+id/name"
-
+                android:textColor="?attr/textColor"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#000"
+
                 android:visibility="@{post.name.empty ? View.GONE : View.VISIBLE}"
                 app:html="@{post.name}"
                 tools:text="Anon" />
@@ -187,7 +190,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentTop="true"
                 android:id="@+id/answers"
-                android:textColor="#000"
+                android:textColor="?attr/textColor"
                 android:background="?attr/selectableItemBackground"
                 android:clickable="true"
                 android:focusable="true"

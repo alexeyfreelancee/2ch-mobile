@@ -38,27 +38,41 @@ import java.util.*
 
 
 @BindingAdapter("answers")
-fun setAnswers(view:TextView, answers:Int?){
-    if(answers!=null){
+fun setAnswers(view: TextView, answers: Int?) {
+    if (answers != null) {
         val root = "ответ"
-        val endings = arrayOf("a", "ов")
-        val number = answers % 100
-
-
-        val result = if(number in 11..19){
-            root + endings[1]
-        } else{
-            when(number % 10){
-                1 -> root
-                2 -> root + endings[0]
-                3 -> root + endings[0]
-                4 -> root + endings[0]
-                else ->  root + endings[1]
-            }
-        }
-        view.text = "$answers $result"
+        view.text= russianMagic(root, answers)
     }
 }
+
+
+@BindingAdapter("posts")
+fun setPosts(view: TextView, posts: Int?) {
+    if (posts != null) {
+        val root = "пост"
+       view.text= russianMagic(root, posts)
+    }
+}
+
+private fun russianMagic(root: String, count: Int): String {
+    val endings = arrayOf("a", "ов")
+    val number = count % 100
+
+
+    val result = if (number in 11..19) {
+        root + endings[1]
+    } else {
+        when (number % 10) {
+            1 -> root
+            2 -> root + endings[0]
+            3 -> root + endings[0]
+            4 -> root + endings[0]
+            else -> root + endings[1]
+        }
+    }
+    return "$count $result"
+}
+
 val myOptions = RequestOptions()
     .diskCacheStrategy(DiskCacheStrategy.ALL)
     .centerCrop()
@@ -112,14 +126,14 @@ fun String.isWebLink(): Boolean {
 
 }
 
-fun Context.copyToClipboard(string:String){
+fun Context.copyToClipboard(string: String) {
     val clipboardManager = this.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
     val clip = ClipData.newPlainText("thread url", string)
     clipboardManager.setPrimaryClip(clip)
     this.toast("Скопировано в буфер обмена")
 }
 
-fun initError(activity: Activity, error:Error) {
+fun initError(activity: Activity, error: Error) {
 
     activity.toast(error.msg)
     if (error.type == CRITICAL) activity.finish()

@@ -4,7 +4,7 @@
     android:layout_width="300dp"
     android:maxHeight="350dp"
     android:layout_height="wrap_content"
-    android:background="@color/backgroundColor"
+    android:background="?attr/backgroundColor"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.dvach_2ch.a2ch.views.RecyclerMaxHeight
@@ -12,7 +12,7 @@
         app:maxHeight="350dp"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:background="@color/backgroundColor"
+        android:background="?attr/backgroundColor"
         android:overScrollMode="never"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
 

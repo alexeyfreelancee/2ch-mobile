@@ -41,7 +41,7 @@
     <string name="answers">%s ответов</string>
     <string name="copy_url">Скопировать ссылку</string>
     <string name="help_ad">Поддержать проект вы можете просмотрев рекламу, кликнув по кнопке ниже.</string>
-    <string name="help_thx">Свои пожелания проекту отправляйте на почту <font color="#FB7000">alexey.solovev43@gmail.com</font>\n(нажмите чтобы скопировать)</string>
+    <string name="help_thx">Свои пожелания проекту отправляйте на почту alexey.solovev43@gmail.com\n(нажмите чтобы скопировать)</string>
     <string name="card_copied">Номер карты скопирован в буфер обмена</string>
     <string name="mail_copied">Почта скопирована в буфер обмена</string>
     <string name="card">4890494631222460</string>
