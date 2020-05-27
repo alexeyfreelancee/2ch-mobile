@@ -31,6 +31,7 @@ class MediaSliderActivity : AppCompatActivity() {
     private var positionView :TextView? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if(checkDarkTheme()) setTheme(R.style.DarkMediaSlider)
         setContentView(R.layout.view_content_activity)
 
         getData(intent)
@@ -43,7 +44,7 @@ class MediaSliderActivity : AppCompatActivity() {
         setupContentSlider()
         setupDownloadButton()
 
-        if(checkDarkTheme()) setTheme(R.style.DarkMediaSlider)
+
     }
 
 

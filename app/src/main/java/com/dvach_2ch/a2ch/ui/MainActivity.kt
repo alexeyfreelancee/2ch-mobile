@@ -1,6 +1,7 @@
 package com.dvach_2ch.a2ch.ui
 
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -32,28 +33,36 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private val helpFragment = HelpProjectFragment()
     private var activeFragment: Fragment = boardsFragment
     private lateinit var searchView: SearchView
+    private  var darkTheme: MenuItem? = null
+    private  var defaultTheme: MenuItem? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setDarkTheme()
-        if(checkDarkTheme()) setTheme(R.style.DarkNoActionBar)
-
+        if(checkDarkTheme())setTheme(R.style.DarkNoActionBar)
         setContentView(R.layout.actvity_main)
-
-
         initFragments()
         setSupportActionBar(toolbar)
         checkPermissions()
         initNavigationDrawer()
-
         supportActionBar?.title = "Борды"
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.search_option, menu)
+        menuInflater.inflate(R.menu.main_menu, menu)
 
-        val searchItem = menu?.findItem(R.id.opt_search)
-        searchView = searchItem?.actionView as SearchView
+
+        defaultTheme = menu?.findItem(R.id.default_theme)
+        darkTheme = menu?.findItem(R.id.dark_theme)
+        searchView = menu?.findItem(R.id.opt_search)?.actionView as SearchView
+
+        if(checkDarkTheme()) {
+            darkTheme?.isVisible = true
+            defaultTheme?.isVisible = false
+        } else{
+            darkTheme?.isVisible = false
+            defaultTheme?.isVisible = true
+        }
 
         searchView.imeOptions = EditorInfo.IME_ACTION_DONE
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -72,6 +81,21 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return super.onCreateOptionsMenu(menu)
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.dark_theme -> {
+                setDefaultTheme()
+                finish()
+                startActivity(Intent(this, MainActivity::class.java))
+            }
+            R.id.default_theme -> {
+                setDarkTheme()
+               finish()
+                startActivity(Intent(this, MainActivity::class.java))
+            }
+        }
+        return true
+    }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {

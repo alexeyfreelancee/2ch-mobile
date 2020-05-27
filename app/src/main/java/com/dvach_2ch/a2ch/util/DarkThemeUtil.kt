@@ -1,22 +1,15 @@
 package com.dvach_2ch.a2ch.util
 
-import android.content.Context
-import android.content.Context.MODE_PRIVATE
+import androidx.appcompat.app.AppCompatDelegate
 
-const val DARK_THEME = "DARK_THEME"
-
-
-fun Context.checkDarkTheme(): Boolean{
-    val prefs = this.getSharedPreferences("theme", MODE_PRIVATE)
-    return prefs.getBoolean(DARK_THEME, false)
+fun checkDarkTheme(): Boolean {
+    return AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES
 }
 
-fun Context.setDarkTheme(){
-    val prefs = this.getSharedPreferences("theme", MODE_PRIVATE)
-    prefs.edit().putBoolean(DARK_THEME, true).apply()
+fun setDarkTheme() {
+    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
 }
 
-fun Context.setDefaultTheme(){
-    val prefs = this.getSharedPreferences("theme", MODE_PRIVATE)
-    prefs.edit().putBoolean(DARK_THEME, false).apply()
+fun setDefaultTheme() {
+    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 }

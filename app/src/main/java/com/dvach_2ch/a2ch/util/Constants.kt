@@ -3,7 +3,6 @@ package com.dvach_2ch.a2ch.util
 
 const val BOARD_NAME = "categoryName"
 const val THREAD_NUM = "threadNum"
-const val URL = "URL"
 const val URLS = "URLS"
 const val USERNAME = "username"
 const val POSITION = "POSITION"

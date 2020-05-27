@@ -9,11 +9,8 @@ import java.util.concurrent.TimeUnit
 object RetrofitClient {
     private const val DVACH_API = "https://2ch.hk/"
 
-    private val interceptor =  HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
-
     private val client = OkHttpClient.Builder()
         .readTimeout(60, TimeUnit.SECONDS)
-      //  .addInterceptor(interceptor)
         .connectTimeout(60, TimeUnit.SECONDS)
         .build()
 

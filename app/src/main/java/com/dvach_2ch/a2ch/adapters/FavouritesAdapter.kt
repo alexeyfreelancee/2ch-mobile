@@ -30,13 +30,6 @@ class FavouritesAdapter(private val viewModel: FavouritesViewModel?) :
         }
     }
 
-    fun loadItem(position: Int) : ThreadPost?{
-        return getItem(position)
-    }
-    fun removeItem(position: Int){
-        notifyItemRemoved(position)
-    }
-
 
     inner class ThreadViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(item: ThreadPost) {

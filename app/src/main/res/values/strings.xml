@@ -43,10 +43,12 @@
     <string name="help_ad">Поддержать проект вы можете просмотрев рекламу, кликнув по кнопке ниже.</string>
     <string name="help_thx">Свои пожелания проекту отправляйте на почту alexey.solovev43@gmail.com\n(нажмите чтобы скопировать)</string>
     <string name="card_copied">Номер карты скопирован в буфер обмена</string>
-    <string name="mail_copied">Почта скопирована в буфер обмена</string>
+    <string name="mail_copied">Скопировано в буфер обмена</string>
     <string name="card">4890494631222460</string>
     <string name="mail">alexey.solovev43@gmail.com</string>
     <string name="add_thread">Добавить тред</string>
     <string name="show_captcha">Нажмите чтобы загрузить капчу</string>
     <string name="success_captcha">Вы прошли капчу</string>
+    <style name="default_theme">Светллая тема</style>
+    <style name="dark_theme">Темная тема</style>
 </resources>

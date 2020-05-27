@@ -36,20 +36,6 @@ interface DvachApi {
     ): CaptchaData
 
 
-
-    @POST("makaba/posting.fcgi")
-    suspend fun makePostWithCaptcha(
-        @Query("json") json: Int = 1,
-        @Query("task") task: String = "post",
-        @Query("board") board: String,
-        @Query("thread") thread: String,
-        @Query("captcha_type") captchaType: String = "recaptcha",
-        @Query("captcha-key") captchaKey: String,
-        @Query("g-recaptcha-response") captchaResponse: String,
-        @Query("comment", encoded = true) comment: String
-    ) : MakePostResult
-
-
     @GET("makaba/mobile.fcgi")
     suspend fun getCurrentPost(
         @Query("task") task: String,

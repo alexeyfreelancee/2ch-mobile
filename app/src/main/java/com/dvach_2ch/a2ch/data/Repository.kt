@@ -13,7 +13,7 @@ import android.text.style.URLSpan
 import android.view.View
 import com.dvach_2ch.a2ch.data.db.AppDatabase
 import com.dvach_2ch.a2ch.data.networking.RetrofitClient
-import com.dvach_2ch.a2ch.models.Thumb
+import com.dvach_2ch.a2ch.models.Thumbnail
 import com.dvach_2ch.a2ch.models.boards.BoardsBase
 import com.dvach_2ch.a2ch.models.threads.ThreadBase
 import com.dvach_2ch.a2ch.models.threads.ThreadItem
@@ -342,9 +342,9 @@ class Repository(
 
     }
 
-    suspend fun loadAllThumbs(threadNum: String, board: String): ArrayList<Thumb> {
+    suspend fun loadAllThumbs(threadNum: String, board: String): ArrayList<Thumbnail> {
         return withContext(CoroutineScope(Dispatchers.IO).coroutineContext) {
-            val thumbs = ArrayList<Thumb>()
+            val thumbs = ArrayList<Thumbnail>()
             val posts = retrofit.dvach.getPosts(
                 "get_thread", board, threadNum, 1
             )
@@ -352,7 +352,7 @@ class Repository(
                 it.files.forEach { file ->
                     val lastIndex = file.path.lastIndexOf(".") + 1
                     val postfix = file.path.substring(lastIndex, file.path.length)
-                    thumbs.add(Thumb(postfix, file.thumbnail ?: ""))
+                    thumbs.add(Thumbnail(postfix, file.thumbnail ?: ""))
                 }
             }
             thumbs

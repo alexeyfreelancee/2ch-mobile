@@ -25,9 +25,8 @@ class GalleryActivity : AppCompatActivity(), KodeinAware {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        if(checkDarkTheme()) setTheme(R.style.Dark)
         viewModel = ViewModelProvider(this, factory).get(GalleryViewModel::class.java)
-
-
         binding = DataBindingUtil.setContentView(this, R.layout.activity_gallery)
         binding.apply {
             viewmodel = viewModel
@@ -47,7 +46,6 @@ class GalleryActivity : AppCompatActivity(), KodeinAware {
             }
         })
         setupPhotosList()
-        if(checkDarkTheme()) setTheme(R.style.Dark)
     }
 
     override fun onStart() {

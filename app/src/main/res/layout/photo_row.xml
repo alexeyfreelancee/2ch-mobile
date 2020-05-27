@@ -6,7 +6,7 @@
         <import type="android.view.View"/>
         <variable
             name="thumb"
-            type="com.dvach_2ch.a2ch.models.Thumb" />
+            type="com.dvach_2ch.a2ch.models.Thumbnail" />
 
         <variable
             name="viewmodel"

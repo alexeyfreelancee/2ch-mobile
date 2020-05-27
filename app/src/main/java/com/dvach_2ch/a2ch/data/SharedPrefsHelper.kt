@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import com.dvach_2ch.a2ch.util.USERNAME
 
-class SharedPrefsHelper (private val context:Context){
+class SharedPrefsHelper (context:Context){
     private val prefs = context.getSharedPreferences("prefs", MODE_PRIVATE)
 
     fun loadUsername() : String?{

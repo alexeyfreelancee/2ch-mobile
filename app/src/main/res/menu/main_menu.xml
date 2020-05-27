@@ -2,11 +2,26 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+
     <item
         android:title="@string/search"
         app:showAsAction="always"
         app:actionViewClass="android.widget.SearchView"
         android:icon="@drawable/ic_search"
         android:id="@+id/opt_search">
+    </item>
+
+    <item
+        android:title="Светлая тема"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_day"
+        android:id="@+id/default_theme">
+    </item>
+
+    <item
+        android:title="Темная тема"
+        app:showAsAction="always"
+        android:icon="@drawable/ic_night"
+        android:id="@+id/dark_theme">
     </item>
 </menu>

@@ -4,15 +4,15 @@ import android.os.Bundle
 import androidx.core.os.bundleOf
 import androidx.lifecycle.*
 import com.dvach_2ch.a2ch.data.Repository
-import com.dvach_2ch.a2ch.models.Thumb
+import com.dvach_2ch.a2ch.models.Thumbnail
 import com.dvach_2ch.a2ch.util.Event
 import com.dvach_2ch.a2ch.util.POSITION
 import com.dvach_2ch.a2ch.util.URLS
 import kotlinx.coroutines.launch
 
 class GalleryViewModel(private val repository: Repository) : ViewModel() {
-    private val _thumbs = MutableLiveData<List<Thumb>>()
-    val thumbs: LiveData<List<Thumb>> = _thumbs
+    private val _thumbs = MutableLiveData<List<Thumbnail>>()
+    val thumbs: LiveData<List<Thumbnail>> = _thumbs
 
     val openPhoto = MutableLiveData<Event<Bundle>>()
 

@@ -46,8 +46,6 @@ class BoardListAdapter(private val viewModel: BoardsViewModel?) :
     }
 
 
-
-    //Не трогай эту ебанину, сам не понимаю как работает
     override fun getFilter(): Filter {
         return object : Filter() {
             override fun performFiltering(constraint: CharSequence?): FilterResults {
