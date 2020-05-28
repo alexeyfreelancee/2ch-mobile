@@ -32,7 +32,7 @@ class BoardsViewModel(private val repository: Repository) : ViewModel() {
             _boards.value = (getResultList(boards))
             _error.value = null
         } catch (ex: Exception) {
-            _error.value = (Event(Error(WARNING, NO_INTERNET)))
+            _error.value = (Event(Error(WARNING, ex.localizedMessage)))
             ex.printStackTrace()
         }
     }

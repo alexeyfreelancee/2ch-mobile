@@ -381,15 +381,20 @@ class Repository(
         val prefix = if (url.endsWith("mp4") || url.endsWith("webm")) ".mp4" else ".jpg"
         val file = createFile(prefix)
         val title = if (prefix == ".mp4") "video" else "photo"
-
+        val uri = Uri.fromFile(file)
 
         request.apply {
             setTitle("2ch $title")
             setDescription(url)
             setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
             allowScanningByMediaScanner()
-            setDestinationUri(Uri.fromFile(file))
+            setDestinationUri(uri)
         }
+
+
+        val mediaScanIntent = Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE)
+        mediaScanIntent.data = uri
+        context.sendBroadcast(mediaScanIntent)
 
         val manager =
             context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager

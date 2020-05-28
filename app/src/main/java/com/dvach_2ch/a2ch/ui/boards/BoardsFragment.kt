@@ -14,6 +14,7 @@ import com.dvach_2ch.a2ch.adapters.BoardListAdapter
 import com.dvach_2ch.a2ch.databinding.BoardsFragmentBinding
 import com.dvach_2ch.a2ch.ui.threads.ThreadsActivity
 import com.dvach_2ch.a2ch.util.BOARD_NAME
+import com.dvach_2ch.a2ch.util.log
 import com.dvach_2ch.a2ch.util.toast
 import com.dvach_2ch.a2ch.views.RecyclerFastScroll
 import org.kodein.di.KodeinAware
@@ -74,6 +75,7 @@ class BoardsFragment : Fragment(), KodeinAware {
     private fun initList() {
         boardListAdapter = BoardListAdapter(viewModel)
         binding.boardList.adapter = boardListAdapter
+
         val color = TypedValue()
         requireContext().theme.resolveAttribute(R.attr.colorAccent, color, true)
         RecyclerFastScroll(binding.boardList, color.data, color.data)

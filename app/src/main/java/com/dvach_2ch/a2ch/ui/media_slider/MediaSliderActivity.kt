@@ -7,15 +7,13 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.widget.ImageView
+import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
 import com.dvach_2ch.a2ch.R
-import com.dvach_2ch.a2ch.util.POSITION
-import com.dvach_2ch.a2ch.util.URLS
-import com.dvach_2ch.a2ch.util.checkDarkTheme
+import com.dvach_2ch.a2ch.util.*
 import com.dvach_2ch.a2ch.views.ViewPagerFixed
-import com.dvach_2ch.a2ch.util.toast
 import com.r0adkll.slidr.Slidr
 import com.r0adkll.slidr.model.SlidrConfig
 import com.r0adkll.slidr.model.SlidrPosition
@@ -26,12 +24,14 @@ class MediaSliderActivity : AppCompatActivity() {
     private var mediaSliderAdapter: MediaSliderAdapter? = null
     private var urls = ArrayList<String>()
     private var position: Int = 0
+    private lateinit var root: RelativeLayout
     private lateinit var contentSlider: ViewPagerFixed
 
     private var positionView :TextView? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if(checkDarkTheme()) setTheme(R.style.DarkMediaSlider)
+
         setContentView(R.layout.view_content_activity)
 
         getData(intent)
@@ -44,9 +44,8 @@ class MediaSliderActivity : AppCompatActivity() {
         setupContentSlider()
         setupDownloadButton()
 
-
+        root = findViewById(R.id.root)
     }
-
 
     private fun download(url: String) {
         try {
@@ -139,14 +138,21 @@ class MediaSliderActivity : AppCompatActivity() {
         Slidr.attach(this, config)
     }
 
+    override fun onBackPressed() {
+        root.gone()
+        mediaSliderAdapter!!.pausePlayers()
+        mediaSliderAdapter!!.releasePlayers()
+        finish()
+    }
+
+
     override fun onPause() {
         mediaSliderAdapter!!.pausePlayers()
         super.onPause()
     }
 
     override fun onDestroy() {
-        mediaSliderAdapter!!.releasePlayers()
-
+       mediaSliderAdapter!!.releasePlayers()
         super.onDestroy()
     }
 }

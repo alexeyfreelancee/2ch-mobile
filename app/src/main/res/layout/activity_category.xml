@@ -15,13 +15,14 @@
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
+        android:background="?attr/backgroundColor"
         android:layout_height="wrap_content"
         app:onRefreshListener="@{viewmodel::loadData}"
         app:refreshing="@{viewmodel.dataLoading}">
 
 
         <LinearLayout
-
+            android:background="?attr/backgroundColor"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">

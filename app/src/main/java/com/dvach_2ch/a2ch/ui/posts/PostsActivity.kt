@@ -164,16 +164,21 @@ class PostsActivity : AppCompatActivity(), KodeinAware {
     private fun initPostList() {
         postListAdapter = PostListAdapter(viewModel)
         binding.postList.adapter = postListAdapter
+
+        val color = TypedValue()
+
+        theme.resolveAttribute(R.attr.colorAccent, color, true)
+        RecyclerFastScroll(binding.postList, color.data, color.data)
+
+        recyclerViewState = binding.postList.layoutManager?.onSaveInstanceState()
+
         viewModel.posts.observe(this, Observer {
             postListAdapter.updateList(it)
             if (recyclerViewState != null) {
                 binding.postList.layoutManager?.onRestoreInstanceState(recyclerViewState)
             }
         })
-        val color = TypedValue()
-        applicationContext.theme.resolveAttribute(R.attr.colorAccent, color, true)
-        RecyclerFastScroll(binding.postList, color.data, color.data)
-        recyclerViewState = binding.postList.layoutManager?.onSaveInstanceState()
+
     }
 
     private fun openAnswersDialog(answers: List<ThreadPost>) {

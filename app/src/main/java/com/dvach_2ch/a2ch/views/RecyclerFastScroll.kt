@@ -8,6 +8,7 @@ import android.view.MotionEvent
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlin.math.abs
+import kotlin.math.log
 import kotlin.math.max
 import kotlin.math.roundToInt
 
@@ -102,7 +103,7 @@ class RecyclerFastScroll(private val rv: RecyclerView,
         state = st
     }
 
-    fun show() {
+    private fun show() {
         with(showHideAnimator) {
             if (animationState == ANIMATION_STATE_FADING_OUT) {
                 cancel()
@@ -118,7 +119,7 @@ class RecyclerFastScroll(private val rv: RecyclerView,
         }
     }
 
-    private fun hide(d: Int) {
+    private fun hide(delay: Int) {
         with(showHideAnimator) {
             if (animationState == ANIMATION_STATE_FADING_IN) {
                 cancel()
@@ -127,7 +128,7 @@ class RecyclerFastScroll(private val rv: RecyclerView,
             if (animationState == ANIMATION_STATE_IN) {
                 animationState = ANIMATION_STATE_FADING_OUT
                 setFloatValues(alpha, 0f)
-                duration = d.toLong()
+                duration = delay.toLong()
                 start()
             }
         }
@@ -154,19 +155,21 @@ class RecyclerFastScroll(private val rv: RecyclerView,
             setState(STATE_HIDDEN)
             return
         }
-        if(needRecompute)
-            computeScroll()
+        if(needRecompute) computeScroll()
         if (animationState!=ANIMATION_STATE_OUT && state!=STATE_HIDDEN) {
             with(canvas){
                 save()
                 val left = rvWidth - thumbWidth
                 val top = thumbY
                 clipRect(left, top, left+thumbWidth, top+thumbHeight)
-                var c = if (state == STATE_DRAGGING) colorPressed else colorNormal
+
+
+                var color = if (state == STATE_DRAGGING) colorPressed else colorNormal
                 if(alpha!=1f){
-                    c = (c and 0xffffff) or (((c ushr 24)*alpha).toInt() shl 24)
+                    color = (color and 0xffffff) or (((color ushr 24)*alpha).toInt() shl 24)
                 }
-                drawColor(c)
+
+                drawColor(color)
                 restore()
             }
         }

@@ -3,6 +3,7 @@ package com.dvach_2ch.a2ch.ui.media_slider
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.net.Uri
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,7 +26,8 @@ import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.ExoPlayerFactory
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
-import com.google.android.exoplayer2.source.ExtractorMediaSource
+
+import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
 
@@ -36,10 +38,12 @@ class MediaSliderAdapter(
 ) : PagerAdapter() {
     private var layoutInflater: LayoutInflater? = null
     private val players = HashMap<Int, SimpleExoPlayer>()
-    private val playerViews = HashMap<Int, PlayerView>()
+
+
     init {
         layoutInflater = ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
     }
+
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         val view = layoutInflater!!.inflate(R.layout.content_row, container, false)
@@ -105,7 +109,7 @@ class MediaSliderAdapter(
     ) {
         val player = ExoPlayerFactory.newSimpleInstance(video.context)
         players[position] = player
-        playerViews[position] = video
+
         video.player = player
 
         progressBar.visible()
@@ -114,13 +118,20 @@ class MediaSliderAdapter(
             addListener(object : Player.DefaultEventListener() {
                 override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
                     super.onPlayerStateChanged(playWhenReady, playbackState)
+
                     if (playbackState == ExoPlayer.STATE_BUFFERING) progressBar.visible() else progressBar.gone()
-                    if (playbackState == ExoPlayer.STATE_IDLE) player.prepare(createMediaSource(url))
+                    if (playbackState == ExoPlayer.STATE_IDLE) {
+                        Handler().postDelayed({
+                            if(player.playbackState == ExoPlayer.STATE_IDLE) {
+                                player.prepare(createMediaSource(url))
+                            }
+                        },1000)
+
+                    }
                 }
             })
         }
     }
-
 
 
     fun pausePlayers() {
@@ -128,7 +139,8 @@ class MediaSliderAdapter(
             players.forEach {
                 it.value.playWhenReady = false
             }
-        } catch (ex: Exception){}
+        } catch (ex: Exception) {
+        }
 
     }
 
@@ -140,11 +152,11 @@ class MediaSliderAdapter(
                 stop(true);
             }
         }
-
+        players.clear()
     }
 
-    private fun createMediaSource(url: String): ExtractorMediaSource {
-        return ExtractorMediaSource.Factory(DefaultHttpDataSourceFactory("2ch"))
+    private fun createMediaSource(url: String): ProgressiveMediaSource {
+        return ProgressiveMediaSource.Factory(DefaultHttpDataSourceFactory("2ch"))
             .createMediaSource(Uri.parse(url))
     }
 
