@@ -26,7 +26,7 @@ import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.ExoPlayerFactory
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
-
+import com.google.android.exoplayer2.source.ExtractorMediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory
@@ -118,20 +118,12 @@ class MediaSliderAdapter(
             addListener(object : Player.DefaultEventListener() {
                 override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
                     super.onPlayerStateChanged(playWhenReady, playbackState)
-
                     if (playbackState == ExoPlayer.STATE_BUFFERING) progressBar.visible() else progressBar.gone()
-                    if (playbackState == ExoPlayer.STATE_IDLE) {
-                        Handler().postDelayed({
-                            if(player.playbackState == ExoPlayer.STATE_IDLE) {
-                                player.prepare(createMediaSource(url))
-                            }
-                        },1000)
-
-                    }
                 }
             })
         }
     }
+
 
 
     fun pausePlayers() {
@@ -145,6 +137,7 @@ class MediaSliderAdapter(
     }
 
     fun releasePlayers() {
+
         players.forEach {
             it.value.apply {
                 release()
@@ -153,6 +146,7 @@ class MediaSliderAdapter(
             }
         }
         players.clear()
+
     }
 
     private fun createMediaSource(url: String): ProgressiveMediaSource {

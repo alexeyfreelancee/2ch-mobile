@@ -19,6 +19,7 @@ class ViewPagerFixed : ViewPager {
         return false
     }
 
+
     override fun onInterceptTouchEvent(ev: MotionEvent?): Boolean {
         try {
             return super.onInterceptTouchEvent(ev)

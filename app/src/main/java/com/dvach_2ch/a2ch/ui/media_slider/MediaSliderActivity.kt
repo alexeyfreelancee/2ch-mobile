@@ -58,6 +58,7 @@ class MediaSliderActivity : AppCompatActivity() {
             request.apply {
                 setTitle("2ch $title")
                 setDescription(url)
+
                 setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
                 allowScanningByMediaScanner()
                 setDestinationUri(Uri.fromFile(file))
@@ -138,20 +139,17 @@ class MediaSliderActivity : AppCompatActivity() {
         Slidr.attach(this, config)
     }
 
-    override fun onBackPressed() {
-        root.gone()
-        mediaSliderAdapter!!.pausePlayers()
-        mediaSliderAdapter!!.releasePlayers()
-        finish()
-    }
+   
 
 
     override fun onPause() {
+
         mediaSliderAdapter!!.pausePlayers()
         super.onPause()
     }
 
     override fun onDestroy() {
+
        mediaSliderAdapter!!.releasePlayers()
         super.onDestroy()
     }

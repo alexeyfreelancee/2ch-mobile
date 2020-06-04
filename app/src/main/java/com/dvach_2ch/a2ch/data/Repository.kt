@@ -378,9 +378,9 @@ class Repository(
 
     private fun download(url: String, context: Context) {
         val request = DownloadManager.Request(Uri.parse(url))
-        val prefix = if (url.endsWith("mp4") || url.endsWith("webm")) ".mp4" else ".jpg"
+        val prefix = if (url.endsWith("mp4") || url.endsWith("webm")) ".mp4" else if (url.endsWith(".gif")) ".gif" else ".jpg"
         val file = createFile(prefix)
-        val title = if (prefix == ".mp4") "video" else "photo"
+        val title = if (prefix == ".mp4") "video" else if (prefix == "gif") "gif" else "photo"
         val uri = Uri.fromFile(file)
 
         request.apply {
