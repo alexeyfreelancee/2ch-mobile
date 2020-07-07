@@ -20,6 +20,8 @@ import com.dvach_2ch.a2ch.views.RecyclerFastScroll
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.kodein
 import org.kodein.di.generic.instance
+import java.net.URL
+import java.nio.file.Files
 
 
 class BoardsFragment : Fragment(), KodeinAware {
@@ -35,6 +37,7 @@ class BoardsFragment : Fragment(), KodeinAware {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         viewModel = ViewModelProvider(this, factory).get(BoardsViewModel::class.java)
         binding = BoardsFragmentBinding.inflate(
             inflater, container, false

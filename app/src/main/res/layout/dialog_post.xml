@@ -19,7 +19,7 @@
 
         <org.sufficientlysecure.htmltextview.HtmlTextView
             android:id="@+id/comment"
-            android:textColor="?attr/textColor"
+            android:textColor="?attr/hintColor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:linksClickable="true"

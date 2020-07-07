@@ -5,7 +5,7 @@ apply plugin: 'kotlin-kapt'
 
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 30
     buildToolsVersion "29.0.3"
 
     compileOptions {
@@ -15,9 +15,10 @@ android {
     defaultConfig {
         applicationId "com.dvach_2ch.a2ch"
         minSdkVersion 19
-        targetSdkVersion 29
-        versionCode 5
-        versionName "5.0"
+        targetSdkVersion 30
+        versionCode 7
+        versionName "7.0"
+        vectorDrawables.useSupportLibrary = true
         multiDexEnabled = true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

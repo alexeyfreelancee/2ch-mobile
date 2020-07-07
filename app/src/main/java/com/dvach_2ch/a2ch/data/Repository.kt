@@ -4,6 +4,7 @@ import android.app.DownloadManager
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.net.Uri
 import android.os.Environment
@@ -18,14 +19,10 @@ import com.dvach_2ch.a2ch.models.boards.BoardsBase
 import com.dvach_2ch.a2ch.models.threads.ThreadBase
 import com.dvach_2ch.a2ch.models.threads.ThreadItem
 import com.dvach_2ch.a2ch.models.threads.ThreadPost
-import com.dvach_2ch.a2ch.util.isNetworkAvailable
-import com.dvach_2ch.a2ch.util.isWebLink
-import com.dvach_2ch.a2ch.util.parseDigits
-import com.dvach_2ch.a2ch.util.parseThreadDate
+import com.dvach_2ch.a2ch.util.*
 import kotlinx.coroutines.*
-import java.io.DataOutputStream
-import java.io.File
-import java.io.FileOutputStream
+import java.io.*
+import java.lang.StringBuilder
 import java.net.HttpURLConnection
 import java.net.URL
 import java.nio.charset.StandardCharsets
@@ -36,7 +33,23 @@ class Repository(
     private val db: AppDatabase,
     private val prefsHelper: SharedPrefsHelper
 ) {
+    fun loadFilePaths(data:Intent, context: Context) : List<String>{
+        val pathList= ArrayList<String>()
 
+        if(data.clipData != null){
+            for(i in 0 until data.clipData!!.itemCount){
+                val uri =  data.clipData!!.getItemAt(i).uri
+                val path = PathUtil.getPath(context, uri)
+                pathList.add(path)
+            }
+        }else if (data.data != null){
+            val uri =  data.data!!
+            val path = PathUtil.getPath(context, uri)
+            pathList.add(path)
+        }
+
+        return pathList
+    }
     suspend fun loadAnswers(
         threadNum: String,
         board: String,
@@ -82,20 +95,23 @@ class Repository(
         comment: String,
         captchaKey: String,
         captchaResponse: String,
-        username: String
+        username: String,
+        images: List<String> = emptyList()
     ): String {
         if (loadBoardInfo(board)?.threadItems?.find { it.num == thread } == null) {
             return "Тред умер"
         }
         try {
-            val urlParameters = buildPostUrl(
+            val urlParameters = buildPostRequest(
                 board = board,
                 thread = thread,
                 captchaKey = captchaKey,
                 comment = java.net.URLDecoder.decode(comment, "utf-8"),
                 captchaResponse = captchaResponse,
-                username = username
+                username = username,
+                images = prepareImages(images)
             )
+            log(urlParameters)
             val postData = urlParameters.toByteArray(StandardCharsets.UTF_8)
             val request = "https://2ch.hk/makaba/posting.fcgi"
             val conn = URL(request).openConnection() as HttpURLConnection
@@ -111,16 +127,15 @@ class Repository(
 
             DataOutputStream(conn.outputStream).use { wr -> wr.write(postData) }
             prefsHelper.saveUsername(username)
+
             return if (conn.responseCode == 200) "OK" else conn.responseMessage
-
-
         } catch (ex: Exception) {
             ex.printStackTrace()
             return ex.localizedMessage
         }
     }
 
-    private fun buildPostUrl(
+    private fun buildPostRequest(
         json: Int = 1,
         task: String = "post",
         username: String,
@@ -129,14 +144,33 @@ class Repository(
         captchaType: String = "recaptcha",
         captchaKey: String,
         captchaResponse: String,
-        comment: String
+        comment: String,
+        images:String
     ): String {
         return "json=$json&task=$task&board=$board" +
                 "&thread=$thread&captcha_type=$captchaType" +
                 "&captcha-key=$captchaKey" +
-                "&g-recaptcha-response=$captchaResponse&comment=$comment&name=$username"
+                "&g-recaptcha-response=$captchaResponse&comment=$comment&name=$username&$images}"
     }
 
+    private fun prepareImages(images:List<String>):String{
+        val imgString = StringBuilder()
+        val bitmaps = ArrayList<Bitmap>()
+        images.forEach {path->
+            log(path)
+            val options = BitmapFactory.Options().apply {
+                inPreferredConfig = Bitmap.Config.ARGB_8888
+            }
+            val bitmap = BitmapFactory.decodeFile(path, options)
+            bitmaps.add(bitmap)
+        }
+        for((i, image) in bitmaps.withIndex()){
+            val stream = ByteArrayOutputStream()
+            image.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+            imgString.append("image${i+1}=$stream.toString()")
+        }
+        return imgString.toString()
+    }
 
     suspend fun getCaptchaKey(board: String, thread: String): String {
         return withContext(CoroutineScope(Dispatchers.IO).coroutineContext) {

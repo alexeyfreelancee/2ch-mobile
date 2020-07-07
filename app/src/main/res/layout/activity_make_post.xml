@@ -36,7 +36,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@null"
-            android:onClick="@{(view)-> viewmodel.makePost()}"
+            android:onClick="@{viewmodel::makePost}"
             android:text="@string/makepost"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
@@ -59,42 +59,89 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+
         <EditText
-            android:textColor="?attr/textColor"
-            android:textColorHint="?attr/hintColor"
             android:id="@+id/editText"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginTop="16dp"
-            android:layout_marginBottom="2dp"
+            android:layout_marginBottom="16dp"
             android:background="@null"
             android:ems="10"
             android:gravity="top"
             android:hint="@string/comment"
             android:inputType="textCapSentences|textMultiLine"
             android:text="@={viewmodel.comment}"
-            app:layout_constraintBottom_toTopOf="@+id/captcha_img"
+            android:textColor="?attr/textColor"
+            android:textColorHint="?attr/hintColor"
+            app:layout_constraintBottom_toTopOf="@+id/photos"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/editText2" />
 
+        <RelativeLayout
+            android:id="@+id/photos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:layout_constraintBottom_toTopOf="@+id/captcha_img"
+            tools:layout_editor_absoluteX="16dp">
+
+            <ImageView
+                android:id="@+id/first"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:onClick="@{(view)->viewmodel.removeFile(0)}"
+                android:scaleType="centerCrop"
+                app:file="@{viewmodel.images}" />
+
+            <ImageView
+                android:id="@+id/second"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginEnd="8dp"
+                android:layout_toEndOf="@id/first"
+                android:onClick="@{(view)->viewmodel.removeFile(1)}"
+                android:scaleType="centerCrop"
+                app:file="@{viewmodel.images}" />
+
+            <ImageView
+                android:id="@+id/third"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginEnd="8dp"
+                android:layout_toEndOf="@id/second"
+                android:onClick="@{(view)->viewmodel.removeFile(2)}"
+                android:scaleType="centerCrop"
+                app:file="@{viewmodel.images}" />
+
+            <ImageView
+                android:id="@+id/fourth"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_toEndOf="@id/third"
+                android:onClick="@{(view)->viewmodel.removeFile(3)}"
+                android:scaleType="centerCrop"
+                app:file="@{viewmodel.images}" />
+
+        </RelativeLayout>
 
         <TextView
-            android:textColor="?attr/hintColor"
             android:id="@+id/captcha_img"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
             android:layout_marginBottom="8dp"
             android:clickable="@{viewmodel.captchaResponse.empty == false ? false : true}"
             android:onClick="@{(view)-> viewmodel.loadCaptcha(view)}"
             android:text="@{viewmodel.captchaResponse.empty == false ?  @string/success_captcha:@string/show_captcha }"
             android:textAlignment="center"
+            android:textColor="?attr/hintColor"
             android:textSize="18sp"
             app:layout_constraintBottom_toTopOf="@+id/b_make_post"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editText" />
+            app:layout_constraintStart_toStartOf="parent" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

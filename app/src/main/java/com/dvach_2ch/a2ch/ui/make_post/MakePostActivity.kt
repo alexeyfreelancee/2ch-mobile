@@ -1,6 +1,9 @@
 package com.dvach_2ch.a2ch.ui.make_post
 
+import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
@@ -74,5 +77,30 @@ class MakePostActivity : AppCompatActivity(), KodeinAware, CaptchaListener {
         viewModel.captchaPassed(response)
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.attach -> attachFile()
+        }
+        return super.onOptionsItemSelected(item)
+    }
 
+    private fun attachFile(){
+        val intent = Intent().apply{
+            action = Intent.ACTION_GET_CONTENT
+            type = "image/*"
+            putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+        }
+        startActivityForResult(Intent.createChooser(intent, "Прикрепить файлы"), 123)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if(requestCode == 123 && resultCode == RESULT_OK && data !=null){
+            viewModel.fileAttached(data, this)
+        }
+        super.onActivityResult(requestCode, resultCode, data)
+    }
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.makepost_menu, menu)
+        return true
+    }
 }

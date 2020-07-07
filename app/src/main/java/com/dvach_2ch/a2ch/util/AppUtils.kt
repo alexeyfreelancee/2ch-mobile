@@ -4,10 +4,15 @@ package com.dvach_2ch.a2ch.util
 import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
+import android.content.ContentUris
 import android.content.Context
 import android.graphics.Color
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
+import android.net.Uri
+import android.os.Environment
+import android.provider.DocumentsContract
+import android.provider.MediaStore
 import android.text.Html
 import android.text.Spannable
 import android.text.SpannableStringBuilder
@@ -27,15 +32,84 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 import com.dvach_2ch.a2ch.App
+import com.dvach_2ch.a2ch.R
 import com.dvach_2ch.a2ch.models.util.CRITICAL
 import com.dvach_2ch.a2ch.models.util.Error
 import com.dvach_2ch.a2ch.ui.posts.PostsViewModel
 import org.sufficientlysecure.htmltextview.HtmlFormatter
 import org.sufficientlysecure.htmltextview.HtmlFormatterBuilder
 import org.sufficientlysecure.htmltextview.HtmlTextView
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
+fun List<String>.toStr() :String{
+    val result = StringBuilder()
+    this.forEach { element ->
+        if(element.length > 5) result.append("$element,")
+    }
+    return result.toString().dropLast(1)
+}
+
+fun String.toArrayList():ArrayList<String>{
+    val resultList = ArrayList<String>()
+    val array = this.split(",")
+    array.forEach {
+        if(it.length > 5)resultList.add(it)
+    }
+    return resultList
+}
+@BindingAdapter("file")
+fun showPhotoFromFile(view:ImageView, str:String?){
+    if (str != null) {
+        val files = str.toArrayList()
+        when (view.id) {
+            R.id.first -> {
+                if (files.isNotEmpty() && files[0].isNotEmpty()) {
+                    view.loadFile(files[0])
+                    view.visible()
+                } else {
+                    view.gone()
+                }
+            }
+            R.id.second -> {
+                if (files.size > 1) {
+                    view.loadFile(files[1])
+                    view.visible()
+                } else {
+                    view.gone()
+                }
+            }
+            R.id.third -> {
+                if (files.size > 2) {
+                    view.loadFile(files[2])
+                    view.visible()
+                } else {
+                    view.gone()
+                }
+            }
+            R.id.fourth -> {
+                if (files.size > 3) {
+                    view.loadFile(files[3])
+                    view.visible()
+                } else {
+                    view.gone()
+                }
+            }
+
+        }
+    } else {
+        view.gone()
+    }
+}
+
+fun ImageView.loadFile(path: String) {
+    this.visible()
+    Glide.with(this.context)
+        .load(File(path))
+        .into(this)
+}
 
 @BindingAdapter("answers")
 fun setAnswers(view: TextView, answers: Int?) {

@@ -1,11 +1,13 @@
 package com.dvach_2ch.a2ch.ui.make_post
 
+import android.content.Context
+import android.content.Intent
 import android.view.View
 import androidx.lifecycle.*
 import com.dvach_2ch.a2ch.data.Repository
 import com.dvach_2ch.a2ch.models.util.Error
 import com.dvach_2ch.a2ch.models.util.WARNING
-import com.dvach_2ch.a2ch.util.Event
+import com.dvach_2ch.a2ch.util.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -31,16 +33,33 @@ class SendPostViewModel(private val repository: Repository) : ViewModel() {
     private val _success = MutableLiveData<Any>()
     val success: LiveData<Any> = _success
 
+     val images = MutableLiveData<String>("")
 
+    fun removeFile(position:Int){
+        val list = images.value!!.toArrayList()
+        list.removeAt(position)
+        images.value = list.toStr()
+    }
 
-     fun checkNamesEnabled() = viewModelScope.launch{
+    fun fileAttached(data:Intent, context: Context){
+        val paths = repository.loadFilePaths(data,context)
+        if(images.value!!.toArrayList().size>= 4){
+            context.toast("Максимум 4 файла")
+        }else{
+            images.value = images.value+ "," + paths.toStr()
+        }
+
+    }
+
+    fun checkNamesEnabled() = viewModelScope.launch {
         val boardInfo = repository.loadBoardInfo(board)
         boardInfo?.let {
             namesEnabled.value = boardInfo.namesEnabled == 1
         }
 
     }
-    fun makePost() {
+
+    fun makePost(view:View  ) {
         if (checkFields()) {
             CoroutineScope(Dispatchers.IO).launch {
                 dataLoading.postValue(true)
@@ -48,9 +67,12 @@ class SendPostViewModel(private val repository: Repository) : ViewModel() {
                     val result = repository.makePost(
                         board,
                         thread, comment,
-                        captchaKey, captchaResponse.value!!, username
+                        captchaKey, captchaResponse.value!!,
+                        username,
+                        images.value!!.toArrayList()
                     )
                     checkResult(result)
+                    PathUtil.deleteTempFiles(view.context)
                 } catch (ex: Exception) {
                     ex.printStackTrace()
                     _error.postValue(Event(Error(WARNING, "Не получилось отправить запрос")))
@@ -85,6 +107,9 @@ class SendPostViewModel(private val repository: Repository) : ViewModel() {
             return false
         } else if (captchaResponse.value.isNullOrEmpty()) {
             _error.postValue(Event(Error(WARNING, "Пройдите капчу")))
+            return false
+        } else if(thread == "0" && images.value!!.toArrayList().isEmpty()){
+            _error.postValue(Event(Error(WARNING, "Необходимо добавить хотябы одно фото")))
             return false
         }
         return true

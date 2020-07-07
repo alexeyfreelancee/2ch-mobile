@@ -64,8 +64,8 @@ class PostsActivity : AppCompatActivity(), KodeinAware {
 
 
     private fun initViewModelData() {
-        board = intent.getStringExtra(BOARD_NAME)
-        thread = intent.getStringExtra(THREAD_NUM)
+        board = intent.getStringExtra(BOARD_NAME)!!
+        thread = intent.getStringExtra(THREAD_NUM)!!
         viewModel.apply {
             board = this@PostsActivity.board
             threadNum = this@PostsActivity.thread
@@ -279,12 +279,7 @@ class PostsActivity : AppCompatActivity(), KodeinAware {
         super.onStop()
         supportActionBar?.title = ""
     }
-//    private fun scrollToUnread() {
-//        val total = postListAdapter.itemCount - 1
-//        val lastReadPost = total - unreadPostsCount
-//        post_list.layoutManager?.scrollToPosition(lastReadPost)
-//        scrollDown.isVisible = false
-//    }
+
 
 
 }

@@ -2,12 +2,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-
     <item
-        android:id="@+id/opt_addThread"
-        android:title="@string/add_thread"
-        android:icon="@drawable/ic_add"
-        app:showAsAction="always" />
-
-   
+        android:id="@+id/attach"
+        android:icon="@drawable/ic_attach"
+        android:title="Attach"
+        app:showAsAction="always"/>
 </menu>
